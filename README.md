@@ -1,2 +1,2 @@
 # data design project automatic seller
-## teammate ZhangTong DengxiangBo Zhnagkunlong
+## teammate : ZhangTong DengxiangBo Zhnagkunlong
