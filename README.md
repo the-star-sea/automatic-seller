@@ -1,2 +1,2 @@
-# data design project automatic seller
+# Digital Design project automatic seller
 ## teammate : ZhangTong DengxiangBo Zhnagkunlong
