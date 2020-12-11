@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/12/01 23:19:05
+// Create Date: 2020/12/05 22:18:22
 // Design Name: 
-// Module Name: firstTest
+// Module Name: seller
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -30,10 +30,11 @@ input[2:0]state
 
     always @(state)
     begin
-        case(state):
+        case(state)
             2'b001: Search search();
             2'b010: Pay pay();
             2'b100: Add_goods add_goods();
+        endcase
     end
 
 endmodule
