@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/12/05 22:22:25
+// Create Date: 2020/12/12 18:19:51
 // Design Name: 
-// Module Name: Add_goods
+// Module Name: keyboard
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module Add_goods(
-
+module keyboard(
+    input clk,
+    input [7:0] keyboard_in,
+    output [3:0] keyboard_out
     );
-endmodule
+endmodule : keyboard
