@@ -22,6 +22,7 @@
 
 module keyboard(
     input clk,
+    input reset,
     input [7:0] keyboard_in,
     output [3:0] keyboard_out
     );

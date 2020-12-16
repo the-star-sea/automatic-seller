@@ -24,12 +24,12 @@ module controller(
     input clk,
     input reset,//来回拨动
     input [1:0] status,
-    output [1:0] status_led,
+    output [1:0] status_out,
     input [3:0] keyboard,
     input [2:0] channel,
-    output [2:0] channel_led,
+    output [2:0] channel_out,
     input [2:0] goods,
-    output [2:0] goods_led,
+    output [2:0] goods_out,
     output [3:0] warning,
     output [9:0] income,
     output [44:0] current_numbers,//一个商品5个位宽，共9个商品,
@@ -41,7 +41,7 @@ module controller(
     output [44:0] max_supplement,
     output [4:0] waiting_time,
     output [3:0] select_number,
-    output select_led
+    output select_out
 
 );
 
