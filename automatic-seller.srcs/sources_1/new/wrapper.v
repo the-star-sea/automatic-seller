@@ -40,7 +40,7 @@ module wrapper(
     wire [3:0] keyboard;
     wire keyboard_en;
     keyboard keyboard(.clk(clk), .reset(reset), .keyboard_in(keyboard_in), .keyboard_out(keyboard)
-    .keyboard_en(keyboard_en));
+        .keyboard_en(keyboard_en));
 
     //控制信息
     wire [1:0] status_out;//todo 传给led模块
@@ -58,7 +58,7 @@ module wrapper(
     wire [4:0] waiting_time;
     wire [3:0] select_number;
     wire select_out;//todo 传给led模块
-    controller controller(.clk(clk), .reset(reset), .status(status), .status_out(status_out), .keyboard(keyboard),
+    controller controller(.clk(clk), .reset(reset), .status(status), .status_out(status_out), .keyboard(keyboard), .keyboard_en(keyboard_en),
         .channel(channel), .channel_out(channel_out), .goods(goods), .goods_out(goods_out), .warning_cancel(warning_cancel), .warning(warning), .income(income),
         .current_numbers(current_numbers), .sold_numbers(sold_numbers), .max_supplement(max_supplement),
         .waiting_time(waiting_time), .select_number(select_number), .select_out(select_out));//todo

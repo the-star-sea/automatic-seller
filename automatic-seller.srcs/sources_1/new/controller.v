@@ -26,6 +26,7 @@ module controller(
     input [1:0] status,
     output [1:0] status_out,
     input [3:0] keyboard,
+    input keyboard_en,
     input [2:0] channel,
     output [2:0] channel_out,
     input [2:0] goods,
