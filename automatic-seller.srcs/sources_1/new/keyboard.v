@@ -23,7 +23,10 @@
 module keyboard(
     input clk,
     input reset,
-    input [7:0] keyboard_in,
-    output [3:0] keyboard_out
+    input [3:0]keyboard_in,//keyboard_row
+    output [3:0] keyboard_out,
+    output keyboard_en
     );
+
+
 endmodule : keyboard
