@@ -29,7 +29,7 @@ module keyboard(
     output reg keyboard_en
 );
 
-
+//
     //frequency divider
     reg [19:0] cnt;
     always @ (posedge clk, negedge reset)
