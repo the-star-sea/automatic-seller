@@ -22,7 +22,7 @@
 
 module controller(
     input clk,
-    input reset,//来回拨动
+    input reset,//���ز���
     input [1:0] status,
     output reg[1:0] status_out,
     input [3:0] keyboard,
@@ -31,35 +31,25 @@ module controller(
     output reg [2:0] channel_out,
     input [2:0] goods,
     input warning_cancel,
-    output [2:0] goods_out,
-    output [3:0] warning,//第0比特位传爆警使能信号
-    output [9:0] income,
-    output [44:0] current_numbers,//一个商品5个位宽，共9个商品,
+    output reg [2:0] goods_out,
+    output reg [3:0] warning,//第0比特位传爆警使能信号
+    output reg [9:0] income,
+    output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,
     //[4:0]:货道001的第001个商品
     //[9:5]:货道001的第010个商品
     //[14:10]:货道001的第100个商品
     //[44:40]:货道100的第100个商品
-    output [44:0] sold_numbers,
-    output [44:0] max_supplement,
-    output [4:0] waiting_time,
-    output [3:0] select_number,
-    output select_out
+    output reg  [44:0] sold_numbers,
+    output reg [44:0] max_supplement,
+    output reg [4:0] waiting_time,
+    output reg [3:0] select_number,
+    output reg select_out
 );
 
     // always @(negedge reset)
     //     begin
     //         if (reset == 0) begin
-    //              status_out=0;
-    //              channel_out=0;
-    //              goods_out=0;
-    //             warning=0;
-    //              income=0;
-    //             current_numbers=0;
-    //              sold_numbers=0;
-    //            max_supplement=0;
-    //             waiting_time=0;
-    //               select_number=0;
-    //              select_out=0;
+    //
     //         end
 
 
@@ -67,7 +57,17 @@ module controller(
 
     case(reset)
         1'b1: //todo
-
+status_out=0;
+               channel_out<=3'b0;
+                 goods_out<=3'b0;
+             warning<=4'b0;
+                 income<=10'b0;
+               current_numbers<=45'b0;
+                sold_numbers<=45'b0;
+             max_supplement<=45'b0;
+                 waiting_time<=5'b0;
+                 select_number<=4'b0;
+                 select_out<=0;
 
     default :
 
