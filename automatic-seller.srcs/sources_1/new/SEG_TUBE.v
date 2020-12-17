@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/12/16 11:46:55
+// Create Date: 2020/12/01 23:19:05
 // Design Name: 
-// Module Name: SEG_TUBE
+// Module Name: firstTest
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module SEG_TUBE(
+module firstTest(
 
     );
 endmodule
