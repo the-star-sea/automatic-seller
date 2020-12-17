@@ -24,7 +24,7 @@ module controller(
     input clk,
     input reset,//���ز���
     input [1:0] status,
-    output reg [1:0] status_out,
+    output [1:0] status_out,
     input [3:0] keyboard,
     input keyboard_en,
     input [2:0] channel,
@@ -46,6 +46,7 @@ module controller(
     output reg select_out
 );
 
+assign status_out = status;
     // always @(negedge reset)
     //     begin
     //         if (reset == 0) begin
@@ -57,7 +58,7 @@ module controller(
 
         case (reset)
             1'b1: begin//todo
-                status_out = 0;
+
                 channel_out <= 3'b0;
                 goods_out <= 3'b0;
                 warning <= 4'b0;
@@ -72,7 +73,11 @@ module controller(
             default:
 
                 case (status)
+2'b00: //todo初始状态
 
+       2'b01: //todo购买状态
+
+    default:
                 endcase
 
         endcase
