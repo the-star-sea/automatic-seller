@@ -3,9 +3,9 @@
 // Company: 
 // Engineer: 
 // 
-// Create Date: 2020/12/01 23:46:07
+// Create Date: 2020/12/12 18:19:51
 // Design Name: 
-// Module Name: firstSimTest
+// Module Name: keyboard
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -20,7 +20,13 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module firstSimTest(
-
+module keyboard(
+    input clk,
+    input reset,
+    input [3:0]keyboard_in,//keyboard_row
+    output [3:0] keyboard_out,
+    output keyboard_en
     );
-endmodule
+
+
+endmodule : keyboard
