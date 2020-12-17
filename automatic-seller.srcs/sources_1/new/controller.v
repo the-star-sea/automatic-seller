@@ -24,7 +24,7 @@ module controller(
     input clk,
     input reset,//���ز���
     input [1:0] status,
-    output reg[1:0] status_out,
+    output reg [1:0] status_out,
     input [3:0] keyboard,
     input keyboard_en,
     input [2:0] channel,
@@ -39,7 +39,7 @@ module controller(
     //[9:5]:货道001的第010个商品
     //[14:10]:货道001的第100个商品
     //[44:40]:货道100的第100个商品
-    output reg  [44:0] sold_numbers,
+    output reg [44:0] sold_numbers,
     output reg [44:0] max_supplement,
     output reg [4:0] waiting_time,
     output reg [3:0] select_number,
@@ -53,36 +53,40 @@ module controller(
     //         end
 
 
-    always @(posedge clk,posedge reset)
+    always @(posedge clk, posedge reset)
 
-    case(reset)
-        1'b1: //todo
-status_out=0;
-               channel_out<=3'b0;
-                 goods_out<=3'b0;
-             warning<=4'b0;
-                 income<=10'b0;
-               current_numbers<=45'b0;
-                sold_numbers<=45'b0;
-             max_supplement<=45'b0;
-                 waiting_time<=5'b0;
-                 select_number<=4'b0;
-                 select_out<=0;
-
-    default :
-
-    endcase
-
-        begin
-            case (status)
-                2'b00: //todo初始状态
-
-                2'b01: //todo购买状态
-                //2'b10: //todo补货状态
+        case (reset)
+            1'b1: begin//todo
+                status_out = 0;
+                channel_out <= 3'b0;
+                goods_out <= 3'b0;
+                warning <= 4'b0;
+                income <= 10'b0;
+                current_numbers <= 45'b0;
+                sold_numbers <= 45'b0;
+                max_supplement <= 45'b0;
+                waiting_time <= 5'b0;
+                select_number <= 4'b0;
+                select_out <= 0;
+            end
             default:
-            endcase
-        end
 
-endmodule : controller
+                case (status)
+
+                endcase
+
+        endcase
+
+    // begin
+    // case (status)
+    //     2'b00: //todo初始状态
+    //
+    //     2'b01: //todo购买状态
+    //         //2'b10: //todo补货状态
+    // default:
+    // endcase
+    // end
+
+endmodule: controller
 
 
