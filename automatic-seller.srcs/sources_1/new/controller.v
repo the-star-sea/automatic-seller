@@ -22,7 +22,7 @@
 
 module controller(
     input clk,
-    input reset,//���ز���
+    input reset,
     input [1:0] status,
     output reg [1:0] status_out,
     input [3:0] keyboard,
@@ -46,12 +46,6 @@ module controller(
     output reg select_out
 );
 
-    // always @(negedge reset)
-    //     begin
-    //         if (reset == 0) begin
-    //
-    //         end
-
 
     always @(posedge clk, posedge reset)
 
@@ -72,21 +66,17 @@ module controller(
             default:
 
                 case (status)
+                    2'b00: //todo初始状态
+
+                    2'b01: //todo购买状态
+
+
+                    //2'b10: //todo补货状态
+                default:
 
                 endcase
 
         endcase
 
-    // begin
-    // case (status)
-    //     2'b00: //todo初始状态
-    //
-    //     2'b01: //todo购买状态
-    //         //2'b10: //todo补货状态
-    // default:
-    // endcase
-    // end
 
 endmodule: controller
-
-
