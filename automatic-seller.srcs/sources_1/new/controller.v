@@ -22,7 +22,7 @@
 
 module controller(
     input clk,
-    input reset,//À´»Ø²¦¶¯
+    input reset,//æ¥å›æ‹¨åŠ¨
     input [1:0] status,
     output reg[1:0] status_out,
     input [3:0] keyboard,
@@ -31,19 +31,19 @@ module controller(
     output reg [2:0] channel_out,
     input [2:0] goods,
     input warning_cancel,
-    output reg  [2:0]  goods_out,
-    output reg [3:0] warning,//??0±ÈÌØÎ»´«±¬¾¯Ê¹ÄÜĞÅºÅ
-    output reg[9:0] income,
-    output reg [44:0] current_numbers,//??¸öÉÌ??5¸öÎ»¿í£¬??9¸öÉÌ??,
-    //[4:0]:»õµÀ001µÄµÚ001¸öÉÌ??
-    //[9:5]:»õµÀ001µÄµÚ010¸öÉÌ??
-    //[14:10]:»õµÀ001µÄµÚ100¸öÉÌ??
-    //[44:40]:»õµÀ100µÄµÚ100¸öÉÌ??
-    output reg [44:0] sold_numbers,
-    output reg [44:0] max_supplement,
-    output reg [4:0] waiting_time,
-    output reg [3:0] select_number,
-    output reg select_out
+    output [2:0] goods_out,
+    output [3:0] warning,//ç¬¬0æ¯”ç‰¹ä½ä¼ çˆ†è­¦ä½¿èƒ½ä¿¡å·
+    output [9:0] income,
+    output [44:0] current_numbers,//ä¸€ä¸ªå•†å“5ä¸ªä½å®½ï¼Œå…±9ä¸ªå•†å“,
+    //[4:0]:è´§é“001çš„ç¬¬001ä¸ªå•†å“
+    //[9:5]:è´§é“001çš„ç¬¬010ä¸ªå•†å“
+    //[14:10]:è´§é“001çš„ç¬¬100ä¸ªå•†å“
+    //[44:40]:è´§é“100çš„ç¬¬100ä¸ªå•†å“
+    output [44:0] sold_numbers,
+    output [44:0] max_supplement,
+    output [4:0] waiting_time,
+    output [3:0] select_number,
+    output select_out
 );
 
     always @(negedge reset)
@@ -66,15 +66,10 @@ module controller(
     always @(posedge clk)
         begin
             case (status)
-                2'b00: //todo³õÊ¼×´???
-                begin
-                channel_out=channel;
-                goods_out=goods;
-                 select=select_out
+                2'b00: //todoåˆå§‹çŠ¶æ€
 
-                    end
-                2'b01: //todo¹ºÂò×´???
-
+                2'b01: //todoè´­ä¹°çŠ¶æ€
+                //2'b10: //todoè¡¥è´§çŠ¶æ€
             default:
             endcase
         end

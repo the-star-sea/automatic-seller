@@ -39,7 +39,7 @@ module wrapper(
     //keyboard 处理信息
     wire [3:0] keyboard;
     wire keyboard_en;
-    keyboard keyboard(.clk(clk), .reset(reset), .keyboard_in(keyboard_in), .keyboard_out(keyboard)
+    keyboard keyboard(.clk(clk), .reset(reset), .keyboard_in(keyboard_in), .keyboard_out(keyboard),
         .keyboard_en(keyboard_en));
 
     //控制信息
