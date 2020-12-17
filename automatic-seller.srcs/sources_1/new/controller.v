@@ -46,24 +46,33 @@ module controller(
     output select_out
 );
 
-    always @(negedge reset)
-        begin
-            if (reset == 0) begin
-                 status_out=0;
-                 channel_out=0;
-                 goods_out=0;
-                warning=0;
-                 income=0;
-                current_numbers=0;
-                 sold_numbers=0;
-               max_supplement=0;
-                waiting_time=0;
-                  select_number=0;
-                 select_out=0;
-            end
+    // always @(negedge reset)
+    //     begin
+    //         if (reset == 0) begin
+    //              status_out=0;
+    //              channel_out=0;
+    //              goods_out=0;
+    //             warning=0;
+    //              income=0;
+    //             current_numbers=0;
+    //              sold_numbers=0;
+    //            max_supplement=0;
+    //             waiting_time=0;
+    //               select_number=0;
+    //              select_out=0;
+    //         end
 
 
-    always @(posedge clk)
+    always @(posedge clk,posedge reset)
+
+    case(reset)
+        1'b1: //todo
+
+
+    default :
+
+    endcase
+
         begin
             case (status)
                 2'b00: //todo初始状态
@@ -77,4 +86,3 @@ module controller(
 endmodule : controller
 
 
-        //hhh
