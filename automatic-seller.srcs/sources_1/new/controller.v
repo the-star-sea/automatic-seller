@@ -32,7 +32,7 @@ module controller(
     input warning_cancel,
     output [2:0] goods_out,
     output reg [4:0] warning,//第0比特位传爆警使能信号
-    output reg [9:0] income,
+    output reg [9:0] income,//总收益
     output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,
     //[4:0]:货道001的第001个商品
     //[9:5]:货道001的第010个商品
@@ -43,6 +43,8 @@ module controller(
     output reg [4:0] waiting_time,
     input reg [3:0] select_number,//选多少商品
     output reg [3:0]select_out
+    reg [5:0]paid;//已付
+    reg [5:0]inneedpaid;//要付
 );
     reg [0:0] keyboard_enable;
     reg [4:0] money_in_all;
@@ -61,6 +63,7 @@ assign select_out=select_number;
             max_supplement <= 45'b100;
             waiting_time <= 5'b0;
             select_out <= 0;
+            paid<=0;
         end
 
         else begin
@@ -84,7 +87,7 @@ assign select_out=select_number;
                                 warning <= 4'b0010;//商品选多了
                         endcase
 
-                        if (!keyboard_enable)
+                        if (waiting_time<5'd30||paid<=)
                             begin
 
                             end
