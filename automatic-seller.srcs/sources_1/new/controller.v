@@ -41,15 +41,15 @@ module controller(
     output reg [44:0] sold_numbers,
     output reg [44:0] max_supplement,
     output reg [4:0] waiting_time,
-    output reg [3:0] select_number,
-    output reg select_out
+    input reg [3:0] select_number,//选多少商品
+    output reg [3:0]select_out
 );
     reg [0:0] keyboard_enable;
     reg [4:0] money_in_all;
     assign channel_out = channel;
     assign goods_out = goods;
     assign status_out = status;
-
+assign select_out=select_number;
 
     always @(posedge clk, posedge reset)
         if (reset == 1'b1) begin
@@ -58,9 +58,8 @@ module controller(
             income <= 10'b0;
             current_numbers <= 45'b0;
             sold_numbers <= 45'b0;
-            max_supplement <= 45'b0;
+            max_supplement <= 45'b100;
             waiting_time <= 5'b0;
-            select_number <= 4'b0;
             select_out <= 0;
         end
 
@@ -95,6 +94,7 @@ module controller(
                 //2'b10: //todo补货状态
                 default:
                     begin
+
                     end
             endcase
 
