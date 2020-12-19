@@ -2,7 +2,7 @@ module controller(
     input clk,
     input reset,
     input [2:0] status,
-    output [5:0] status_out,
+    output [6:0] status_out,
     input [3:0] keyboard,
     input keyboard_en,
     input [2:0] channel,
@@ -37,15 +37,15 @@ module controller(
     assign goods_out = goods;
     assign select_out = select_number;
     assign status_out = current_mode;
-    reg [5:0] current_mode, next_mode;
-    parameter resetmode=6'b000000;
-    parameter purchasemode=6'b000001;
-    parameter managermode=6'b000010;
-    parameter browsemode=6'b000100;
-    parameter failpurchase=6'b001000;
-    parameter completepurchase=6'b010000;
-    parameter rootbrowse=6'b100000;
-    parameter rootadd=6'b000011;
+    reg [6:0] current_mode, next_mode;
+    parameter resetmode=7'b0000000;
+    parameter purchasemode=7'b0000001;
+    parameter managermode=7'b0000010;
+    parameter browsemode=7'b0000100;
+    parameter failpurchase=7'b0001000;
+    parameter completepurchase=7'b0010000;
+    parameter rootbrowse=7'b0100000;
+    parameter rootadd=7'b1000000;
     parameter maxnum=4'b1000;
     parameter price1=2'd1;
     parameter price2=2'd2;
@@ -209,7 +209,9 @@ module controller(
     end
 
 
-    always @(posedge keyboard_en, negedge reset)
+    always @(posedge keyboard_en, negedge reset,posedge current_mode[3:3])
+    if(current_mode[3:3]==1'b1)paid=0;
+    else begin
         if (keyboard_en == 1'b1)
             begin
                 if (current_mode == rootadd)
@@ -268,6 +270,6 @@ module controller(
                     end
                 else if (current_mode == purchasemode) paid = 6'b0;
             end
-
+end
 
 endmodule: controller
