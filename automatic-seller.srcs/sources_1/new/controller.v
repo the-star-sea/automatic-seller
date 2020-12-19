@@ -217,8 +217,10 @@ module controller(
             failpurchase:
                     charge = paid;
             completepurchase:
+            begin
             charge=paid-paidinneed;
-
+                income=income+paidindeed;
+end
         endcase
 
     end
