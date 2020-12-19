@@ -50,71 +50,54 @@ module controller(
     assign goods_out = goods;
     assign status_out = status;
 
-    // always @(negedge reset)
-    //     begin
-    //         if (reset == 0) begin
-    //
-    //         end
 
+    always @(posedge clk, posedge reset)
+        if (reset == 1'b1) begin
+            keyboard_enable <= 1'b0;
+            warning <= 4'b0;
+            income <= 10'b0;
+            current_numbers <= 45'b0;
+            sold_numbers <= 45'b0;
+            max_supplement <= 45'b0;
+            waiting_time <= 5'b0;
+            select_number <= 4'b0;
+            select_out <= 0;
+        end
 
-    always @(posedge clk, negedge reset) //todo 时钟错误
+        else begin
 
-        case (reset)
-            1'b1: begin//todo
-                keyboard_enable <= 1'b0;
-                warning <= 4'b0;
-                income <= 10'b0;
-                current_numbers <= 45'b0;
-                sold_numbers <= 45'b0;
-                max_supplement <= 45'b0;
-                waiting_time <= 5'b0;
-                select_number <= 4'b0;
-                select_out <= 0;
-            end
-            default:
+            case (status)
+                2'b00: //todo初始状态
+                    begin
+                    end
+                2'b01: //todo购买状态
+                    begin
+                        case (goods)
+                            3'b000:
+                                warning <= 4'b0001;//没选商品
+                            3'b001:
+                                warning <= 4'b0000;
+                            3'b010:
+                                warning <= 4'b0000;
+                            3'b100:
+                                warning <= 4'b0000;
+                            default:
+                                warning <= 4'b0010;//商品选多了
+                        endcase
 
-                case (status)
-                    2'b00: //todo初始状态
-                        begin
-                        end
-                    2'b01: //todo购买状态
-                        begin
-                            case (goods)
-                                3'b000:
-                                    warning <= 4'b0001;//没选商品
-                                3'b001:
-                                    warning <= 4'b0000;
-                                3'b010:
-                                    warning <= 4'b0000;
-                                3'b100:
-                                    warning <= 4'b0000;
-                                default:
-                                    warning <= 4'b0010;//商品选多了
-                            endcase
+                        if (!keyboard_enable)
+                            begin
 
-                            if (!keyboard_enable)
-                                begin
+                            end
 
-                                end
+                    end
 
-                        end
+                //2'b10: //todo补货状态
+                default:
+                    begin
+                    end
+            endcase
 
-                    //2'b10: //todo补货状态
-                    default:
-                        begin
-                        end
-                endcase
-
-        endcase
-
-    // begin
-    // case (status)
-    //     2'b00: //todo初始状态
-    //
-    //     2'b01: //todo购买状态
-    //         //2'b10: //todo补货状态
-    // default:
-    // endcase
-    // end
+        end
 
 endmodule: controller
