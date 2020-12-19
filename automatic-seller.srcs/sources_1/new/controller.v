@@ -225,7 +225,7 @@ module controller(
         endcase
 
     end
-
+    //
 
     always @(posedge keyboard_en, negedge reset, posedge current_mode[3:3])
         if (current_mode[3:3] == 1'b1) paid = 0;
