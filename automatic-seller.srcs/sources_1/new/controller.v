@@ -215,13 +215,12 @@ module controller(
 
                 endcase
             failpurchase:
-                    charge = paid;
+                charge = paid;
             completepurchase:
-            begin
-            charge=paid-paidinneed;
-                income=income+paidinneed;
-
-end
+                begin
+                    charge = paid-paidinneed;
+                    income = income+paidinneed;
+                end
         endcase
 
     end
@@ -280,7 +279,7 @@ end
 
                     else if (current_mode == purchasemode)
 
-                            paid = paid+keyboard;
+                        paid = paid+keyboard;
 
                 end
             else if (current_mode == resetmode)
