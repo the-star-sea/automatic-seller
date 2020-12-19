@@ -182,11 +182,7 @@ module controller(
                     income = 10'b0;
                     sold_numbers = 45'b0;
                 end
-            rootbrowse:
-                case (channel)
-                    default:;
 
-                endcase
             browsemode:
                 case ({channel, goods})
 
@@ -219,9 +215,9 @@ module controller(
 
                 endcase
             failpurchase:
-                begin
+
                     charge = paid;
-                end
+
         endcase
 
     end
@@ -275,9 +271,9 @@ module controller(
                         endcase
 
                     else if (current_mode == purchasemode)
-                        begin
+
                             paid = paid+keyboard;
-                        end
+
                 end
             else if (current_mode == resetmode)
                 begin
