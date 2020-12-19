@@ -12,13 +12,13 @@ module controller(
     output [2:0] goods_out,
 
     output reg [9:0] income,//总收益
-    output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,
+    output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,现在多少商品
     //[4:0]:货道001的第001个商品
     //[9:5]:货道001的第010个商品
     //[14:10]:货道001的第100个商品
     //[44:40]:货道100的第100个商品
-    output reg [44:0] sold_numbers,
-    output reg [44:0] max_supplement,//还可以添加的数量
+    output reg [44:0] sold_numbers,//卖了多少商品
+    output  [44:0] max_supplement,//还可以添加的数量
     output reg [4:0] waiting_time,//付款计时器，一进入付款状态立即开始计时，处于其他状态保持为0
     input [3:0] select_number,//选多少商品
     output [3:0] select_out,
@@ -32,7 +32,7 @@ module controller(
     output reg[0:0] warning4,
     output reg[0:0] warning5,
     output reg[0:0] warning6
-);
+);assign max_supplement=maxnum-current_numbers;
     assign channel_out = channel;
     assign goods_out = goods;
     assign select_out = select_number;
@@ -178,8 +178,8 @@ module controller(
                 begin
                     charge = 5'b0;
                     income = 10'b0;
-                    current_numbers <= 45'b0;
-                    sold_numbers <= 45'b0;
+                    current_numbers = 45'b0;
+                    sold_numbers = 45'b0;
                 end
             rootbrowse:
                 case (channel)
@@ -236,40 +236,40 @@ module controller(
                     case ({channel, goods})
                         6'b001001:
 
-                            if (max_supplement[4:0]+keyboard < maxnum) warning1 = 1'b1;//todo 判断warning何时消失
-                            else max_supplement[4:0] = max_supplement[4:0]+keyboard;
+                            if (current_numbers[4:0]+keyboard < maxnum) warning1 = 1'b1;//todo 判断warning何时消失
+                            else current_numbers[4:0] = current_numbers[4:0]+keyboard;
 
                         6'b001010:
 
-                            if (max_supplement[9:5]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[9:5] = max_supplement[9:5]+keyboard;
+                            if (current_numbers[9:5]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                            else current_numbers[9:5] = current_numbers[9:5]+keyboard;
                         6'b001100:
-                            if (max_supplement[14:10]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[14:10] = max_supplement[14:10]+keyboard;
+                            if (current_numbers[14:10]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                            else current_numbers[14:10] = current_numbers[14:10]+keyboard;
 
                         6'b010001:
-                            if (max_supplement[19:15]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[19:15] = max_supplement[19:15]+keyboard;
+                            if (current_numbers[19:15]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                            else current_numbers[19:15] = current_numbers[19:15]+keyboard;
 
                         6'b010010:
-                            if (max_supplement[24:20]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[24:20] = max_supplement[24:20]+keyboard;
+                            if (current_numbers[24:20]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                            else current_numbers[24:20] = current_numbers[24:20]+keyboard;
 
                         6'b010100:
-                            if (max_supplement[29:25]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[29:25] = max_supplement[29:25]+keyboard;
+                            if (current_numbers[29:25]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                            else current_numbers[29:25] = current_numbers[29:25]+keyboard;
 
                         6'b100001:
-                            if (max_supplement[34:30]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[34:30] = max_supplement[34:30]+keyboard;
+                            if (current_numbers[34:30]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                            else current_numbers[34:30] = current_numbers[34:30]+keyboard;
 
                         6'b100010:
-                            if (max_supplement[39:35]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[39:35] = max_supplement[39:35]+keyboard;
+                            if (current_numbers[39:35]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                            else current_numbers[39:35] = current_numbers[39:35]+keyboard;
 
                         6'b100100:
-                            if (max_supplement[44:40]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[44:40] = max_supplement[44:40]+keyboard;
+                            if (current_numbers[44:40]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                            else current_numbers[44:40] = current_numbers[44:40]+keyboard;
 
                     endcase
 
