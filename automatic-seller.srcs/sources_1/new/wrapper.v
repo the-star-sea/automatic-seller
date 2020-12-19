@@ -32,7 +32,7 @@ module wrapper(
     input warning_cancel,
     input [1:0] chooseroot,
     output [2:0] channel_led,
-    output [6:0] status_led,
+    output [7:0] status_led,
     output [2:0] good_led,
     //output select_led,//没绑定
     output [3:0] keyboard_col,
