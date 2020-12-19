@@ -23,9 +23,10 @@
 module controller(
     input clk,
     input reset,
-    input [1:0] status,
-    output [1:0] status_out,
+    input [2:0] status,
+    output [2:0] status_out,
     input [3:0] keyboard,
+    input keyboard_en,
     input [2:0] channel,
     output [2:0] channel_out,
     input [2:0] goods,
@@ -41,66 +42,202 @@ module controller(
     output reg [44:0] sold_numbers,
     output reg [44:0] max_supplement,
     output reg [4:0] waiting_time,
-    input reg [3:0] select_number,//选多少商品
-    output reg [3:0]select_out
-    reg [5:0]paid;//已付
-    reg [5:0]inneedpaid;//要付
+    input  [3:0] select_number,//选多少商品
+    output reg [3:0] select_out,
+    output reg [5:0] paid,//已付
+    output reg [5:0] inneedpaid,//要付
+    input [1:0] chooseroot
+
 );
-    reg [0:0] keyboard_enable;
-    reg [4:0] money_in_all;
     assign channel_out = channel;
     assign goods_out = goods;
-    assign status_out = status;
-assign select_out=select_number;
 
-    always @(posedge clk, posedge reset)
-        if (reset == 1'b1) begin
-            keyboard_enable <= 1'b0;
-            warning <= 4'b0;
-            income <= 10'b0;
-            current_numbers <= 45'b0;
-            sold_numbers <= 45'b0;
-            max_supplement <= 45'b100;
-            waiting_time <= 5'b0;
-            select_out <= 0;
-            paid<=0;
-        end
+    reg [5:0] current_mode, next_mode;
+    parameter resetmode=6'b000000;
+    parameter purchasemode=6'b000001;
+    parameter managermode=6'b000010;
+    parameter browsemode=6'b000011;
+    parameter failpurchase=6'b000100;
+    parameter completepurchase=6'b000101;
+    parameter rootbrowse=6'b000110;
+    parameter rootadd=6'b000111;
+    // parameter searchMode=6'b000001;
 
-        else begin
+    always @(posedge clk, negedge reset)
+        if (~reset && status == 3'b100) current_mode <= resetmode;
+        else current_mode <= next_mode;
 
-            case (status)
-                2'b00: //todo初始状态
+    always @*
+        case (current_mode)
+            resetmode: //100
+                case (status)
+                    3'b001: next_mode = browsemode;
+                    3'b010: next_mode = purchasemode;
+                    3'b100: next_mode = managermode; //todo 可能有bug
+                    default: next_mode = current_mode;
+
+                endcase
+            browsemode:
+                case (status)
+                    3'b010: next_mode = purchasemode;
+                    3'b100: next_mode = managermode;
+                    default: next_mode = current_mode;
+                endcase
+            purchasemode:
+                begin
+                    if (waiting_time < 30 && paid < inneedpaid)
+                        next_mode = current_mode;
+                    else if (waiting_time >= 30)
+                        next_mode = failpurchase;
+                    else next_mode = completepurchase;
+                end
+            failpurchase:
+                case (status)
+                    3'b001: next_mode = browsemode;//010
+                    3'b100: next_mode = managermode;
+                    default: next_mode = current_mode;
+                endcase
+            completepurchase: //010
+                case (status)
+                    3'b001: next_mode = browsemode;
+                    3'b100: next_mode = managermode;
+                    default: next_mode = current_mode;
+                endcase
+            managermode: //100
+                if (chooseroot == 2'b01)
+
+                    next_mode = rootbrowse;
+                else if (chooseroot == 2'b10)
+                    next_mode = rootadd;
+                else
                     begin
-                    end
-                2'b01: //todo购买状态
-                    begin
-                        case (goods)
-                            3'b000:
-                                warning <= 4'b0001;//没选商品
-                            3'b001:
-                                warning <= 4'b0000;
-                            3'b010:
-                                warning <= 4'b0000;
-                            3'b100:
-                                warning <= 4'b0000;
-                            default:
-                                warning <= 4'b0010;//商品选多了
+                        case (status)
+                            3'b001: next_mode = browsemode;
+                            default: next_mode = current_mode;
                         endcase
-
-                        if (waiting_time<5'd30||paid<=)
-                            begin
-
-                            end
-
                     end
+            rootbrowse:
+                if (chooseroot == 2'b00)
 
-                //2'b10: //todo补货状态
-                default:
+                    next_mode = managermode;
+                else if (chooseroot == 2'b10)
+                    next_mode = rootadd;
+                else
                     begin
-
+                        case (status)
+                            3'b001: next_mode = browsemode;
+                            default: next_mode = current_mode;
+                        endcase
                     end
-            endcase
+            rootadd:
+                if (chooseroot == 2'b01)
 
-        end
+                    next_mode = rootbrowse;
+                else if (chooseroot == 2'b00)
+                    next_mode = managermode;
+                else
+                    begin
+                        case (status)
+                            3'b001: next_mode = browsemode;
+                            default: next_mode = current_mode;
+                        endcase
+                    end
+            // if (reset == 1'b0) mode <= resetmode;
+
+            // else begin
+            //     case (status)
+            //         2'b00: mode <= searchMode;
+            //
+            //     endcase
+
+
+            // if(mode==searchMode )begin
+            //     case(channel)
+            //         3'b001:
+            //         3'b010:
+            //         3'b100:
+            //         default : mode <=searchMode;
+            //     endcase
+            //
+            // end
+
+            // end
+        endcase
+    always @(posedge clk) begin
+        case (current_mode)
+            resetmode:
+                begin
+                    warning <= 4'b0;
+                    income <= 10'b0;
+                    current_numbers <= 45'b0;
+                    sold_numbers <= 45'b0;
+                    max_supplement <= 45'b100;
+                    waiting_time <= 5'b0;
+                    select_out <= 0;
+                    paid <= 0;
+                end
+            // searchMode:
+            //     begin
+            //
+            //     end
+        endcase
+
+    end
+    // reg [0:0] keyboard_enable;
+    // reg [4:0] money_in_all;
+    // assign channel_out = channel;
+    // assign goods_out = goods;
+    // assign status_out = status;
+    // assign select_out = select_number;
+
+    // always @(posedge clk, posedge reset)
+    //     if (reset == 1'b1) begin
+    //         keyboard_enable <= 1'b0;
+    //         warning <= 4'b0;
+    //         income <= 10'b0;
+    //         current_numbers <= 45'b0;
+    //         sold_numbers <= 45'b0;
+    //         max_supplement <= 45'b100;
+    //         waiting_time <= 5'b0;
+    //         select_out <= 0;
+    //         paid <= 0;
+    //     end
+    //
+    //     else begin
+    //
+    //         case (status)
+    //             2'b00: //todo初始状态
+    //                 begin
+    //                 end
+    //             2'b01: //todo购买状态
+    //                 begin
+    //                     case (goods)
+    //                         3'b000:
+    //                             warning <= 4'b0001;//没选商品
+    //                         3'b001:
+    //                             warning <= 4'b0000;
+    //                         3'b010:
+    //                             warning <= 4'b0000;
+    //                         3'b100:
+    //                             warning <= 4'b0000;
+    //                         default:
+    //                             warning <= 4'b0010;//商品选多了
+    //                     endcase
+    //
+    //                     if (waiting_time < 5'd30 || paid <=)
+    //                         begin
+    //
+    //                         end
+    //
+    //                 end
+    //
+    //             //2'b10: //todo补货状态
+    //             default:
+    //                 begin
+    //
+    //                 end
+    //         endcase
+    //
+    //     end
 
 endmodule: controller

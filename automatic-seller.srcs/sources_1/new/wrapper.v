@@ -26,24 +26,30 @@ module wrapper(
     input clk,
     input reset,
     input [3:0] keyboard_in,
-    input [1:0] status,
+    input [2:0] status,
     input [2:0] channel,
     input [2:0] goods,
     input warning_cancel,
+    input [1:0] chooseroot,
     output [2:0] channel_led,//没绑定
-    output [1:0] status_led,//没绑定
+    output [2:0] status_led,//没绑定
     output [2:0] good_led,//没绑定
-    output select_led//没绑定
+    output select_led,//没绑定
+    output  [3:0] keyboard_col
+
 );
 
     //keyboard 处理信息
-    wire [3:0] keyboard;
     wire keyboard_en;
-    keyboard keyboard(.clk(clk), .reset(reset), .keyboard_in(keyboard_in), .keyboard_out(keyboard),
+    wire [3:0] keyboard_col;
+    wire [3:0] keyboard_out;
+    keyboard keyboard(.clk(clk), .reset(reset), .keyboard_in(keyboard_in),
+        .keyboard_col(keyboard_col),
+        .keyboard_out(keyboard_out),
         .keyboard_en(keyboard_en));
 
     //控制信息
-    wire [1:0] status_out;//todo 传给led模块
+    wire [2:0] status_out;//todo 传给led模块
     wire [2:0] channel_out;//todo 传给led模块
     wire [2:0] goods_out;//todo 传给led模块
     wire [3:0] warning;
@@ -58,14 +64,17 @@ module wrapper(
     wire [4:0] waiting_time;
     wire [3:0] select_number;
     wire select_out;//todo 传给led模块
+    wire [5:0] paid;
+    wire [5:0] inneedpaid;
     controller controller(.clk(clk),
         .reset(reset),
         .status(status),
         .status_out(status_out),
-        .keyboard(keyboard),
+        .keyboard(keyboard_out),
         .keyboard_en(keyboard_en),
         .channel(channel), .channel_out(channel_out), .goods(goods), .goods_out(goods_out), .warning_cancel(warning_cancel), .warning(warning), .income(income),
         .current_numbers(current_numbers), .sold_numbers(sold_numbers), .max_supplement(max_supplement),
-        .waiting_time(waiting_time), .select_number(select_number), .select_out(select_out));//todo
+        .waiting_time(waiting_time), .select_number(select_number), .select_out(select_out),
+        .paid(paid), .inneedpaid(inneedpaid), .chooseroot(chooseroot));//todo
 
 endmodule : wrapper
