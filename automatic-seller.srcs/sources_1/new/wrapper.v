@@ -31,18 +31,28 @@ module wrapper(
     input [2:0] goods,
     input warning_cancel,
     input [1:0] chooseroot,
-    output [2:0] channel_led,//没绑定
-    output [5:0] status_led,//没绑定
-    output [2:0] good_led,//没绑定
-    output select_led,//没绑定
+    output [2:0] channel_led,
+    output [6:0] status_led,
+    output [2:0] good_led,
+    //output select_led,//没绑定
     output [3:0] keyboard_col,
-    output [0:0] warning1,
-    output [0:0] warning2,
-    output [0:0] warning3,
-    output [0:0] warning4,
-    output [0:0] warning5,
-    output [0:0] warning6
+    output [0:0] warning1_led,
+    output [0:0] warning2_led,
+    output [0:0] warning3_led,
+    output [0:0] warning4_led,
+    output [0:0] warning5_led,
+    output [0:0] warning6_led
 );
+
+    assign warning1_led = warning1;
+    assign warning2_led = warning2;
+    assign warning3_led = warning3;
+    assign warning4_led = warning4;
+    assign warning5_led = warning5;
+    assign warning6_led = warning6;
+    assign good_led = goods_out;
+    assign channel_led = channel_out;
+
     parameter price1=2'd1;
     parameter price2=2'd2;
     parameter price3=2'd3;
@@ -62,10 +72,10 @@ module wrapper(
         .keyboard_en(keyboard_en));
 
     //控制信息
-    wire [2:0] status_out;//todo 传给led模块
+    // wire [2:0] status_out;//todo 传给led模块
     wire [2:0] channel_out;//todo 传给led模块
     wire [2:0] goods_out;//todo 传给led模块
-    wire [3:0] warning;
+    // wire [3:0] warning;
     wire [9:0] income;
     wire [44:0] current_numbers;//一个商品5个位宽，共9个商品,
     //[4:0]:货道001的第001个商品
@@ -98,6 +108,7 @@ module wrapper(
         .current_numbers(current_numbers), .sold_numbers(sold_numbers), .max_supplement(max_supplement),
         .waiting_time(waiting_time), .select_number(select_number), .select_out(select_out),
         .paid(paid), .paidinneed(inneedpaid), .charge(charge), .chooseroot(chooseroot),
-        .warning1(warning1),.warning2(warning2));//todo
+        .warning1(warning1), .warning2(warning2), .warning3(warning3), .warning4(warning4),
+        .warning5(warning5), .warning6(warning6));//todo
 
 endmodule : wrapper
