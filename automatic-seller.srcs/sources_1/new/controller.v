@@ -290,4 +290,4 @@ module controller(
                 end
         end
 
-endmodule: controller
+endmodule
