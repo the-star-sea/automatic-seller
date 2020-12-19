@@ -25,7 +25,7 @@ module controller(
     output reg [5:0] paid,//已付
     output reg [5:0] inneedpaid,//要付
     output reg [5:0] charge,//找零
-    input [1:0] chooseroot
+    input [1:0] chooseroot,
     output [0:0] warning1,
     output [0:0] warning2,
     output [0:0] warning3,
