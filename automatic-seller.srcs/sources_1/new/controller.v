@@ -46,7 +46,7 @@ module controller(
     output [3:0] select_out,
     output reg [5:0] paid,//已付
     output reg [5:0] inneedpaid,//要付
-    output reg[5:0]charge,//找零
+    output reg [5:0] charge,//找零
     input [1:0] chooseroot
 
 );
@@ -181,59 +181,59 @@ module controller(
     end
 
 
-    always @(posedge keyboard_enable,negedge reset)
-   if(keyboard_enable==1'b1)
-   if(mode==rootadd)
-        begin
-case({channel,goods})
-6'b001001:
+    always @(posedge keyboard_enable, negedge reset)
+        if (keyboard_enable == 1'b1)
+            if (mode == rootadd)
+                begin
+                    case ({channel, goods})
+                        6'b001001:
 
-if(max_supplement[4:0]+keyboard<maxnum)warning=4'b0001;//补多了
-else max_supplement[4:0]+=keyboard;
+                            if (max_supplement[4:0]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            else max_supplement[4:0] += keyboard;
 
-6'b001010:
+                        6'b001010:
 
-if(max_supplement[9:5]+keyboard<maxnum)warning=4'b0001;//补多了
-else max_supplement[9:5]+=keyboard;
-6'b001100:
-if(max_supplement[14:10]+keyboard<maxnum)warning=4'b0001;//补多了
-else max_supplement[14:10]+=keyboard;
+                            if (max_supplement[9:5]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            else max_supplement[9:5] += keyboard;
+                        6'b001100:
+                            if (max_supplement[14:10]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            else max_supplement[14:10] += keyboard;
 
-6'b010001:
-if(max_supplement[19:15]+keyboard<maxnum)warning=4'b0001;//补多了
-else max_supplement[19:15]+=keyboard;
+                        6'b010001:
+                            if (max_supplement[19:15]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            else max_supplement[19:15] += keyboard;
 
-6'b010010:
-if(max_supplement[24:20]+keyboard<maxnum)warning=4'b0001;//补多了
-else max_supplement[24:20]+=keyboard;
+                        6'b010010:
+                            if (max_supplement[24:20]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            else max_supplement[24:20] += keyboard;
 
-6'b010100:
-if(max_supplement[29:25]+keyboard<maxnum)warning=4'b0001;//补多了
-else max_supplement[29:25]+=keyboard;
+                        6'b010100:
+                            if (max_supplement[29:25]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            else max_supplement[29:25] += keyboard;
 
-6'b100001:
-if(max_supplement[34:30]+keyboard<maxnum)warning=4'b0001;//补多了
-else max_supplement[34:30]+=keyboard;
+                        6'b100001:
+                            if (max_supplement[34:30]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            else max_supplement[34:30] += keyboard;
 
-6'b100010:
-if(max_supplement[39:35]+keyboard<maxnum)warning=4'b0001;//补多了
-else max_supplement[39:35]+=keyboard;
+                        6'b100010:
+                            if (max_supplement[39:35]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            else max_supplement[39:35] += keyboard;
 
-6'b100100:
-if(max_supplement[44:40]+keyboard<maxnum)warning=4'b0001;//补多了
-else max_supplement[44:40]+=keyboard;
+                        6'b100100:
+                            if (max_supplement[44:40]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            else max_supplement[44:40] += keyboard;
 
-endcase
-else if(current_mode==purchasemod)
-begin
-paid+=keyboard;
-end
- end
- else if(keyboard_enable==1'b0)
- begin
- if(mode==rootadd) max_supplement = 45'b010000100001000010000100001000010000100001000;
- else paid=6'b0;
- end
+                    endcase
+                    else if (current_mode == purchasemod)
+                    begin
+                        paid += keyboard;
+                    end
+                end
+            else if (keyboard_enable == 1'b0)
+                begin
+                    if (mode == rootadd) max_supplement = 45'b010000100001000010000100001000010000100001000;
+                    else paid = 6'b0;
+                end
 
     // reg [0:0] keyboard_enable;
     // reg [4:0] money_in_all;

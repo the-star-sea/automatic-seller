@@ -35,7 +35,7 @@ module wrapper(
     output [5:0] status_led,//没绑定
     output [2:0] good_led,//没绑定
     output select_led,//没绑定
-    output  [3:0] keyboard_col
+    output [3:0] keyboard_col
 
 );
 
@@ -66,7 +66,9 @@ module wrapper(
     wire select_out;//todo 传给led模块
     wire [5:0] paid;
     wire [5:0] inneedpaid;
-    controller controller(.clk(clk),
+    wire [5:0] charge;
+    controller controller(
+        .clk(clk),
         .reset(reset),
         .status(status),
         .status_out(status_led),
@@ -75,6 +77,6 @@ module wrapper(
         .channel(channel), .channel_out(channel_out), .goods(goods), .goods_out(goods_out), .warning_cancel(warning_cancel), .warning(warning), .income(income),
         .current_numbers(current_numbers), .sold_numbers(sold_numbers), .max_supplement(max_supplement),
         .waiting_time(waiting_time), .select_number(select_number), .select_out(select_out),
-        .paid(paid), .inneedpaid(inneedpaid), .chooseroot(chooseroot));//todo
+        .paid(paid), .inneedpaid(inneedpaid), .charge(charge), .chooseroot(chooseroot));//todo
 
 endmodule : wrapper
