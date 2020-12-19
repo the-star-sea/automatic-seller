@@ -158,6 +158,7 @@ module controller(
                 else if (chooseroot == 2'b11)
                     begin
                         next_mode = current_mode;
+
                     end
             rootadd:
                 if (chooseroot == 2'b01)
@@ -287,6 +288,6 @@ module controller(
                     end
                 else if (current_mode == purchasemode) paid = 6'b0;
             end
-end
+
 
 endmodule: controller
