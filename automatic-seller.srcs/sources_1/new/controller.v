@@ -1,4 +1,3 @@
-
 module controller(
     input clk,
     input reset,
@@ -27,12 +26,12 @@ module controller(
     output reg [5:0] inneedpaid,//要付
     output reg [5:0] charge,//找零
     input [1:0] chooseroot
-output [0:0]warning1,
-output [0:0]warning2,
-output [0:0]warning3,
-output [0:0]warning4,
-output [0:0]warning5,
-output [0:0]warning6
+    output [0:0] warning1,
+    output [0:0] warning2,
+    output [0:0] warning3,
+    output [0:0] warning4,
+    output [0:0] warning5,
+    output [0:0] warning6
 );
     assign channel_out = channel;
     assign goods_out = goods;
@@ -81,6 +80,7 @@ output [0:0]warning6
                 endcase
             purchasemode:
                 begin
+
                     if (waiting_time < 30 && paid < inneedpaid)
                         next_mode = current_mode;
                     else if (waiting_time >= 30)
@@ -119,7 +119,7 @@ output [0:0]warning6
                     next_mode = rootadd;
                 else if (chooseroot == 2'b01)
                     begin
-                         next_mode = current_mode;
+                        next_mode = current_mode;
 
                     end
             rootadd:
@@ -144,38 +144,37 @@ output [0:0]warning6
                     current_numbers <= 45'b0;
                     sold_numbers <= 45'b0;
                 end
-             browsemode:
-              case ({channel, goods})
+            browsemode:
+                case ({channel, goods})
 
-                                     6'b001001:
-             paidinneed=select_number*price1;
+                    6'b001001:
+                        paidinneed = select_number*price1;
 
+                    6'b001010:
+                        paidinneed = select_number*price2;
 
-                                     6'b001010:
-             paidinneed=select_number*price2;
+                    6'b001100:
+                        paidinneed = select_number*price3;
 
-                                     6'b001100:
-             paidinneed=select_number*price3;
+                    6'b010001:
+                        paidinneed = select_number*price4;
 
-                                     6'b010001:
-              paidinneed=select_number*price4;
+                    6'b010010:
+                        paidinneed = select_number*price5;
 
-                                     6'b010010:
-               paidinneed=select_number*price5;
+                    6'b010100:
+                        paidinneed = select_number*price6;
 
-                                     6'b010100:
-                paidinneed=select_number*price6;
+                    6'b100001:
+                        paidinneed = select_number*price7;
 
-                                     6'b100001:
-                 paidinneed=select_number*price7;
+                    6'b100010:
+                        paidinneed = select_number*price8;
 
-                                     6'b100010:
-                paidinneed=select_number*price8;
+                    6'b100100:
+                        paidinneed = select_number*price9;
 
-                                     6'b100100:
-                  paidinneed=select_number*price9;
-
-                                 endcase
+                endcase
         endcase
 
     end
@@ -234,11 +233,11 @@ output [0:0]warning6
         else if (current_mode == resetmode)
             begin
                 if (current_mode == rootadd)
-                begin
-                max_supplement = 45'b010000100001000010000100001000010000100001000;
-                warning1 = 1'b0;
-                end
-                else if(current_mode ==purchasemode) paid = 6'b0;
+                    begin
+                        max_supplement = 45'b010000100001000010000100001000010000100001000;
+                        warning1 = 1'b0;
+                    end
+                else if (current_mode == purchasemode) paid = 6'b0;
             end
 
 
