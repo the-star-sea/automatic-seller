@@ -24,7 +24,7 @@ module controller(
     input clk,
     input reset,
     input [2:0] status,
-    output [2:0] status_out,
+    output [5:0] status_out,
     input [3:0] keyboard,
     input keyboard_en,
     input [2:0] channel,
@@ -42,8 +42,8 @@ module controller(
     output reg [44:0] sold_numbers,
     output reg [44:0] max_supplement,
     output reg [4:0] waiting_time,
-    input  [3:0] select_number,//选多少商品
-    output reg [3:0] select_out,
+    input [3:0] select_number,//选多少商品
+    output  [3:0] select_out,
     output reg [5:0] paid,//已付
     output reg [5:0] inneedpaid,//要付
     input [1:0] chooseroot
@@ -51,16 +51,17 @@ module controller(
 );
     assign channel_out = channel;
     assign goods_out = goods;
-
+assign select_out=select_number;
+    assign status_out = current_mode;
     reg [5:0] current_mode, next_mode;
     parameter resetmode=6'b000000;
     parameter purchasemode=6'b000001;
     parameter managermode=6'b000010;
-    parameter browsemode=6'b000011;
-    parameter failpurchase=6'b000100;
-    parameter completepurchase=6'b000101;
-    parameter rootbrowse=6'b000110;
-    parameter rootadd=6'b000111;
+    parameter browsemode=6'b000100;
+    parameter failpurchase=6'b001000;
+    parameter completepurchase=6'b010000;
+    parameter rootbrowse=6'b100000;
+    parameter rootadd=6'b000011;
     // parameter searchMode=6'b000001;
 
     always @(posedge clk, negedge reset)
@@ -173,7 +174,6 @@ module controller(
                     sold_numbers <= 45'b0;
                     max_supplement <= 45'b100;
                     waiting_time <= 5'b0;
-                    select_out <= 0;
                     paid <= 0;
                 end
             // searchMode:

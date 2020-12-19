@@ -32,7 +32,7 @@ module wrapper(
     input warning_cancel,
     input [1:0] chooseroot,
     output [2:0] channel_led,//没绑定
-    output [2:0] status_led,//没绑定
+    output [5:0] status_led,//没绑定
     output [2:0] good_led,//没绑定
     output select_led,//没绑定
     output  [3:0] keyboard_col
@@ -69,7 +69,7 @@ module wrapper(
     controller controller(.clk(clk),
         .reset(reset),
         .status(status),
-        .status_out(status_out),
+        .status_out(status_led),
         .keyboard(keyboard_out),
         .keyboard_en(keyboard_en),
         .channel(channel), .channel_out(channel_out), .goods(goods), .goods_out(goods_out), .warning_cancel(warning_cancel), .warning(warning), .income(income),
