@@ -145,9 +145,37 @@ output [0:0]warning6
                     sold_numbers <= 45'b0;
                 end
              browsemode:
-             begin
+              case ({channel, goods})
 
-             end
+                                     6'b001001:
+             paidinneed=select_number*price1;
+
+
+                                     6'b001010:
+             paidinneed=select_number*price2;
+
+                                     6'b001100:
+             paidinneed=select_number*price3;
+
+                                     6'b010001:
+              paidinneed=select_number*price4;
+
+                                     6'b010010:
+               paidinneed=select_number*price5;
+
+                                     6'b010100:
+                paidinneed=select_number*price6;
+
+                                     6'b100001:
+                 paidinneed=select_number*price7;
+
+                                     6'b100010:
+                paidinneed=select_number*price8;
+
+                                     6'b100100:
+                  paidinneed=select_number*price9;
+
+                                 endcase
         endcase
 
     end
@@ -161,7 +189,7 @@ output [0:0]warning6
                     case ({channel, goods})
                         6'b001001:
 
-                            if (max_supplement[4:0]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                            if (max_supplement[4:0]+keyboard < maxnum) warning1 = 1'b1;//todo 判断warning何时消失
                             else max_supplement[4:0] = max_supplement[4:0]+keyboard;
 
                         6'b001010:
