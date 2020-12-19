@@ -41,8 +41,8 @@ module wrapper(
     output [0:0] warning4_led,
     output [0:0] warning5_led,
     output [0:0] warning6_led,
-    output [7:0]DIG_tube,
-    output [7:0]Y_tube
+    output [7:0] DIG_tube,
+    output [7:0] Y_tube
 );
 
     assign warning1_led = warning1;
@@ -114,11 +114,9 @@ module wrapper(
         .warning5(warning5), .warning6(warning6));//todo
 
 
-
-
     //数码显示管
-    tube_display tube_display(.rst(reset),.clk(clk),.channel(channel_out),
-    .goods_in(goods_out),.current_numbers(current_numbers),.waiting_time(waiting_time),
-    .max_supplement(max_supplement),.sold_numbers(sold_numbers),.current_mode(status_led),
-    .income(income),.charge(charge),.paid(paid),.DIG(DIG_tube),.Y(Y_tube));
+    tube_display tube_display(.rst(reset), .clk(clk), .channel(channel_out),
+        .goods_in(goods_out), .current_numbers(current_numbers), .waiting_time(waiting_time),
+        .max_supplement(max_supplement), .sold_numbers(sold_numbers), .current_mode(status_led),
+        .income(income), .charge(charge), .paid(paid), .DIG(DIG_tube), .Y(Y_tube));
 endmodule : wrapper

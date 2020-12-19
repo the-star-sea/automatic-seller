@@ -94,9 +94,9 @@ module controller(
                 clockstart = 1'b0;
                 case (status)
                     3'b010:
-                    begin
-                    if(warning2==1'b0)
-                        next_mode = purchasemode;
+                        begin
+                            if (warning2 == 1'b0)
+                                next_mode = purchasemode;
                         end
                     3'b100: next_mode = managermode;
                     default: next_mode = current_mode;
@@ -190,63 +190,62 @@ module controller(
             browsemode:
 
 
-
                 case ({channel, goods})
 
                     6'b001001:
-                    begin
-                        if(select_number>current_numbers[4:0])warning2=1'b1;
-                        else warning2=1'b0;
-                        paidinneed = select_number*price1;
-end
+                        begin
+                            if (select_number > current_numbers[4:0]) warning2 = 1'b1;
+                            else warning2 = 1'b0;
+                            paidinneed = select_number*price1;
+                        end
                     6'b001010:
-                    begin
-                        if(select_number>current_numbers[9:5])warning2=1'b1;
-                        else warning2=1'b0;
-                        paidinneed = select_number*price2;
-end
+                        begin
+                            if (select_number > current_numbers[9:5]) warning2 = 1'b1;
+                            else warning2 = 1'b0;
+                            paidinneed = select_number*price2;
+                        end
                     6'b001100:
-                    begin
-                        if(select_number>current_numbers[14:10])warning2=1'b1;
-                        else warning2=1'b0;
-                        paidinneed = select_number*price3;
-end
+                        begin
+                            if (select_number > current_numbers[14:10]) warning2 = 1'b1;
+                            else warning2 = 1'b0;
+                            paidinneed = select_number*price3;
+                        end
                     6'b010001:
-                    begin
-                        if(select_number>current_numbers[19:15])warning2=1'b1;
-                        else warning2=1'b0;
-                        paidinneed = select_number*price4;
-end
+                        begin
+                            if (select_number > current_numbers[19:15]) warning2 = 1'b1;
+                            else warning2 = 1'b0;
+                            paidinneed = select_number*price4;
+                        end
                     6'b010010:
-                    begin
-                        if(select_number>current_numbers[24:20])warning2=1'b1;
-                        else warning2=1'b0;
-                        paidinneed = select_number*price5;
-end
+                        begin
+                            if (select_number > current_numbers[24:20]) warning2 = 1'b1;
+                            else warning2 = 1'b0;
+                            paidinneed = select_number*price5;
+                        end
                     6'b010100:
-                    begin
-                        if(select_number>current_numbers[29:25])warning2=1'b1;
-                        else warning2=1'b0;
-                        paidinneed = select_number*price6;
-end
+                        begin
+                            if (select_number > current_numbers[29:25]) warning2 = 1'b1;
+                            else warning2 = 1'b0;
+                            paidinneed = select_number*price6;
+                        end
                     6'b100001:
-                    begin
-                        if(select_number>current_numbers[34:30])warning2=1'b1;
-                        else warning2=1'b0;
-                        paidinneed = select_number*price7;
-end
+                        begin
+                            if (select_number > current_numbers[34:30]) warning2 = 1'b1;
+                            else warning2 = 1'b0;
+                            paidinneed = select_number*price7;
+                        end
                     6'b100010:
-                    begin
-                        if(select_number>current_numbers[39:35])warning2=1'b1;
-                        else warning2=1'b0;
-                        paidinneed = select_number*price8;
-end
+                        begin
+                            if (select_number > current_numbers[39:35]) warning2 = 1'b1;
+                            else warning2 = 1'b0;
+                            paidinneed = select_number*price8;
+                        end
                     6'b100100:
-                    begin
-                        if(select_number>current_numbers[44:40])warning2=1'b1;
-                        else warning2=1'b0;
-                        paidinneed = select_number*price9;
-end
+                        begin
+                            if (select_number > current_numbers[44:40]) warning2 = 1'b1;
+                            else warning2 = 1'b0;
+                            paidinneed = select_number*price9;
+                        end
                 endcase
 
             failpurchase:
@@ -263,9 +262,9 @@ end
 
     always @(posedge keyboard_en, negedge reset, negedge current_mode[3:3])
         if (current_mode[3:3] == 1'b0)//todo可能bug
-        begin
-            paid = 0;
-            current_numbers=current_numbers-select_number;
+            begin
+                paid = 0;
+                current_numbers = current_numbers-select_number;
             end
         else begin
             if (keyboard_en == 1'b1)
@@ -274,102 +273,102 @@ end
 
                         case ({channel, goods})
                             6'b001001:
-if(warning1==1'b0)
-begin
-                                if (current_numbers[4:0]+keyboard > maxnum) warning1 = 1'b1;//todo 判断warning何时消失
-                                else current_numbers[4:0] = current_numbers[4:0]+keyboard;
-end
-                            else if(current_numbers[4:0]+keyboard < maxnum)
-                            begin
-                                warning1=1'b0;
-                                current_numbers[4:0] = current_numbers[4:0]+keyboard;
-                                end
+                                if (warning1 == 1'b0)
+                                    begin
+                                        if (current_numbers[4:0]+keyboard > maxnum) warning1 = 1'b1;//todo 判断warning何时消失
+                                        else current_numbers[4:0] = current_numbers[4:0]+keyboard;
+                                    end
+                                else if (current_numbers[4:0]+keyboard < maxnum)
+                                    begin
+                                        warning1 = 1'b0;
+                                        current_numbers[4:0] = current_numbers[4:0]+keyboard;
+                                    end
                             6'b001010:
-                                if(warning1==1'b0)
+                                if (warning1 == 1'b0)
                                     begin
-                                if (current_numbers[9:5]+keyboard > maxnum) warning1 = 1'b1;//补多了
-                                else current_numbers[9:5] = current_numbers[9:5]+keyboard;
-     end
-                                else if(current_numbers[9:5]+keyboard < maxnum)
+                                        if (current_numbers[9:5]+keyboard > maxnum) warning1 = 1'b1;//补多了
+                                        else current_numbers[9:5] = current_numbers[9:5]+keyboard;
+                                    end
+                                else if (current_numbers[9:5]+keyboard < maxnum)
                                     begin
-                                        warning1=1'b0;
+                                        warning1 = 1'b0;
                                         current_numbers[9:5] = current_numbers[9:5]+keyboard;
                                     end
                             6'b001100:
-                                if(warning1==1'b0)
+                                if (warning1 == 1'b0)
                                     begin
-                                if (current_numbers[14:10]+keyboard > maxnum) warning1 = 1'b1;//补多了
-                                else current_numbers[14:10] = current_numbers[14:10]+keyboard;
-end
-                                else if(current_numbers[14:10]+keyboard < maxnum)
+                                        if (current_numbers[14:10]+keyboard > maxnum) warning1 = 1'b1;//补多了
+                                        else current_numbers[14:10] = current_numbers[14:10]+keyboard;
+                                    end
+                                else if (current_numbers[14:10]+keyboard < maxnum)
                                     begin
-                                        warning1=1'b0;
+                                        warning1 = 1'b0;
                                         current_numbers[14:10] = current_numbers[14:10]+keyboard;
                                     end
                             6'b010001:
-                                if(warning1==1'b0)
+                                if (warning1 == 1'b0)
                                     begin
-                                if (current_numbers[19:15]+keyboard > maxnum) warning1 = 1'b1;//补多了
-                                else current_numbers[19:15] = current_numbers[19:15]+keyboard;
-end
-                                else if(current_numbers[19:15]+keyboard < maxnum)
+                                        if (current_numbers[19:15]+keyboard > maxnum) warning1 = 1'b1;//补多了
+                                        else current_numbers[19:15] = current_numbers[19:15]+keyboard;
+                                    end
+                                else if (current_numbers[19:15]+keyboard < maxnum)
                                     begin
-                                        warning1=1'b0;
+                                        warning1 = 1'b0;
                                         current_numbers[19:15] = current_numbers[19:15]+keyboard;
                                     end
                             6'b010010:
-                                if(warning1==1'b0)
+                                if (warning1 == 1'b0)
                                     begin
-                                if (current_numbers[24:20]+keyboard > maxnum) warning1 = 1'b1;//补多了
-                                else current_numbers[24:20] = current_numbers[24:20]+keyboard;
-end
-                                else if(current_numbers[24:20]+keyboard < maxnum)
+                                        if (current_numbers[24:20]+keyboard > maxnum) warning1 = 1'b1;//补多了
+                                        else current_numbers[24:20] = current_numbers[24:20]+keyboard;
+                                    end
+                                else if (current_numbers[24:20]+keyboard < maxnum)
                                     begin
-                                        warning1=1'b0;
+                                        warning1 = 1'b0;
                                         current_numbers[24:20] = current_numbers[24:20]+keyboard;
                                     end
                             6'b010100:
-                                if(warning1==1'b0)
+                                if (warning1 == 1'b0)
                                     begin
-                                if (current_numbers[29:25]+keyboard > maxnum) warning1 = 1'b1;//补多了
-                                else current_numbers[29:25] = current_numbers[29:25]+keyboard;
-end
-                                else if(current_numbers[29:25]+keyboard < maxnum)
+                                        if (current_numbers[29:25]+keyboard > maxnum) warning1 = 1'b1;//补多了
+                                        else current_numbers[29:25] = current_numbers[29:25]+keyboard;
+                                    end
+                                else if (current_numbers[29:25]+keyboard < maxnum)
                                     begin
-                                        warning1=1'b0;
+                                        warning1 = 1'b0;
                                         current_numbers[29:25] = current_numbers[29:25]+keyboard;
                                     end
                             6'b100001:
-                                if(warning1==1'b0)
+                                if (warning1 == 1'b0)
                                     begin
-                                if (current_numbers[34:30]+keyboard > maxnum) warning1 = 1'b1;//补多了
-                                else current_numbers[34:30] = current_numbers[34:30]+keyboard;
-end
-                                else if(current_numbers[34:30]+keyboard < maxnum)
+                                        if (current_numbers[34:30]+keyboard > maxnum) warning1 = 1'b1;//补多了
+                                        else current_numbers[34:30] = current_numbers[34:30]+keyboard;
+                                    end
+                                else if (current_numbers[34:30]+keyboard < maxnum)
                                     begin
-                                        warning1=1'b0;
+                                        warning1 = 1'b0;
                                         current_numbers[34:30] = current_numbers[34:30]+keyboard;
                                     end
                             6'b100010:
-                                if(warning1==1'b0)
+                                if (warning1 == 1'b0)
                                     begin
-                                if (current_numbers[39:35]+keyboard > maxnum) warning1 = 1'b1;//补多了
-                                else current_numbers[39:35] = current_numbers[39:35]+keyboard;
-end
-                                else if(current_numbers[39:35]+keyboard < maxnum)
+                                        if (current_numbers[39:35]+keyboard > maxnum) warning1 = 1'b1;//补多了
+                                        else current_numbers[39:35] = current_numbers[39:35]+keyboard;
+                                    end
+                                else if (current_numbers[39:35]+keyboard < maxnum)
                                     begin
-                                        warning1=1'b0;
+                                        warning1 = 1'b0;
                                         current_numbers[39:35] = current_numbers[39:35]+keyboard;
                                     end
                             6'b100100:
-                                if(warning1==1'b0)
+                                if (warning1 == 1'b0)
                                     begin
-                                if (current_numbers[44:40]+keyboard > maxnum) warning1 = 1'b1;//补多了
-                                else current_numbers[44:40] = current_numbers[44:40]+keyboard;
-end
-                                else if(current_numbers[44:40]+keyboard < maxnum)
+                                        if (current_numbers[44:40]+keyboard > maxnum) warning1 = 1'b1;//补多了
+                                        else current_numbers[44:40] = current_numbers[44:40]+keyboard;
+                                    end
+                                else if (current_numbers[44:40]+keyboard < maxnum)
                                     begin
-                                        warning1=1'b0;
+                                        warning1 = 1'b0;
                                         current_numbers[44:40] = current_numbers[44:40]+keyboard;
                                     end
                         endcase
