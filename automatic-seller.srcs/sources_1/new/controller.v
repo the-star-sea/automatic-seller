@@ -26,7 +26,7 @@ module controller(
     output reg [5:0] paid,//已付
     output reg [5:0] inneedpaid,//要付
     output reg [5:0] charge,//找零
-    input [1:0] chooseroot
+    input [1:0] chooseroot,
 output [0:0]warning1,
 output [0:0]warning2,
 output [0:0]warning3,
@@ -139,7 +139,7 @@ output [0:0]warning6
         case (current_mode)
             resetmode:
                 begin
-
+                    charge=5'b0;
                     income = 10'b0;
                     current_numbers <= 45'b0;
                     sold_numbers <= 45'b0;
@@ -176,6 +176,10 @@ output [0:0]warning6
                   paidinneed=select_number*price9;
 
                                  endcase
+           failpurchase:
+           begin
+               charge=paid;
+           end
         endcase
 
     end
