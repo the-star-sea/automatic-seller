@@ -21,7 +21,7 @@
 
 
 module frequency_divider
-    #(parameter period)(
+    #(parameter period = 5000000)(
     input clk,//系统时钟
     input rst,//复位信号
     output reg clkout//输出频率

@@ -31,7 +31,10 @@ module keyboard(
 
     //防抖
     reg pre_keyboard_en;
-    edge_cap edge_cap(.clk(clk), .rst_n(reset), .pulse(pre_keyboard_en),
+    wire clk_temp;
+    frequency_divider #(.period(5000000)) frequency_divider_keyboard_shake(.clk(clk),.rst(reset),
+        .clkout(clk_temp));
+    edge_cap edge_cap(.clk(clk_temp), .rst_n(reset), .pulse(pre_keyboard_en),
         .pos_edge(keyboard_en));
 
 //
