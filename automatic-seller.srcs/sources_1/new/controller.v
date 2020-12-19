@@ -1,24 +1,3 @@
-`timescale 1ns/1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 2020/12/12 18:59:31
-// Design Name: 
-// Module Name: controller
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
-
 
 module controller(
     input clk,
@@ -64,6 +43,15 @@ module controller(
     parameter rootbrowse=6'b100000;
     parameter rootadd=6'b000011;
     parameter maxnum=4'b1000;
+    parameter price1=2'd1;
+    parameter price2=2'd2;
+    parameter price3=2'd3;
+    parameter price4=2'd5;
+    parameter price5=2'd7;
+    parameter price6=2'd8;
+    parameter price7=2'd13;
+    parameter price8=2'd14;
+    parameter price9=2'd15;
     // parameter searchMode=6'b000001;
 
     always @(posedge clk, negedge reset)

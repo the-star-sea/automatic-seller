@@ -38,7 +38,15 @@ module wrapper(
     output [3:0] keyboard_col
 
 );
-
+parameter price1=2'd1;
+parameter price2=2'd2;
+parameter price3=2'd3;
+parameter price4=2'd5;
+parameter price5=2'd7;
+parameter price6=2'd8;
+parameter price7=2'd13;
+parameter price8=2'd14;
+parameter price9=2'd15;
     //keyboard 处理信息
     wire keyboard_en;
     wire [3:0] keyboard_col;
