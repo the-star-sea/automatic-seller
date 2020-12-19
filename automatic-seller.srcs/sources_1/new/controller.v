@@ -169,6 +169,10 @@ module controller(
                     current_numbers <= 45'b0;
                     sold_numbers <= 45'b0;
                 end
+            rootbrowse:
+                case (channel)
+
+                    endcase
             browsemode:
                 case ({channel, goods})
 
