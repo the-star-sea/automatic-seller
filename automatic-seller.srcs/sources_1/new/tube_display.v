@@ -130,10 +130,10 @@ module tube_display(
     parameter G =     7'b0111101;//G
     parameter J =     7'b0001110;//J
     parameter H =     7'b0110110;//H
-    parameter none =  7'b0000000;//不亮
+    parameter none =  7'b0000000;//����
 
     reg [4:0] numbers;
-    //选择对应的商品剩余量
+    //ѡ���Ӧ����Ʒʣ����
     always @({channel,goods})
         case({channel,goods})
             2'b001_001: numbers = current_numbers[4:0];
@@ -183,7 +183,7 @@ module tube_display(
 
     always @(current_mode, tube_cnt)
         case (current_mode)
-            browsemode: //显示货道号、商品名称、商品剩余量、商品金额
+            browsemode: //��ʾ�����š���Ʒ���ơ���Ʒʣ��������Ʒ���
                 case(tude_cnt)
                     7:case(channel)
                         3'b001:Y_r = one;//1
@@ -237,10 +237,10 @@ module tube_display(
                         15: Y_r = F;//F
                         default:Y_r = none;
                     endcase
-            purchasemode: // 显示付款时间--[4:0]waiting_time， 已付金额--[5:0]paid， 付款单价--[3:0] price
-                case(tube_cnt)
-
-                endcase
+            purchasemode: // ��ʾ����ʱ��--[4:0]waiting_time�� �Ѹ����--[5:0]paid�� �����--[3:0] price
+//                case(tube_cnt)
+//
+//                endcase
 //            failpurchase:
 //            completepurchase:
 //            rootadd:
@@ -248,5 +248,4 @@ module tube_display(
         endcase
 
 endmodule : tube_display
-endmodule : tube_display
-endmodule : tube_display
+
