@@ -2,7 +2,7 @@ module controller(
     input clk,
     input reset,
     input [2:0] status,
-    output [6:0] status_out,
+    output [7:0] status_out,
     input [3:0] keyboard,
     input keyboard_en,
     input [2:0] channel,
@@ -37,15 +37,16 @@ module controller(
     assign goods_out = goods;
     assign select_out = select_number;
     assign status_out = current_mode;
-    reg [6:0] current_mode, next_mode;
-    parameter resetmode=7'b0000000;
-    parameter purchasemode=7'b0000001;
-    parameter managermode=7'b0000010;
-    parameter browsemode=7'b0000100;
-    parameter failpurchase=7'b0001000;
-    parameter completepurchase=7'b0010000;
-    parameter rootbrowse=7'b0100000;
-    parameter rootadd=7'b1000000;
+    reg [7:0] current_mode, next_mode;
+    parameter resetmode=8'b00000000;
+    parameter purchasemode=8'b00000001;
+    parameter managermode=8'b00000010;
+    parameter browsemode=8'b00000100;
+    parameter failpurchase=8'b00001000;
+    parameter completepurchase=8'b00010000;
+    parameter rootbrowse=8'b00100000;
+    parameter rootadd=8'b01000000;
+    parameter allinall=8'b10000000;
     parameter maxnum=4'b1000;
     parameter price1=2'd1;
     parameter price2=2'd2;
@@ -141,10 +142,22 @@ module controller(
                     next_mode = managermode;
                 else if (chooseroot == 2'b10)
                     next_mode = rootadd;
+                else if(chooseroot==2'b11)
+                next_mode=allinall;
                 else if (chooseroot == 2'b01)
                     begin
                         next_mode = current_mode;
-
+                    end
+            allinall:
+                if (chooseroot == 2'b00)
+                    next_mode = managermode;
+                else if (chooseroot == 2'b10)
+                    next_mode = rootadd;
+                else if(chooseroot==2'b01)
+                    next_mode=rootbrowse;
+                else if (chooseroot == 2'b11)
+                    begin
+                        next_mode = current_mode;
                     end
             rootadd:
                 if (chooseroot == 2'b01)
