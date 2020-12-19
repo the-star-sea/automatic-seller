@@ -219,15 +219,20 @@ module controller(
             completepurchase:
             begin
             charge=paid-paidinneed;
-                income=income+paidindeed;
+                income=income+paidinneed;
+
 end
         endcase
 
     end
     //
 
-    always @(posedge keyboard_en, negedge reset, posedge current_mode[3:3])
-        if (current_mode[3:3] == 1'b1) paid = 0;
+    always @(posedge keyboard_en, negedge reset, negedge current_mode[3:3])
+        if (current_mode[3:3] == 1'b0)//todo可能bug
+        begin
+            paid = 0;
+            current_numbers=current_numbers-select_number;
+            end
         else begin
             if (keyboard_en == 1'b1)
                 begin
