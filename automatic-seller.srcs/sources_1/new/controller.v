@@ -30,7 +30,7 @@ module controller(
     output [2:0] channel_out,
     input [2:0] goods,
     input warning_cancel,
-    output  [2:0] goods_out,
+    output [2:0] goods_out,
     output reg [4:0] warning,//第0比特位传爆警使能信号
     output reg [9:0] income,
     output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,
@@ -43,11 +43,12 @@ module controller(
     output reg [4:0] waiting_time,
     output reg [3:0] select_number,
     output reg select_out
-);reg[0:0] keyboard_enable;
-reg [4:0]money_in_all;
-assign channel_out=channel;
-assign goods_out=goods;
-assign status_out = status;
+);
+    reg [0:0] keyboard_enable;
+    reg [4:0] money_in_all;
+    assign channel_out = channel;
+    assign goods_out = goods;
+    assign status_out = status;
 
     // always @(negedge reset)
     //     begin
@@ -56,12 +57,11 @@ assign status_out = status;
     //         end
 
 
-    always @(posedge clk, posedge reset)
+    always @(posedge clk, negedge reset) //todo 时钟错误
 
         case (reset)
             1'b1: begin//todo
-keyboard_enable<=1'b0;
-                channel_out <= 3'b0;
+                keyboard_enable <= 1'b0;
                 warning <= 4'b0;
                 income <= 10'b0;
                 current_numbers <= 45'b0;
@@ -75,34 +75,34 @@ keyboard_enable<=1'b0;
 
                 case (status)
                     2'b00: //todo初始状态
-                    begin
-                    end
+                        begin
+                        end
                     2'b01: //todo购买状态
-begin
-case(goods)
-3'b000:
-warning<=4'b0001;//没选商品
-3'b001:
-warning<=4'b0000;
-3'b010:
-warning<=4'b0000;
-3'b100:
-warning<=4'b0000;
-default:
-warning<=4'b0010;//商品选多了
-endcase
+                        begin
+                            case (goods)
+                                3'b000:
+                                    warning <= 4'b0001;//没选商品
+                                3'b001:
+                                    warning <= 4'b0000;
+                                3'b010:
+                                    warning <= 4'b0000;
+                                3'b100:
+                                    warning <= 4'b0000;
+                                default:
+                                    warning <= 4'b0010;//商品选多了
+                            endcase
 
-if(!keyboard_enable)
-begin
+                            if (!keyboard_enable)
+                                begin
 
-end
+                                end
 
-end
+                        end
 
                     //2'b10: //todo补货状态
-                default:
-begin
-end
+                    default:
+                        begin
+                        end
                 endcase
 
         endcase
