@@ -26,12 +26,12 @@ module controller(
     output reg [5:0] paidinneed,//要付
     output reg [5:0] charge,//找零
     input [1:0] chooseroot,
-    output reg[0:0] warning1,
-    output reg[0:0] warning2,
-    output reg[0:0] warning3,
-    output reg[0:0] warning4,
-    output reg[0:0] warning5,
-    output reg[0:0] warning6
+    output reg [0:0] warning1,
+    output reg [0:0] warning2,
+    output reg [0:0] warning3,
+    output reg [0:0] warning4,
+    output reg [0:0] warning5,
+    output reg [0:0] warning6
 );
     assign channel_out = channel;
     assign goods_out = goods;
@@ -142,8 +142,8 @@ module controller(
                     next_mode = managermode;
                 else if (chooseroot == 2'b10)
                     next_mode = rootadd;
-                else if(chooseroot==2'b11)
-                next_mode=allinall;
+                else if (chooseroot == 2'b11)
+                    next_mode = allinall;
                 else if (chooseroot == 2'b01)
                     begin
                         next_mode = current_mode;
@@ -153,8 +153,8 @@ module controller(
                     next_mode = managermode;
                 else if (chooseroot == 2'b10)
                     next_mode = rootadd;
-                else if(chooseroot==2'b01)
-                    next_mode=rootbrowse;
+                else if (chooseroot == 2'b01)
+                    next_mode = rootbrowse;
                 else if (chooseroot == 2'b11)
                     begin
                         next_mode = current_mode;
@@ -184,14 +184,14 @@ module controller(
                 end
             rootbrowse:
                 case (channel)
+                    default:;
 
-                    endcase
+                endcase
             browsemode:
                 case ({channel, goods})
 
                     6'b001001:
                         paidinneed = select_number*price1;
-
 
                     6'b001010:
                         paidinneed = select_number*price2;
@@ -227,67 +227,67 @@ module controller(
     end
 
 
-    always @(posedge keyboard_en, negedge reset,posedge current_mode[3:3])
-    if(current_mode[3:3]==1'b1)paid=0;
-    else begin
-        if (keyboard_en == 1'b1)
-            begin
-                if (current_mode == rootadd)
+    always @(posedge keyboard_en, negedge reset, posedge current_mode[3:3])
+        if (current_mode[3:3] == 1'b1) paid = 0;
+        else begin
+            if (keyboard_en == 1'b1)
+                begin
+                    if (current_mode == rootadd)
 
-                    case ({channel, goods})
-                        6'b001001:
+                        case ({channel, goods})
+                            6'b001001:
 
-                            if (max_supplement[4:0]+keyboard < maxnum) warning1 = 1'b1;//todo 判断warning何时消失
-                            else max_supplement[4:0] = max_supplement[4:0]+keyboard;
+                                if (max_supplement[4:0]+keyboard < maxnum) warning1 = 1'b1;//todo 判断warning何时消失
+                                else max_supplement[4:0] = max_supplement[4:0]+keyboard;
 
-                        6'b001010:
+                            6'b001010:
 
-                            if (max_supplement[9:5]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[9:5] = max_supplement[9:5]+keyboard;
-                        6'b001100:
-                            if (max_supplement[14:10]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[14:10] = max_supplement[14:10]+keyboard;
+                                if (max_supplement[9:5]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                else max_supplement[9:5] = max_supplement[9:5]+keyboard;
+                            6'b001100:
+                                if (max_supplement[14:10]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                else max_supplement[14:10] = max_supplement[14:10]+keyboard;
 
-                        6'b010001:
-                            if (max_supplement[19:15]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[19:15] = max_supplement[19:15]+keyboard;
+                            6'b010001:
+                                if (max_supplement[19:15]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                else max_supplement[19:15] = max_supplement[19:15]+keyboard;
 
-                        6'b010010:
-                            if (max_supplement[24:20]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[24:20] = max_supplement[24:20]+keyboard;
+                            6'b010010:
+                                if (max_supplement[24:20]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                else max_supplement[24:20] = max_supplement[24:20]+keyboard;
 
-                        6'b010100:
-                            if (max_supplement[29:25]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[29:25] = max_supplement[29:25]+keyboard;
+                            6'b010100:
+                                if (max_supplement[29:25]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                else max_supplement[29:25] = max_supplement[29:25]+keyboard;
 
-                        6'b100001:
-                            if (max_supplement[34:30]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[34:30] = max_supplement[34:30]+keyboard;
+                            6'b100001:
+                                if (max_supplement[34:30]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                else max_supplement[34:30] = max_supplement[34:30]+keyboard;
 
-                        6'b100010:
-                            if (max_supplement[39:35]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[39:35] = max_supplement[39:35]+keyboard;
+                            6'b100010:
+                                if (max_supplement[39:35]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                else max_supplement[39:35] = max_supplement[39:35]+keyboard;
 
-                        6'b100100:
-                            if (max_supplement[44:40]+keyboard < maxnum) warning1 = 1'b1;//补多了
-                            else max_supplement[44:40] = max_supplement[44:40]+keyboard;
+                            6'b100100:
+                                if (max_supplement[44:40]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                else max_supplement[44:40] = max_supplement[44:40]+keyboard;
 
-                    endcase
+                        endcase
 
-                else if (current_mode == purchasemode)
-                    begin
-                        paid = paid+keyboard;
-                    end
-            end
-        else if (current_mode == resetmode)
-            begin
-                if (current_mode == rootadd)
-                    begin
-                        max_supplement = 45'b010000100001000010000100001000010000100001000;
-                        warning1 = 1'b0;
-                    end
-                else if (current_mode == purchasemode) paid = 6'b0;
-            end
-
+                    else if (current_mode == purchasemode)
+                        begin
+                            paid = paid+keyboard;
+                        end
+                end
+            else if (current_mode == resetmode)
+                begin
+                    if (current_mode == rootadd)
+                        begin
+                            max_supplement = 45'b010000100001000010000100001000010000100001000;
+                            warning1 = 1'b0;
+                        end
+                    else if (current_mode == purchasemode) paid = 6'b0;
+                end
+        end
 
 endmodule: controller
