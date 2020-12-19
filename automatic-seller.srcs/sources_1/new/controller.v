@@ -43,7 +43,7 @@ module controller(
     output reg [44:0] max_supplement,
     output reg [4:0] waiting_time,
     input [3:0] select_number,//选多少商品
-    output  [3:0] select_out,
+    output [3:0] select_out,
     output reg [5:0] paid,//已付
     output reg [5:0] inneedpaid,//要付
     input [1:0] chooseroot
@@ -51,7 +51,7 @@ module controller(
 );
     assign channel_out = channel;
     assign goods_out = goods;
-assign select_out=select_number;
+    assign select_out = select_number;
     assign status_out = current_mode;
     reg [5:0] current_mode, next_mode;
     parameter resetmode=6'b000000;
