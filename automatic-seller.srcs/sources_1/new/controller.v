@@ -172,17 +172,20 @@ assign select_out=select_number;
                     income <= 10'b0;
                     current_numbers <= 45'b0;
                     sold_numbers <= 45'b0;
-                    max_supplement <= 45'b100;
+                 max_supplement<=45'b010000100001000010000100001000010000100001000;
                     waiting_time <= 5'b0;
                     paid <= 0;
                 end
-            // searchMode:
-            //     begin
-            //
-            //     end
+
         endcase
 
     end
+    always@(posedge keyboard_enable)
+    begin
+    if(current_mode==rootadd)
+
+    end
+
     // reg [0:0] keyboard_enable;
     // reg [4:0] money_in_all;
     // assign channel_out = channel;
