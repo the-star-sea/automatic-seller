@@ -274,42 +274,104 @@ end
 
                         case ({channel, goods})
                             6'b001001:
-
-                                if (current_numbers[4:0]+keyboard < maxnum) warning1 = 1'b1;//todo 判断warning何时消失
+if(warning1==1'b0)
+begin
+                                if (current_numbers[4:0]+keyboard > maxnum) warning1 = 1'b1;//todo 判断warning何时消失
                                 else current_numbers[4:0] = current_numbers[4:0]+keyboard;
-
+end
+                            else if(current_numbers[4:0]+keyboard < maxnum)
+                            begin
+                                warning1=1'b0;
+                                current_numbers[4:0] = current_numbers[4:0]+keyboard;
+                                end
                             6'b001010:
-
-                                if (current_numbers[9:5]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                if(warning1==1'b0)
+                                    begin
+                                if (current_numbers[9:5]+keyboard > maxnum) warning1 = 1'b1;//补多了
                                 else current_numbers[9:5] = current_numbers[9:5]+keyboard;
+     end
+                                else if(current_numbers[9:5]+keyboard < maxnum)
+                                    begin
+                                        warning1=1'b0;
+                                        current_numbers[9:5] = current_numbers[9:5]+keyboard;
+                                    end
                             6'b001100:
-                                if (current_numbers[14:10]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                if(warning1==1'b0)
+                                    begin
+                                if (current_numbers[14:10]+keyboard > maxnum) warning1 = 1'b1;//补多了
                                 else current_numbers[14:10] = current_numbers[14:10]+keyboard;
-
+end
+                                else if(current_numbers[14:10]+keyboard < maxnum)
+                                    begin
+                                        warning1=1'b0;
+                                        current_numbers[14:10] = current_numbers[14:10]+keyboard;
+                                    end
                             6'b010001:
-                                if (current_numbers[19:15]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                if(warning1==1'b0)
+                                    begin
+                                if (current_numbers[19:15]+keyboard > maxnum) warning1 = 1'b1;//补多了
                                 else current_numbers[19:15] = current_numbers[19:15]+keyboard;
-
+end
+                                else if(current_numbers[19:15]+keyboard < maxnum)
+                                    begin
+                                        warning1=1'b0;
+                                        current_numbers[19:15] = current_numbers[19:15]+keyboard;
+                                    end
                             6'b010010:
-                                if (current_numbers[24:20]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                if(warning1==1'b0)
+                                    begin
+                                if (current_numbers[24:20]+keyboard > maxnum) warning1 = 1'b1;//补多了
                                 else current_numbers[24:20] = current_numbers[24:20]+keyboard;
-
+end
+                                else if(current_numbers[24:20]+keyboard < maxnum)
+                                    begin
+                                        warning1=1'b0;
+                                        current_numbers[24:20] = current_numbers[24:20]+keyboard;
+                                    end
                             6'b010100:
-                                if (current_numbers[29:25]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                if(warning1==1'b0)
+                                    begin
+                                if (current_numbers[29:25]+keyboard > maxnum) warning1 = 1'b1;//补多了
                                 else current_numbers[29:25] = current_numbers[29:25]+keyboard;
-
+end
+                                else if(current_numbers[29:25]+keyboard < maxnum)
+                                    begin
+                                        warning1=1'b0;
+                                        current_numbers[29:25] = current_numbers[29:25]+keyboard;
+                                    end
                             6'b100001:
-                                if (current_numbers[34:30]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                if(warning1==1'b0)
+                                    begin
+                                if (current_numbers[34:30]+keyboard > maxnum) warning1 = 1'b1;//补多了
                                 else current_numbers[34:30] = current_numbers[34:30]+keyboard;
-
+end
+                                else if(current_numbers[34:30]+keyboard < maxnum)
+                                    begin
+                                        warning1=1'b0;
+                                        current_numbers[34:30] = current_numbers[34:30]+keyboard;
+                                    end
                             6'b100010:
-                                if (current_numbers[39:35]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                if(warning1==1'b0)
+                                    begin
+                                if (current_numbers[39:35]+keyboard > maxnum) warning1 = 1'b1;//补多了
                                 else current_numbers[39:35] = current_numbers[39:35]+keyboard;
-
+end
+                                else if(current_numbers[39:35]+keyboard < maxnum)
+                                    begin
+                                        warning1=1'b0;
+                                        current_numbers[39:35] = current_numbers[39:35]+keyboard;
+                                    end
                             6'b100100:
-                                if (current_numbers[44:40]+keyboard < maxnum) warning1 = 1'b1;//补多了
+                                if(warning1==1'b0)
+                                    begin
+                                if (current_numbers[44:40]+keyboard > maxnum) warning1 = 1'b1;//补多了
                                 else current_numbers[44:40] = current_numbers[44:40]+keyboard;
-
+end
+                                else if(current_numbers[44:40]+keyboard < maxnum)
+                                    begin
+                                        warning1=1'b0;
+                                        current_numbers[44:40] = current_numbers[44:40]+keyboard;
+                                    end
                         endcase
 
                     else if (current_mode == purchasemode)
