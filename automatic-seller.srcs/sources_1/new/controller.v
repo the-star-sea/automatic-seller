@@ -20,19 +20,19 @@ module controller(
     //[44:40]:货道100的第100个商品
     output reg [44:0] sold_numbers,
     output reg [44:0] max_supplement,//还可以添加的数量
-    output reg [4:0] waiting_time,
+    output reg [4:0] waiting_time,//付款计时器，一进入付款状态立即开始计时，处于其他状态保持为0
     input [3:0] select_number,//选多少商品
     output [3:0] select_out,
     output reg [5:0] paid,//已付
     output reg [5:0] inneedpaid,//要付
     output reg [5:0] charge,//找零
     input [1:0] chooseroot,
-output [0:0]warning1,
-output [0:0]warning2,
-output [0:0]warning3,
-output [0:0]warning4,
-output [0:0]warning5,
-output [0:0]warning6
+    output [0:0] warning1,
+    output [0:0] warning2,
+    output [0:0] warning3,
+    output [0:0] warning4,
+    output [0:0] warning5,
+    output [0:0] warning6
 );
     assign channel_out = channel;
     assign goods_out = goods;
@@ -63,24 +63,43 @@ output [0:0]warning6
         if (~reset && status == 3'b100) current_mode <= resetmode;
         else current_mode <= next_mode;
 
+    //30秒计时器
+    reg clockstart;
+    wire clk_1HZ;
+    frequency_divider#(.period(100000000)) frequency_divider(.clk(clk), .rst(clockstart), .clkout(clk_1HZ));
+    always @(posedge clk_1HZ) begin
+        if (clockstart == 1'b1) begin
+            waiting_time = waiting_time+1;
+        end
+        if (clockstart == 1'b0) begin
+            waiting_time = 5'b00000;
+        end
+    end
+
     always @*
         case (current_mode)
             resetmode: //100
-                case (status)
-                    3'b001: next_mode = browsemode;
-                    3'b010: next_mode = purchasemode;
-                    3'b100: next_mode = managermode; //todo 可能有bug
-                    default: next_mode = current_mode;
+                begin
+                    clockstart = 1'b0;
+                    case (status)
+                        3'b001: next_mode = browsemode;
+                        3'b010: next_mode = purchasemode;
+                        3'b100: next_mode = managermode; //todo 可能有bug
+                        default: next_mode = current_mode;
 
-                endcase
-            browsemode:
+                    endcase
+                end
+            browsemode: begin
+                clockstart = 1'b0;
                 case (status)
                     3'b010: next_mode = purchasemode;
                     3'b100: next_mode = managermode;
                     default: next_mode = current_mode;
                 endcase
+            end
             purchasemode:
                 begin
+                    clockstart = 1'b1;
                     if (waiting_time < 30 && paid < inneedpaid)
                         next_mode = current_mode;
                     else if (waiting_time >= 30)
@@ -88,17 +107,23 @@ output [0:0]warning6
                     else next_mode = completepurchase;
                 end
             failpurchase:
-                case (status)
-                    3'b001: next_mode = browsemode;//010
-                    3'b100: next_mode = managermode;
-                    default: next_mode = current_mode;
-                endcase
+                begin
+                    clockstart = 1'b0;
+                    case (status)
+                        3'b001: next_mode = browsemode;//010
+                        3'b100: next_mode = managermode;
+                        default: next_mode = current_mode;
+                    endcase
+                end
             completepurchase: //010
-                case (status)
-                    3'b001: next_mode = browsemode;
-                    3'b100: next_mode = managermode;
-                    default: next_mode = current_mode;
-                endcase
+                begin
+                    clockstart = 1'b0;
+                    case (status)
+                        3'b001: next_mode = browsemode;
+                        3'b100: next_mode = managermode;
+                        default: next_mode = current_mode;
+                    endcase
+                end
             managermode: //100
                 if (chooseroot == 2'b01)
 
@@ -119,7 +144,7 @@ output [0:0]warning6
                     next_mode = rootadd;
                 else if (chooseroot == 2'b01)
                     begin
-                         next_mode = current_mode;
+                        next_mode = current_mode;
 
                     end
             rootadd:
@@ -144,36 +169,35 @@ output [0:0]warning6
                     current_numbers <= 45'b0;
                     sold_numbers <= 45'b0;
                 end
-             browsemode:
-              case ({channel, goods})
+            browsemode:
+                case ({channel, goods})
 
-                                     6'b001001:
-             paidinneed=select_number*price1;
+                    6'b001001:
+                        paidinneed = select_number*price1;
 
+                    6'b001010:
+                        paidinneed = select_number*price2;
 
-                                     6'b001010:
-             paidinneed=select_number*price2;
+                    6'b001100:
+                        paidinneed = select_number*price3;
 
-                                     6'b001100:
-             paidinneed=select_number*price3;
+                    6'b010001:
+                        paidinneed = select_number*price4;
 
-                                     6'b010001:
-              paidinneed=select_number*price4;
+                    6'b010010:
+                        paidinneed = select_number*price5;
 
-                                     6'b010010:
-               paidinneed=select_number*price5;
+                    6'b010100:
+                        paidinneed = select_number*price6;
 
-                                     6'b010100:
-                paidinneed=select_number*price6;
+                    6'b100001:
+                        paidinneed = select_number*price7;
 
-                                     6'b100001:
-                 paidinneed=select_number*price7;
+                    6'b100010:
+                        paidinneed = select_number*price8;
 
-                                     6'b100010:
-                paidinneed=select_number*price8;
-
-                                     6'b100100:
-                  paidinneed=select_number*price9;
+                    6'b100100:
+                        paidinneed = select_number*price9;
 
                                  endcase
            failpurchase:
@@ -238,11 +262,11 @@ output [0:0]warning6
         else if (current_mode == resetmode)
             begin
                 if (current_mode == rootadd)
-                begin
-                max_supplement = 45'b010000100001000010000100001000010000100001000;
-                warning1 = 1'b0;
-                end
-                else if(current_mode ==purchasemode) paid = 6'b0;
+                    begin
+                        max_supplement = 45'b010000100001000010000100001000010000100001000;
+                        warning1 = 1'b0;
+                    end
+                else if (current_mode == purchasemode) paid = 6'b0;
             end
 
 
