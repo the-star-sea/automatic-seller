@@ -40,12 +40,13 @@ module controller(
     //[14:10]:货道001的第100个商品
     //[44:40]:货道100的第100个商品
     output reg [44:0] sold_numbers,
-    output reg [44:0] max_supplement,
+    output reg [44:0] max_supplement,//还可以添加的数量
     output reg [4:0] waiting_time,
     input [3:0] select_number,//选多少商品
     output [3:0] select_out,
     output reg [5:0] paid,//已付
     output reg [5:0] inneedpaid,//要付
+    output reg[5:0]charge,//找零
     input [1:0] chooseroot
 
 );
@@ -62,6 +63,7 @@ module controller(
     parameter completepurchase=6'b010000;
     parameter rootbrowse=6'b100000;
     parameter rootadd=6'b000011;
+    parameter maxnum=4'b1000;
     // parameter searchMode=6'b000001;
 
     always @(posedge clk, negedge reset)
@@ -164,27 +166,74 @@ module controller(
 
             // end
         endcase
-    always @(posedge clk) begin
+    always @* begin //todo
         case (current_mode)
             resetmode:
                 begin
-                    warning <= 4'b0;
-                    income <= 10'b0;
+                    warning = 4'b0;
+                    income = 10'b0;
                     current_numbers <= 45'b0;
                     sold_numbers <= 45'b0;
-                    max_supplement <= 45'b010000100001000010000100001000010000100001000;
-                    waiting_time <= 5'b0;
-                    paid <= 0;
                 end
 
         endcase
 
     end
-    always @(posedge keyboard_enable)
-        begin
-            if (current_mode == rootadd)
 
-        end
+
+    always @(posedge keyboard_enable,negedge reset)
+   if(keyboard_enable==1'b1)
+   if(mode==rootadd)
+        begin
+case({channel,goods})
+6'b001001:
+
+if(max_supplement[4:0]+keyboard<maxnum)warning=4'b0001;//补多了
+else max_supplement[4:0]+=keyboard;
+
+6'b001010:
+
+if(max_supplement[9:5]+keyboard<maxnum)warning=4'b0001;//补多了
+else max_supplement[9:5]+=keyboard;
+6'b001100:
+if(max_supplement[14:10]+keyboard<maxnum)warning=4'b0001;//补多了
+else max_supplement[14:10]+=keyboard;
+
+6'b010001:
+if(max_supplement[19:15]+keyboard<maxnum)warning=4'b0001;//补多了
+else max_supplement[19:15]+=keyboard;
+
+6'b010010:
+if(max_supplement[24:20]+keyboard<maxnum)warning=4'b0001;//补多了
+else max_supplement[24:20]+=keyboard;
+
+6'b010100:
+if(max_supplement[29:25]+keyboard<maxnum)warning=4'b0001;//补多了
+else max_supplement[29:25]+=keyboard;
+
+6'b100001:
+if(max_supplement[34:30]+keyboard<maxnum)warning=4'b0001;//补多了
+else max_supplement[34:30]+=keyboard;
+
+6'b100010:
+if(max_supplement[39:35]+keyboard<maxnum)warning=4'b0001;//补多了
+else max_supplement[39:35]+=keyboard;
+
+6'b100100:
+if(max_supplement[44:40]+keyboard<maxnum)warning=4'b0001;//补多了
+else max_supplement[44:40]+=keyboard;
+
+endcase
+else if(current_mode==purchasemod)
+begin
+paid+=keyboard;
+end
+ end
+ else if(keyboard_enable==1'b0)
+ begin
+ if(mode==rootadd) max_supplement = 45'b010000100001000010000100001000010000100001000;
+ else paid=6'b0;
+ end
 
     // reg [0:0] keyboard_enable;
     // reg [4:0] money_in_all;
