@@ -11,7 +11,7 @@ module controller(
     input [2:0] goods,
     input warning_cancel,
     output [2:0] goods_out,
-    output reg [4:0] warning,//第0比特位传爆警使能信号
+
     output reg [9:0] income,//总收益
     output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,
     //[4:0]:货道001的第001个商品
@@ -27,7 +27,12 @@ module controller(
     output reg [5:0] inneedpaid,//要付
     output reg [5:0] charge,//找零
     input [1:0] chooseroot
-
+output [0:0]warning1,
+output [0:0]warning2,
+output [0:0]warning3,
+output [0:0]warning4,
+output [0:0]warning5,
+output [0:0]warning6
 );
     assign channel_out = channel;
     assign goods_out = goods;
@@ -100,7 +105,7 @@ module controller(
                     next_mode = rootbrowse;
                 else if (chooseroot == 2'b10)
                     next_mode = rootadd;
-                else
+                else if (chooseroot == 2'b00)
                     begin
                         case (status)
                             3'b001: next_mode = browsemode;
@@ -109,16 +114,13 @@ module controller(
                     end
             rootbrowse:
                 if (chooseroot == 2'b00)
-
                     next_mode = managermode;
                 else if (chooseroot == 2'b10)
                     next_mode = rootadd;
-                else
+                else if (chooseroot == 2'b01)
                     begin
-                        case (status)
-                            3'b001: next_mode = browsemode;
-                            default: next_mode = current_mode;
-                        endcase
+                         next_mode = current_mode;
+
                     end
             rootadd:
                 if (chooseroot == 2'b01)
@@ -126,12 +128,10 @@ module controller(
                     next_mode = rootbrowse;
                 else if (chooseroot == 2'b00)
                     next_mode = managermode;
-                else
+                else if (chooseroot == 2'b10)
                     begin
-                        case (status)
-                            3'b001: next_mode = browsemode;
-                            default: next_mode = current_mode;
-                        endcase
+                        next_mode = current_mode;
+
                     end
 
         endcase
@@ -139,12 +139,15 @@ module controller(
         case (current_mode)
             resetmode:
                 begin
-                    //warning = 4'b0;
+
                     income = 10'b0;
                     current_numbers <= 45'b0;
                     sold_numbers <= 45'b0;
                 end
+             browsemode:
+             begin
 
+             end
         endcase
 
     end
@@ -158,39 +161,39 @@ module controller(
                     case ({channel, goods})
                         6'b001001:
 
-                            if (max_supplement[4:0]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            if (max_supplement[4:0]+keyboard < maxnum) warning1 = 1'b1;//补多了
                             else max_supplement[4:0] = max_supplement[4:0]+keyboard;
 
                         6'b001010:
 
-                            if (max_supplement[9:5]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            if (max_supplement[9:5]+keyboard < maxnum) warning1 = 1'b1;//补多了
                             else max_supplement[9:5] = max_supplement[9:5]+keyboard;
                         6'b001100:
-                            if (max_supplement[14:10]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            if (max_supplement[14:10]+keyboard < maxnum) warning1 = 1'b1;//补多了
                             else max_supplement[14:10] = max_supplement[14:10]+keyboard;
 
                         6'b010001:
-                            if (max_supplement[19:15]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            if (max_supplement[19:15]+keyboard < maxnum) warning1 = 1'b1;//补多了
                             else max_supplement[19:15] = max_supplement[19:15]+keyboard;
 
                         6'b010010:
-                            if (max_supplement[24:20]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            if (max_supplement[24:20]+keyboard < maxnum) warning1 = 1'b1;//补多了
                             else max_supplement[24:20] = max_supplement[24:20]+keyboard;
 
                         6'b010100:
-                            if (max_supplement[29:25]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            if (max_supplement[29:25]+keyboard < maxnum) warning1 = 1'b1;//补多了
                             else max_supplement[29:25] = max_supplement[29:25]+keyboard;
 
                         6'b100001:
-                            if (max_supplement[34:30]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            if (max_supplement[34:30]+keyboard < maxnum) warning1 = 1'b1;//补多了
                             else max_supplement[34:30] = max_supplement[34:30]+keyboard;
 
                         6'b100010:
-                            if (max_supplement[39:35]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            if (max_supplement[39:35]+keyboard < maxnum) warning1 = 1'b1;//补多了
                             else max_supplement[39:35] = max_supplement[39:35]+keyboard;
 
                         6'b100100:
-                            if (max_supplement[44:40]+keyboard < maxnum) warning = 4'b0001;//补多了
+                            if (max_supplement[44:40]+keyboard < maxnum) warning1 = 1'b1;//补多了
                             else max_supplement[44:40] = max_supplement[44:40]+keyboard;
 
                     endcase
@@ -202,8 +205,12 @@ module controller(
             end
         else if (current_mode == resetmode)
             begin
-                if (current_mode == rootadd) max_supplement = 45'b010000100001000010000100001000010000100001000;
-                else paid = 6'b0;
+                if (current_mode == rootadd)
+                begin
+                max_supplement = 45'b010000100001000010000100001000010000100001000;
+                warning1 = 1'b0;
+                end
+                else if(current_mode ==purchasemode) paid = 6'b0;
             end
 
 

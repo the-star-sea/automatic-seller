@@ -35,8 +35,13 @@ module wrapper(
     output [5:0] status_led,//没绑定
     output [2:0] good_led,//没绑定
     output select_led,//没绑定
-    output [3:0] keyboard_col
-
+    output [3:0] keyboard_col,
+output [0:0]warning1,
+output [0:0]warning2,
+output [0:0]warning3,
+output [0:0]warning4,
+output [0:0]warning5,
+output [0:0]warning6
 );
 parameter price1=2'd1;
 parameter price2=2'd2;
