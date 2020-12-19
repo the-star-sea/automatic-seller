@@ -215,8 +215,9 @@ module controller(
 
                 endcase
             failpurchase:
-
                     charge = paid;
+            completepurchase:
+            charge=paid-paidinneed;
 
         endcase
 
