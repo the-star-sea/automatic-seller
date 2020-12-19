@@ -93,7 +93,11 @@ module controller(
             browsemode: begin
                 clockstart = 1'b0;
                 case (status)
-                    3'b010: next_mode = purchasemode;
+                    3'b010:
+                    begin
+                    if(warning2==1'b0)
+                        next_mode = purchasemode;
+                        end
                     3'b100: next_mode = managermode;
                     default: next_mode = current_mode;
                 endcase
@@ -184,36 +188,67 @@ module controller(
                 end
 
             browsemode:
+
+
+
                 case ({channel, goods})
 
                     6'b001001:
+                    begin
+                        if(select_number>current_numbers[4:0])warning2=1'b1;
+                        else warning2=1'b0;
                         paidinneed = select_number*price1;
-
+end
                     6'b001010:
+                    begin
+                        if(select_number>current_numbers[9:5])warning2=1'b1;
+                        else warning2=1'b0;
                         paidinneed = select_number*price2;
-
+end
                     6'b001100:
+                    begin
+                        if(select_number>current_numbers[14:10])warning2=1'b1;
+                        else warning2=1'b0;
                         paidinneed = select_number*price3;
-
+end
                     6'b010001:
+                    begin
+                        if(select_number>current_numbers[19:15])warning2=1'b1;
+                        else warning2=1'b0;
                         paidinneed = select_number*price4;
-
+end
                     6'b010010:
+                    begin
+                        if(select_number>current_numbers[24:20])warning2=1'b1;
+                        else warning2=1'b0;
                         paidinneed = select_number*price5;
-
+end
                     6'b010100:
+                    begin
+                        if(select_number>current_numbers[29:25])warning2=1'b1;
+                        else warning2=1'b0;
                         paidinneed = select_number*price6;
-
+end
                     6'b100001:
+                    begin
+                        if(select_number>current_numbers[34:30])warning2=1'b1;
+                        else warning2=1'b0;
                         paidinneed = select_number*price7;
-
+end
                     6'b100010:
+                    begin
+                        if(select_number>current_numbers[39:35])warning2=1'b1;
+                        else warning2=1'b0;
                         paidinneed = select_number*price8;
-
+end
                     6'b100100:
+                    begin
+                        if(select_number>current_numbers[44:40])warning2=1'b1;
+                        else warning2=1'b0;
                         paidinneed = select_number*price9;
-
+end
                 endcase
+
             failpurchase:
                 charge = paid;
             completepurchase:
