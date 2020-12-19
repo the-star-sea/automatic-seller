@@ -32,7 +32,6 @@ module wrapper(
     input warning_cancel,
     input [1:0] chooseroot,
     output [2:0] channel_led,
-    output [7:0] status_led,
     output [2:0] good_led,
     //output select_led,//没绑定
     output [3:0] keyboard_col,
@@ -41,7 +40,9 @@ module wrapper(
     output [0:0] warning3_led,
     output [0:0] warning4_led,
     output [0:0] warning5_led,
-    output [0:0] warning6_led
+    output [0:0] warning6_led,
+    output [7:0]DIG_tube,
+    output [7:0]Y_tube
 );
 
     assign warning1_led = warning1;
@@ -96,6 +97,7 @@ module wrapper(
     wire [0:0] warning4;
     wire [0:0] warning5;
     wire [0:0] warning6;
+    wire [7:0] status_led;
     controller controller(
         .clk(clk),
         .reset(reset),
@@ -111,4 +113,12 @@ module wrapper(
         .warning1(warning1), .warning2(warning2), .warning3(warning3), .warning4(warning4),
         .warning5(warning5), .warning6(warning6));//todo
 
+
+
+
+    //数码显示管
+    tube_display tube_display(.rst(reset),.clk(clk),.channel(channel_out),
+    .goods_in(goods_out),.current_numbers(current_numbers),.waiting_time(waiting_time),
+    .max_supplement(max_supplement),.sold_numbers(sold_numbers),.current_mode(status_led),
+    .income(income),.charge(charge),.paid(paid),.DIG(DIG_tube),.Y(Y_tube));
 endmodule : wrapper
