@@ -1,4 +1,3 @@
-
 module controller(
     input clk,
     input reset,
@@ -24,15 +23,15 @@ module controller(
     input [3:0] select_number,//选多少商品
     output [3:0] select_out,
     output reg [5:0] paid,//已付
-    output reg [5:0] inneedpaid,//要付
+    output reg [5:0] paidinneed,//要付
     output reg [5:0] charge,//找零
     input [1:0] chooseroot,
-    output [0:0] warning1,
-    output [0:0] warning2,
-    output [0:0] warning3,
-    output [0:0] warning4,
-    output [0:0] warning5,
-    output [0:0] warning6
+    output reg[0:0] warning1,
+    output reg[0:0] warning2,
+    output reg[0:0] warning3,
+    output reg[0:0] warning4,
+    output reg[0:0] warning5,
+    output reg[0:0] warning6
 );
     assign channel_out = channel;
     assign goods_out = goods;
@@ -100,7 +99,7 @@ module controller(
             purchasemode:
                 begin
                     clockstart = 1'b1;
-                    if (waiting_time < 30 && paid < inneedpaid)
+                    if (waiting_time < 30 && paid < paidinneed)
                         next_mode = current_mode;
                     else if (waiting_time >= 30)
                         next_mode = failpurchase;
@@ -164,7 +163,7 @@ module controller(
         case (current_mode)
             resetmode:
                 begin
-                    charge=5'b0;
+                    charge = 5'b0;
                     income = 10'b0;
                     current_numbers <= 45'b0;
                     sold_numbers <= 45'b0;
@@ -174,6 +173,7 @@ module controller(
 
                     6'b001001:
                         paidinneed = select_number*price1;
+
 
                     6'b001010:
                         paidinneed = select_number*price2;
@@ -199,11 +199,11 @@ module controller(
                     6'b100100:
                         paidinneed = select_number*price9;
 
-                                 endcase
-           failpurchase:
-           begin
-               charge=paid;
-           end
+                endcase
+            failpurchase:
+                begin
+                    charge = paid;
+                end
         endcase
 
     end

@@ -36,22 +36,22 @@ module wrapper(
     output [2:0] good_led,//没绑定
     output select_led,//没绑定
     output [3:0] keyboard_col,
-output [0:0]warning1,
-output [0:0]warning2,
-output [0:0]warning3,
-output [0:0]warning4,
-output [0:0]warning5,
-output [0:0]warning6
+    output [0:0] warning1,
+    output [0:0] warning2,
+    output [0:0] warning3,
+    output [0:0] warning4,
+    output [0:0] warning5,
+    output [0:0] warning6
 );
-parameter price1=2'd1;
-parameter price2=2'd2;
-parameter price3=2'd3;
-parameter price4=2'd5;
-parameter price5=2'd7;
-parameter price6=2'd8;
-parameter price7=2'd13;
-parameter price8=2'd14;
-parameter price9=2'd15;
+    parameter price1=2'd1;
+    parameter price2=2'd2;
+    parameter price3=2'd3;
+    parameter price4=2'd5;
+    parameter price5=2'd7;
+    parameter price6=2'd8;
+    parameter price7=2'd13;
+    parameter price8=2'd14;
+    parameter price9=2'd15;
     //keyboard 处理信息
     wire keyboard_en;
     wire [3:0] keyboard_col;
@@ -80,6 +80,12 @@ parameter price9=2'd15;
     wire [5:0] paid;
     wire [5:0] inneedpaid;
     wire [5:0] charge;
+    wire [0:0] warning1;
+    wire [0:0] warning2;
+    wire [0:0] warning3;
+    wire [0:0] warning4;
+    wire [0:0] warning5;
+    wire [0:0] warning6;
     controller controller(
         .clk(clk),
         .reset(reset),
@@ -87,9 +93,11 @@ parameter price9=2'd15;
         .status_out(status_led),
         .keyboard(keyboard_out),
         .keyboard_en(keyboard_en),
-        .channel(channel), .channel_out(channel_out), .goods(goods), .goods_out(goods_out), .warning_cancel(warning_cancel), .warning(warning), .income(income),
+        .channel(channel), .channel_out(channel_out), .goods(goods), .goods_out(goods_out),
+        .warning_cancel(warning_cancel), .income(income),
         .current_numbers(current_numbers), .sold_numbers(sold_numbers), .max_supplement(max_supplement),
         .waiting_time(waiting_time), .select_number(select_number), .select_out(select_out),
-        .paid(paid), .inneedpaid(inneedpaid), .charge(charge), .chooseroot(chooseroot));//todo
+        .paid(paid), .paidinneed(inneedpaid), .charge(charge), .chooseroot(chooseroot),
+        .warning1(warning1),.warning2(warning2));//todo
 
 endmodule : wrapper
