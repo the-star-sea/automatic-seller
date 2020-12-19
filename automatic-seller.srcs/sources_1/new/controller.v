@@ -180,7 +180,6 @@ module controller(
                 begin
                     charge = 5'b0;
                     income = 10'b0;
-                    current_numbers = 45'b0;
                     sold_numbers = 45'b0;
                 end
             rootbrowse:
@@ -284,7 +283,7 @@ module controller(
                 begin
                     if (current_mode == rootadd)
                         begin
-                            max_supplement = 45'b010000100001000010000100001000010000100001000;
+                            current_numbers = 45'b0;
                             warning1 = 1'b0;
                         end
                     else if (current_mode == purchasemode) paid = 6'b0;
