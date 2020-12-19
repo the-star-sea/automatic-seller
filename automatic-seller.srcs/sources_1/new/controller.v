@@ -145,32 +145,13 @@ module controller(
                             default: next_mode = current_mode;
                         endcase
                     end
-            // if (reset == 1'b0) mode <= resetmode;
 
-            // else begin
-            //     case (status)
-            //         2'b00: mode <= searchMode;
-            //
-            //     endcase
-
-
-            // if(mode==searchMode )begin
-            //     case(channel)
-            //         3'b001:
-            //         3'b010:
-            //         3'b100:
-            //         default : mode <=searchMode;
-            //     endcase
-            //
-            // end
-
-            // end
         endcase
     always @* begin //todo
         case (current_mode)
             resetmode:
                 begin
-                    warning = 4'b0;
+                    //warning = 4'b0;
                     income = 10'b0;
                     current_numbers <= 45'b0;
                     sold_numbers <= 45'b0;
@@ -181,115 +162,61 @@ module controller(
     end
 
 
-    always @(posedge keyboard_enable, negedge reset)
-        if (keyboard_enable == 1'b1)
-            if (mode == rootadd)
-                begin
+    always @(posedge keyboard_en, negedge reset)
+        if (keyboard_en == 1'b1)
+            begin
+                if (current_mode == rootadd)
+
                     case ({channel, goods})
                         6'b001001:
 
                             if (max_supplement[4:0]+keyboard < maxnum) warning = 4'b0001;//补多了
-                            else max_supplement[4:0] += keyboard;
+                            else max_supplement[4:0] = max_supplement[4:0]+keyboard;
 
                         6'b001010:
 
                             if (max_supplement[9:5]+keyboard < maxnum) warning = 4'b0001;//补多了
-                            else max_supplement[9:5] += keyboard;
+                            else max_supplement[9:5] = max_supplement[9:5]+keyboard;
                         6'b001100:
                             if (max_supplement[14:10]+keyboard < maxnum) warning = 4'b0001;//补多了
-                            else max_supplement[14:10] += keyboard;
+                            else max_supplement[14:10] = max_supplement[14:10]+keyboard;
 
                         6'b010001:
                             if (max_supplement[19:15]+keyboard < maxnum) warning = 4'b0001;//补多了
-                            else max_supplement[19:15] += keyboard;
+                            else max_supplement[19:15] = max_supplement[19:15]+keyboard;
 
                         6'b010010:
                             if (max_supplement[24:20]+keyboard < maxnum) warning = 4'b0001;//补多了
-                            else max_supplement[24:20] += keyboard;
+                            else max_supplement[24:20] = max_supplement[24:20]+keyboard;
 
                         6'b010100:
                             if (max_supplement[29:25]+keyboard < maxnum) warning = 4'b0001;//补多了
-                            else max_supplement[29:25] += keyboard;
+                            else max_supplement[29:25] = max_supplement[29:25]+keyboard;
 
                         6'b100001:
                             if (max_supplement[34:30]+keyboard < maxnum) warning = 4'b0001;//补多了
-                            else max_supplement[34:30] += keyboard;
+                            else max_supplement[34:30] = max_supplement[34:30]+keyboard;
 
                         6'b100010:
                             if (max_supplement[39:35]+keyboard < maxnum) warning = 4'b0001;//补多了
-                            else max_supplement[39:35] += keyboard;
+                            else max_supplement[39:35] = max_supplement[39:35]+keyboard;
 
                         6'b100100:
                             if (max_supplement[44:40]+keyboard < maxnum) warning = 4'b0001;//补多了
-                            else max_supplement[44:40] += keyboard;
+                            else max_supplement[44:40] = max_supplement[44:40]+keyboard;
 
                     endcase
-                    else if (current_mode == purchasemod)
+
+                else if (current_mode == purchasemode)
                     begin
-                        paid += keyboard;
+                        paid = paid+keyboard;
                     end
-                end
-            else if (keyboard_enable == 1'b0)
-                begin
-                    if (mode == rootadd) max_supplement = 45'b010000100001000010000100001000010000100001000;
-                    else paid = 6'b0;
-                end
+            end
+        else if (current_mode == resetmode)
+            begin
+                if (current_mode == rootadd) max_supplement = 45'b010000100001000010000100001000010000100001000;
+                else paid = 6'b0;
+            end
 
-    // reg [0:0] keyboard_enable;
-    // reg [4:0] money_in_all;
-    // assign channel_out = channel;
-    // assign goods_out = goods;
-    // assign status_out = status;
-    // assign select_out = select_number;
-
-    // always @(posedge clk, posedge reset)
-    //     if (reset == 1'b1) begin
-    //         keyboard_enable <= 1'b0;
-    //         warning <= 4'b0;
-    //         income <= 10'b0;
-    //         current_numbers <= 45'b0;
-    //         sold_numbers <= 45'b0;
-    //         max_supplement <= 45'b100;
-    //         waiting_time <= 5'b0;
-    //         select_out <= 0;
-    //         paid <= 0;
-    //     end
-    //
-    //     else begin
-    //
-    //         case (status)
-    //             2'b00: //todo初始状态
-    //                 begin
-    //                 end
-    //             2'b01: //todo购买状态
-    //                 begin
-    //                     case (goods)
-    //                         3'b000:
-    //                             warning <= 4'b0001;//没选商品
-    //                         3'b001:
-    //                             warning <= 4'b0000;
-    //                         3'b010:
-    //                             warning <= 4'b0000;
-    //                         3'b100:
-    //                             warning <= 4'b0000;
-    //                         default:
-    //                             warning <= 4'b0010;//商品选多了
-    //                     endcase
-    //
-    //                     if (waiting_time < 5'd30 || paid <=)
-    //                         begin
-    //
-    //                         end
-    //
-    //                 end
-    //
-    //             //2'b10: //todo补货状态
-    //             default:
-    //                 begin
-    //
-    //                 end
-    //         endcase
-    //
-    //     end
 
 endmodule: controller
