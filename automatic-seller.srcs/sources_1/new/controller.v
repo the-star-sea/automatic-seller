@@ -254,6 +254,28 @@ module controller(
                 begin
                     charge = paid-paidinneed;
                     income = income+paidinneed;
+                    case ({channel, goods})
+                        6'b001001:
+
+                                   sold_numbers[4:0] = sold_numbers[4:0]+select_number;
+
+                        6'b001010:
+                            sold_numbers[9:15] = sold_numbers[9:15]+select_number;
+                        6'b001100:
+                            sold_numbers[14:10] = sold_numbers[14:10]+select_number;
+                        6'b010001:
+                            sold_numbers[19:15] = sold_numbers[19:15]+select_number;
+                        6'b010010:
+                            sold_numbers[24:20] = sold_numbers[24:20]+select_number;
+                        6'b010100:
+                            sold_numbers[29:25] = sold_numbers[29:25]+select_number;
+                        6'b100001:
+                            sold_numbers[34:30] = sold_numbers[34:30]+select_number;
+                        6'b100010:
+                            sold_numbers[39:35] = sold_numbers[39:35]+select_number;
+                        6'b100100:
+                            sold_numbers[44:40] = sold_numbers[44:40]+select_number;
+                    endcase
                 end
         endcase
 
