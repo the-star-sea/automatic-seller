@@ -74,6 +74,8 @@ module tube_display(
     parameter completepurchase=6'b010000;
     parameter rootbrowse=6'b100000;
     parameter rootadd=6'b000011;
+    parameter allinall=8'b10000000;
+
 
     reg [6:0] Y_r;
     reg [7:0] DIG_r;
@@ -143,6 +145,9 @@ module tube_display(
     parameter price9=2'd15;
 
 
+    reg [4:0]display_time;
+    always @(waiting_time)
+        display_time = 30 - waiting_time;
     reg [3:0] price;
     always @({channel,goods_in})
         case ({channel, goods_in})
@@ -172,8 +177,20 @@ module tube_display(
             2'b100_100: numbers = current_numbers[44:40];
             default: numbers = 9;
         endcase
-
-
+    reg [4:0] sold_num ;
+    always @({channel, goods_in})
+        case ({channel, goods_in})
+            2'b001_001: sold_num = sold_numbers[4:0];
+            2'b001_010: sold_num = sold_numbers[9:5];
+            2'b001_100: sold_num = sold_numbers[14:10];
+            2'b010_001: sold_num = sold_numbers[19:15];
+            2'b010_010: sold_num = sold_numbers[24:20];
+            2'b010_100: sold_num = sold_numbers[29:25];
+            2'b100_001: sold_num = sold_numbers[34:30];
+            2'b100_010: sold_num = sold_numbers[39:30];
+            2'b100_100: sold_num = sold_numbers[44:40];
+            default: sold_num = 9;
+        endcase
     reg [31:0] roll_cnt;
     reg roll_clk;
     always @(posedge clkout or negedge rst) // frequency division : clkout -> roll_clk
@@ -206,6 +223,8 @@ module tube_display(
         end
         else
             goods <= goods_in;
+
+
     always @(current_mode, tube_cnt)
         case (current_mode)
             browsemode: //��ʾ�����š���Ʒ���ơ���Ʒʣ��������Ʒ���
@@ -262,14 +281,290 @@ module tube_display(
                         15: Y_r = F;//F
                         default: Y_r = none;
                     endcase
-//                    purchasemode: // ��ʾ����ʱ��--[4:0]waiting_time�� �Ѹ����--[5:0]paid�� �����--[3:0] price
-//                        case(tube_cnt)
-//
-
-//            failpurchase:
-//            completepurchase:
-//            rootadd:
-//            rootbrowse:
+                endcase
+                    purchasemode: // [4:0]waiting_time、已付金额--[5:0]paid、商品单价--[3:0] price
+                        case(tube_cnt)
+                            7:
+                            begin
+                                case(display_time / 10)
+                                    0: Y_r = zero;//0
+                                    1: Y_r = one;//1
+                                    2: Y_r = two;//2
+                                    3: Y_r = three;//3
+                                endcase
+                            end
+                            6:
+                            begin
+                                case(display_time % 10)
+                                    0: Y_r = zero;//0
+                                    1: Y_r = one;//1
+                                    2: Y_r = two;//2
+                                    3: Y_r = three;//3
+                                    4: Y_r = four;//4
+                                    5: Y_r = five;//5
+                                    6: Y_r = six;//6
+                                    7: Y_r = seven;//7
+                                    8: Y_r = eight;//8
+                                    9: Y_r = nine;//9
+                                endcase
+                            end
+                            4:
+                                case(paid / 100)
+                                    0: Y_r = zero;//0
+                                    1: Y_r = one;//1
+                                    2: Y_r = two;//2
+                                    3: Y_r = three;//3
+                                    4: Y_r = four;//4
+                                    5: Y_r = five;//5
+                                    6: Y_r = six;//6
+                                    7: Y_r = seven;//7
+                                    8: Y_r = eight;//8
+                                    9: Y_r = nine;//9
+                                endcase
+                            3:
+                                case((paid - (paid/100)*100) / 10)
+                                    0: Y_r = zero;//0
+                                    1: Y_r = one;//1
+                                    2: Y_r = two;//2
+                                    3: Y_r = three;//3
+                                    4: Y_r = four;//4
+                                    5: Y_r = five;//5
+                                    6: Y_r = six;//6
+                                    7: Y_r = seven;//7
+                                    8: Y_r = eight;//8
+                                    9: Y_r = nine;//9
+                                endcase
+                            2:
+                                case(paid % 100)
+                                    0: Y_r = zero;//0
+                                    1: Y_r = one;//1
+                                    2: Y_r = two;//2
+                                    3: Y_r = three;//3
+                                    4: Y_r = four;//4
+                                    5: Y_r = five;//5
+                                    6: Y_r = six;//6
+                                    7: Y_r = seven;//7
+                                    8: Y_r = eight;//8
+                                    9: Y_r = nine;//9
+                                endcase
+                            0:
+                                case (price)
+                                    0: Y_r = zero;//0
+                                    1: Y_r = one;//1
+                                    2: Y_r = two;//2
+                                    3: Y_r = three;//3
+                                    //4: Y_r = four;//4
+                                    5: Y_r = five;//5
+                                    6: Y_r = six;//6
+                                    7: Y_r = seven;//7
+                                    8: Y_r = eight;//8
+                                    9: Y_r = nine;//9
+                                    10: Y_r = A;//A
+                                    11: Y_r = b;//b
+                                    12: Y_r = C;//c
+                                    13: Y_r = d;//d
+                                    14: Y_r = E;//E
+                                    15: Y_r = F;//F
+                                    default: Y_r = none;
+                        endcase
+                         endcase
+                    failpurchase:
+                        case(tube_cnt)
+                            2:
+                                case(charge / 100)
+                                    0: Y_r = zero;//0
+                                    1: Y_r = one;//1
+                                    2: Y_r = two;//2
+                                    3: Y_r = three;//3
+                                    4: Y_r = four;//4
+                                    5: Y_r = five;//5
+                                    6: Y_r = six;//6
+                                    7: Y_r = seven;//7
+                                    8: Y_r = eight;//8
+                                    9: Y_r = nine;//9
+                                endcase
+                            1:
+                                case((charge - (charge/100)*100) / 10)
+                                    0: Y_r = zero;//0
+                                    1: Y_r = one;//1
+                                    2: Y_r = two;//2
+                                    3: Y_r = three;//3
+                                    4: Y_r = four;//4
+                                    5: Y_r = five;//5
+                                    6: Y_r = six;//6
+                                    7: Y_r = seven;//7
+                                    8: Y_r = eight;//8
+                                    9: Y_r = nine;//9
+                                endcase
+                            0:
+                                case(charge % 100)
+                                    0: Y_r = zero;//0
+                                    1: Y_r = one;//1
+                                    2: Y_r = two;//2
+                                    3: Y_r = three;//3
+                                    4: Y_r = four;//4
+                                    5: Y_r = five;//5
+                                    6: Y_r = six;//6
+                                    7: Y_r = seven;//7
+                                    8: Y_r = eight;//8
+                                    9: Y_r = nine;//9
+                                endcase
+                        endcase
+            completepurchase:
+                case(tube_cnt)
+                    7: Y_r = A;
+                    2:
+                        case(charge / 100)
+                            0: Y_r = zero;//0
+                            1: Y_r = one;//1
+                            2: Y_r = two;//2
+                            3: Y_r = three;//3
+                            4: Y_r = four;//4
+                            5: Y_r = five;//5
+                            6: Y_r = six;//6
+                            7: Y_r = seven;//7
+                            8: Y_r = eight;//8
+                            9: Y_r = nine;//9
+                        endcase
+                    1:
+                        case((charge - (charge/100)*100) / 10)
+                            0: Y_r = zero;//0
+                            1: Y_r = one;//1
+                            2: Y_r = two;//2
+                            3: Y_r = three;//3
+                            4: Y_r = four;//4
+                            5: Y_r = five;//5
+                            6: Y_r = six;//6
+                            7: Y_r = seven;//7
+                            8: Y_r = eight;//8
+                            9: Y_r = nine;//9
+                        endcase
+                    0:
+                        case(charge % 100)
+                            0: Y_r = zero;//0
+                            1: Y_r = one;//1
+                            2: Y_r = two;//2
+                            3: Y_r = three;//3
+                            4: Y_r = four;//4
+                            5: Y_r = five;//5
+                            6: Y_r = six;//6
+                            7: Y_r = seven;//7
+                            8: Y_r = eight;//8
+                            9: Y_r = nine;//9
+                        endcase
+                endcase
+            rootadd: //显示最大可补数量
+                case (tube_cnt)
+                    7: case (channel)
+                        3'b001: Y_r = one;//1
+                        3'b010: Y_r = two;//2
+                        3'b100: Y_r = three;//3
+                        default: Y_r = none;
+                    endcase
+                    5: case ({channel, goods})
+                        6'b001001: Y_r = A;//A
+                        6'b001010: Y_r = b;//b
+                        6'b001100: Y_r = C;//c
+                        6'b010001: Y_r = d;//d
+                        6'b010010: Y_r = E;//E
+                        6'b010100: Y_r = F;//F
+                        6'b100001: Y_r = G;//G
+                        6'b100010: Y_r = H;//H
+                        6'b100100: Y_r = J;//J
+                        default: Y_r = none;
+                    endcase
+                    0: case (8-numbers)
+                        0: Y_r = zero;//0
+                        1: Y_r = one;//1
+                        2: Y_r = two;//2
+                        3: Y_r = three;//3
+                        4: Y_r = four;//4
+                        5: Y_r = five;//5
+                        6: Y_r = six;//6
+                        7: Y_r = seven;//7
+                        8: Y_r = eight;//8
+                        default: Y_r = none;
+                endcase
+            endcase
+            rootbrowse: //查看售出数量
+                case(tube_cnt)
+                    7: case (channel)
+                        3'b001: Y_r = one;//1
+                        3'b010: Y_r = two;//2
+                        3'b100: Y_r = three;//3
+                        default: Y_r = none;
+                    endcase
+                    5: case ({channel, goods})
+                        6'b001001: Y_r = A;//A
+                        6'b001010: Y_r = b;//b
+                        6'b001100: Y_r = C;//c
+                        6'b010001: Y_r = d;//d
+                        6'b010010: Y_r = E;//E
+                        6'b010100: Y_r = F;//F
+                        6'b100001: Y_r = G;//G
+                        6'b100010: Y_r = H;//H
+                        6'b100100: Y_r = J;//J
+                        default: Y_r = none;
+                    endcase
+                    3:case (sold_num / 10)
+                        1: Y_r = one;
+                        default : Y_r = none;
+                    endcase
+                    2: case (sold_num%10)
+                        0: Y_r = zero;//0
+                        1: Y_r = one;//1
+                        2: Y_r = two;//2
+                        3: Y_r = three;//3
+                        4: Y_r = four;//4
+                        5: Y_r = five;//5
+                        6: Y_r = six;//6
+                        7: Y_r = seven;//7
+                        8: Y_r = eight;//8
+                        default: Y_r = none;
+                    endcase
+                endcase
+            allinall:
+                case (tube_cnt)
+                    3: case (income/1)
+                        1: Y_r = one;
+                        default : Y_r = none;
+                    endcase
+                    2:case ((income-(income)/1000)%100)
+                        0: Y_r = zero;//0
+                        1: Y_r = one;//1
+                        2: Y_r = two;//2
+                        3: Y_r = three;//3
+                        4: Y_r = four;//4
+                        5: Y_r = five;//5
+                        6: Y_r = six;//6
+                        7: Y_r = seven;//7
+                        8: Y_r = eight;//8
+                        9: Y_r = nine;//9
+                    endcase
+                    1:case ((income - ((income-(income)/1000)/100)) % 10)
+                        0: Y_r = zero;//0
+                        1: Y_r = one;//1
+                        2: Y_r = two;//2
+                        3: Y_r = three;//3
+                        4: Y_r = four;//4
+                        5: Y_r = five;//5
+                        6: Y_r = six;//6
+                        7: Y_r = seven;//7
+                        8: Y_r = eight;//8
+                        9: Y_r = nine;//9
+                    endcase
+                    0:case (income - ((income - ((income-(income)/1000)/100)) / 10))
+                        0: Y_r = zero;//0
+                        1: Y_r = one;//1
+                        2: Y_r = two;//2
+                        3: Y_r = three;//3
+                        4: Y_r = four;//4
+                        5: Y_r = five;//5
+                        6: Y_r = six;//6
+                        7: Y_r = seven;//7
+                        8: Y_r = eight;//8
+                        9: Y_r = nine;//9
+                    endcase
                 endcase
         endcase                                           //sad s
 
