@@ -131,10 +131,10 @@ module tube_display(
     parameter G=7'b0111101;//G
     parameter J=7'b0001110;//J
     parameter H=7'b0110110;//H
-    parameter none=7'b0000000;//²»ÁÁ
+    parameter none=7'b0000000;//ï¿½ï¿½ï¿½ï¿½
 
     reg [4:0] numbers;
-    //Ñ¡Ôñ¶ÔÓ¦µÄÉÌÆ·Ê£ÓàÁ¿
+    //Ñ¡ï¿½ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½Æ·Ê£ï¿½ï¿½ï¿½ï¿½
     always @({channel, goods})
         case ({channel, goods})
             2'b001_001: numbers = current_numbers[4:0];
@@ -184,7 +184,7 @@ module tube_display(
             goods <= goods_in;
     always @(current_mode, tube_cnt)
         case (current_mode)
-            browsemode: //ÏÔÊ¾»õµÀºÅ¡¢ÉÌÆ·Ãû³Æ¡¢ÉÌÆ·Ê£ÓàÁ¿¡¢ÉÌÆ·½ð¶î
+            browsemode: //ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Å¡ï¿½ï¿½ï¿½Æ·ï¿½ï¿½ï¿½Æ¡ï¿½ï¿½ï¿½Æ·Ê£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ·ï¿½ï¿½ï¿½
                 case (tube_cnt)
                     7: case (channel)
                         3'b001: Y_r = one;//1
@@ -238,7 +238,7 @@ module tube_display(
                         15: Y_r = F;//F
                         default: Y_r = none;
                     endcase
-//                    purchasemode: // ÏÔÊ¾¸¶¿îÊ±¼ä--[4:0]waiting_time£¬ ÒÑ¸¶½ð¶î--[5:0]paid£¬ ¸¶¿îµ¥¼Û--[3:0] price
+//                    purchasemode: // ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½--[4:0]waiting_timeï¿½ï¿½ ï¿½Ñ¸ï¿½ï¿½ï¿½ï¿½--[5:0]paidï¿½ï¿½ ï¿½ï¿½ï¿½îµ¥ï¿½ï¿½--[3:0] price
 //                        case(tube_cnt)
 //
 
@@ -247,6 +247,6 @@ module tube_display(
 //            rootadd:
 //            rootbrowse:
                 endcase
-        endcase
+        endcase                                           //sad s
 
 endmodule: tube_display
