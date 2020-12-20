@@ -186,6 +186,7 @@ module controller(
                     end
 
         endcase
+
     always @(posedge clk, negedge reset) begin //todo
         if (~reset)
             begin
@@ -426,7 +427,7 @@ module controller(
                         paid <= paid+keyboard;
 
                 end
-            else if (next_mode == resetmode)
+            else if (~reset)
                 begin
                     if (next_mode == rootadd)
                         begin
