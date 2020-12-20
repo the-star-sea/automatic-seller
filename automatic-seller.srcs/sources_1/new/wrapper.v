@@ -42,9 +42,15 @@ module wrapper(
     output [0:0] warning5_led,
     output [0:0] warning6_led,
     output [7:0] DIG_tube,
-    output [7:0] Y_tube
+    output [7:0] Y_tube,
+    output [7:0] status_LED,
+
+    input [3:0] select_numbers,
+    output [3:0]select_outs
 );
 
+    assign select_number = select_numbers;
+    assign select_outs = select_out;
     assign warning1_led = warning1;
     assign warning2_led = warning2;
     assign warning3_led = warning3;
@@ -53,7 +59,7 @@ module wrapper(
     assign warning6_led = warning6;
     assign good_led = goods_out;
     assign channel_led = channel_out;
-
+    assign status_LED = status_led;
     parameter price1=2'd1;
     parameter price2=2'd2;
     parameter price3=2'd3;
@@ -74,8 +80,8 @@ module wrapper(
 
     //控制信息
     // wire [2:0] status_out;//todo 传给led模块
-    wire [2:0] channel_out;//todo 传给led模块
-    wire [2:0] goods_out;//todo 传给led模块
+    wire [2:0] channel_out;
+    wire [2:0] goods_out;
     // wire [3:0] warning;
     wire [9:0] income;
     wire [44:0] current_numbers;//一个商品5个位宽，共9个商品,
@@ -86,8 +92,8 @@ module wrapper(
     wire [44:0] sold_numbers;
     wire [44:0] max_supplement;
     wire [4:0] waiting_time;
-    wire [3:0] select_number;
-    wire select_out;//todo 传给led模块
+    wire [3:0] select_number;//todo input
+    wire [3:0]select_out;//todo output传给led模块 选择的数量
     wire [5:0] paid;
     wire [5:0] inneedpaid;
     wire [5:0] charge;

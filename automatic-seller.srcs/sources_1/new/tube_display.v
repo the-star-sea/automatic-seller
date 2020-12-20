@@ -25,7 +25,7 @@ module tube_display(
     input clk,
     input [2:0] channel,
     input [2:0] goods_in,
-    input [5:0] current_numbers,
+    input [44:0] current_numbers,
     //input [3:0] price,
     input [4:0] waiting_time,
     input [44:0] max_supplement,
@@ -209,7 +209,7 @@ module tube_display(
                     roll_cnt <= roll_cnt+1;
             end
         end
-    reg twenkle;
+    wire twenkle;
     frequency_divider#(.period(twenkle_period)) twenkler(clk, rst, twenkle);
     always @(posedge roll_clk or negedge rst)
         if (!rst && current_mode == browsemode && goods_in == 3'b000) begin
