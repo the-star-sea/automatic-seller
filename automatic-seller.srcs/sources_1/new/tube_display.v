@@ -132,11 +132,35 @@ module tube_display(
     parameter J=7'b0001110;//J
     parameter H=7'b0110110;//H
     parameter none=7'b0000000;//����
+    parameter price1=2'd1;
+    parameter price2=2'd2;
+    parameter price3=2'd3;
+    parameter price4=2'd5;
+    parameter price5=2'd7;
+    parameter price6=2'd8;
+    parameter price7=2'd13;
+    parameter price8=2'd14;
+    parameter price9=2'd15;
 
+
+    reg [3:0] price;
+    always @({channel,goods_in})
+        case ({channel, goods_in})
+            2'b001_001: price = price1;
+            2'b001_010: price = price2;
+            2'b001_100: price = price3;
+            2'b010_001: price = price4;
+            2'b010_010: price = price5;
+            2'b010_100: price = price6;
+            2'b100_001: price = price7;
+            2'b100_010: price = price8;
+            2'b100_100: price = price9;
+            default: price = 4;
+        endcase
     reg [4:0] numbers;
     //ѡ���Ӧ����Ʒʣ����
-    always @({channel, goods})
-        case ({channel, goods})
+    always @({channel, goods_in})
+        case ({channel, goods_in})
             2'b001_001: numbers = current_numbers[4:0];
             2'b001_010: numbers = current_numbers[9:5];
             2'b001_100: numbers = current_numbers[14:10];
@@ -224,7 +248,7 @@ module tube_display(
                         1: Y_r = one;//1
                         2: Y_r = two;//2
                         3: Y_r = three;//3
-                        4: Y_r = four;//4
+                        //4: Y_r = four;//4
                         5: Y_r = five;//5
                         6: Y_r = six;//6
                         7: Y_r = seven;//7
