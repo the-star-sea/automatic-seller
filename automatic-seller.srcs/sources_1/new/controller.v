@@ -260,7 +260,7 @@ module controller(
                                    sold_numbers[4:0] = sold_numbers[4:0]+select_number;
 
                         6'b001010:
-                            sold_numbers[9:15] = sold_numbers[9:15]+select_number;
+                            sold_numbers[9:5] = sold_numbers[9:5]+select_number;
                         6'b001100:
                             sold_numbers[14:10] = sold_numbers[14:10]+select_number;
                         6'b010001:
