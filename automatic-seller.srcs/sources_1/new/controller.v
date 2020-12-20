@@ -33,7 +33,15 @@ module controller(
     output reg [0:0] warning5,
     output reg [0:0] warning6
 );
-    assign max_supplement = maxnum-current_numbers;
+    assign max_supplement[4:0] = maxnum-current_numbers[4:0];
+    assign max_supplement[9:5] = maxnum-current_numbers[9:5];
+    assign max_supplement[14:10] = maxnum-current_numbers[14:10];
+    assign max_supplement[19:15] = maxnum-current_numbers[19:15];
+    assign max_supplement[24:20] = maxnum-current_numbers[24:20];
+    assign max_supplement[29:25] = maxnum-current_numbers[29:25];
+    assign max_supplement[34:30] = maxnum-current_numbers[34:30];
+    assign max_supplement[39:35] = maxnum-current_numbers[39:35];
+    assign max_supplement[44:40] = maxnum-current_numbers[44:40];
     assign channel_out = channel;
     assign goods_out = goods;
     assign select_out = select_number;
@@ -48,7 +56,7 @@ module controller(
     parameter rootbrowse=8'b00100000;
     parameter rootadd=8'b01000000;
     parameter allinall=8'b10000000;
-    parameter maxnum=4'b1000;
+    parameter maxnum=5'b1000;
     parameter price1=1;
     parameter price2=2;
     parameter price3=3;
