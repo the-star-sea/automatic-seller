@@ -49,7 +49,7 @@ module wrapper(
     output [3:0]select_outs
 );
 
-    assign select_number = select_numbers;
+
     assign select_outs = select_out;
     assign warning1_led = warning1;
     assign warning2_led = warning2;
@@ -60,15 +60,15 @@ module wrapper(
     assign good_led = goods_out;
     assign channel_led = channel_out;
     assign status_LED = status_led;
-    parameter price1=2'd1;
-    parameter price2=2'd2;
-    parameter price3=2'd3;
-    parameter price4=2'd5;
-    parameter price5=2'd7;
-    parameter price6=2'd8;
-    parameter price7=2'd13;
-    parameter price8=2'd14;
-    parameter price9=2'd15;
+    parameter price1=1;
+    parameter price2=2;
+    parameter price3=3;
+    parameter price4=5;
+    parameter price5=7;
+    parameter price6=8;
+    parameter price7=13;
+    parameter price8=14;
+    parameter price9=15;
     //keyboard 处理信息
     wire keyboard_en;
     wire [3:0] keyboard_col;
@@ -104,6 +104,7 @@ module wrapper(
     wire [0:0] warning5;
     wire [0:0] warning6;
     wire [7:0] status_led;
+    assign select_number = select_numbers;
     controller controller(
         .clk(clk),
         .reset(reset),
