@@ -10,7 +10,7 @@ module controller(
     input [2:0] goods,
     input warning_cancel,
     output [2:0] goods_out,
-
+input [0:0]okbutton,
     output reg [9:0] income,//总收益
     output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,现在多少商品
     //[4:0]:货道001的第001个商品
