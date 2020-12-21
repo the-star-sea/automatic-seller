@@ -45,7 +45,7 @@ module controller(
     assign channel_out = channel;
     assign goods_out = goods;
     assign select_out = select_number;
-    assign status_out = current_mode;
+    assign status_out = next_mode;
     reg [7:0] current_mode, next_mode;
     parameter resetmode=8'b00000000;
     parameter purchasemode=8'b00000001;
