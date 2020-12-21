@@ -48,11 +48,11 @@ module controller(
     assign status_out = next_mode;
     reg [7:0] current_mode, next_mode;
     parameter resetmode=8'b00000000;
-    parameter purchasemode=8'b00000001;
-    parameter managermode=8'b00000010;
-    parameter browsemode=8'b00000100;
+    parameter browsemode=8'b00000001;
+    parameter purchasemode=8'b00000010;
+    parameter completepurchase=8'b00000100;
     parameter failpurchase=8'b00001000;
-    parameter completepurchase=8'b00010000;
+    parameter managermode=8'b00010000;
     parameter rootbrowse=8'b00100000;
     parameter rootadd=8'b01000000;
     parameter allinall=8'b10000000;
@@ -329,7 +329,7 @@ end
     //
 
 
-    always @(posedge keyboard_en, negedge reset, negedge rst) //todo
+    always @(posedge keyboard_en, negedge reset/*, negedge rst*/) //todo
         if (!rst ) //todo可能bug
             begin
                 paid <= 0;
