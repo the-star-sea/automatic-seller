@@ -328,7 +328,7 @@ module controller(
     wire clk_okb;
     wire okbutton_cap;
     frequency_divider#(500000) frequency_divider_okb(.clk(clk),.rst(reset),.clkout(clk_okb));
-    edge_cap edge_cap_okb(.clk(clk_okb),.rst_n(reset),.pulse(okbutton),.neg_edge(okbutton_cap));
+    edge_cap edge_cap_okb(.clk(clk_okb),.rst_n(reset),.pulse(okbutton),.pos_edge(okbutton_cap));
 
 
     always @(posedge keyboard_en, negedge reset) //todo
