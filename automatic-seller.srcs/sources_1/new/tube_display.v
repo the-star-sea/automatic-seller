@@ -66,14 +66,14 @@ module tube_display(
         end
 
 
-    parameter resetmode=6'b000000;
-    parameter purchasemode=6'b000001;
-    parameter managermode=6'b000010;
-    parameter browsemode=6'b000100;
-    parameter failpurchase=6'b001000;
-    parameter completepurchase=6'b010000;
-    parameter rootbrowse=6'b100000;
-    parameter rootadd=6'b000011;
+    parameter resetmode=8'b00000000;
+    parameter browsemode=8'b00000001;
+    parameter purchasemode=8'b00000010;
+    parameter completepurchase=8'b00000100;
+    parameter failpurchase=8'b00001000;
+    parameter managermode=8'b00010000;
+    parameter rootbrowse=8'b00100000;
+    parameter rootadd=8'b01000000;
     parameter allinall=8'b10000000;
 
 
