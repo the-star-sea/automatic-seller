@@ -66,6 +66,7 @@ module controller(
     parameter price7=13;
     parameter price8=14;
     parameter price9=15;
+    reg [0:0]rst;
     // parameter searchMode=6'b000001;
 
     always @(posedge clk, negedge reset)
@@ -75,13 +76,13 @@ module controller(
     //30秒计时器
     reg clockstart;
     wire clk_1HZ;
-    frequency_divider#(.period(100000000)) frequency_divider(.clk(clk), .rst(clockstart), .clkout(clk_1HZ));
+    frequency_divider#(.period(100000000)) frequency_divider(.clk(clk), .rst(reset), .clkout(clk_1HZ));
     always @(posedge clk_1HZ) begin
         if (clockstart == 1'b1) begin
-            waiting_time = waiting_time+1;
+            waiting_time <= waiting_time+1;
         end
         if (clockstart == 1'b0) begin
-            waiting_time = 5'b00000;
+            waiting_time <= 5'b00000;
         end
     end
 
@@ -89,6 +90,7 @@ module controller(
         case (current_mode)
             resetmode: //100
                 begin
+                    rst=1'b0;
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;
@@ -99,6 +101,7 @@ module controller(
                     endcase
                 end
             browsemode: begin
+                rst=1'b0;
                 clockstart = 1'b0;
                 case (status)
                     3'b010:
@@ -112,6 +115,7 @@ module controller(
             end
             purchasemode:
                 begin
+                    rst=1'b0;
                     clockstart = 1'b1;
                     if (waiting_time < 30 && paid < paidinneed)
                         next_mode = current_mode;
@@ -121,6 +125,7 @@ module controller(
                 end
             failpurchase:
                 begin
+                    rst=1'b1;
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;//010
@@ -130,6 +135,7 @@ module controller(
                 end
             completepurchase: //010
                 begin
+                    rst=1'b1;
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;
@@ -138,6 +144,8 @@ module controller(
                     endcase
                 end
             managermode: //100
+            begin
+                rst=1'b0;
                 if (chooseroot == 2'b01)
 
                     next_mode = rootbrowse;
@@ -150,7 +158,11 @@ module controller(
                             default: next_mode = current_mode;
                         endcase
                     end
+                end
+
             rootbrowse:
+            begin
+                rst=1'b0;
                 if (chooseroot == 2'b00)
                     next_mode = managermode;
                 else if (chooseroot == 2'b10)
@@ -161,7 +173,11 @@ module controller(
                     begin
                         next_mode = current_mode;
                     end
+                    end
             allinall:
+            begin
+                rst=1'b0;
+
                 if (chooseroot == 2'b00)
                     next_mode = managermode;
                 else if (chooseroot == 2'b10)
@@ -171,9 +187,11 @@ module controller(
                 else if (chooseroot == 2'b11)
                     begin
                         next_mode = current_mode;
-
+end
                     end
             rootadd:
+            begin
+                rst=1'b0;
                 if (chooseroot == 2'b01)
 
                     next_mode = rootbrowse;
@@ -183,6 +201,8 @@ module controller(
                     begin
                         next_mode = current_mode;
 
+
+                    end
                     end
 
         endcase
@@ -309,10 +329,11 @@ module controller(
     //
 
 
-    always @(posedge keyboard_en, negedge reset, negedge next_mode[3:3]) //todo
-        if (next_mode[3:3] == 1'b0) //todo可能bug
+    always @(posedge keyboard_en, negedge reset, negedge rst) //todo
+        if (!rst ) //todo可能bug
             begin
                 paid <= 0;
+                if(current_mode==completepurchase)
                 current_numbers <= current_numbers-select_number;
             end
         else begin
