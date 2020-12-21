@@ -10,7 +10,7 @@ module controller(
     input [2:0] goods,
     input warning_cancel,
     output [2:0] goods_out,
-    input [0:0]okbutton,
+    input [0:0] okbutton,
     output reg [9:0] income,//总收益
     output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,现在多少商品
     //[4:0]:货道001的第001个商品
@@ -69,7 +69,11 @@ module controller(
     reg [0:0] rst;
     // parameter searchMode=6'b000001;
 
-    always @(posedge clk, negedge reset)
+
+    //
+    wire clk_slow;
+    frequency_divider#(20000000) frequency_divider_slow(.clk(clk),.rst(reset),.clkout(clk_slow));
+    always @(posedge clk_slow, negedge reset)
         if (~reset && status == 3'b100) current_mode <= resetmode;
         else current_mode <= next_mode;
 
@@ -205,7 +209,7 @@ module controller(
 
         endcase
 
-    always @(posedge clk, negedge reset) begin //todo
+    always @(posedge clk_slow, negedge reset) begin //todo
         if (~reset && status == 3'b100)
             begin
                 charge <= 5'b0;
@@ -327,8 +331,8 @@ module controller(
     //
     wire clk_okb;
     wire okbutton_cap;
-    frequency_divider#(500000) frequency_divider_okb(.clk(clk),.rst(reset),.clkout(clk_okb));
-    edge_cap edge_cap_okb(.clk(clk_okb),.rst_n(reset),.pulse(okbutton),.pos_edge(okbutton_cap));
+    frequency_divider#(500000) frequency_divider_okb(.clk(clk), .rst(reset), .clkout(clk_okb));
+    edge_cap edge_cap_okb(.clk(clk_okb), .rst_n(reset), .pulse(okbutton), .pos_edge(okbutton_cap));
 
 
     always @(posedge keyboard_en, negedge reset) //todo
