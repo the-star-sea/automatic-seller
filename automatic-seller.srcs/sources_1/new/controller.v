@@ -90,7 +90,7 @@ module controller(
         case (current_mode)
             resetmode: //100
                 begin
-                    rst=1'b0;
+
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;
@@ -101,7 +101,7 @@ module controller(
                     endcase
                 end
             browsemode: begin
-                rst=1'b0;
+
                 clockstart = 1'b0;
                 case (status)
                     3'b010:
@@ -115,7 +115,7 @@ module controller(
             end
             purchasemode:
                 begin
-                    rst=1'b0;
+
                     clockstart = 1'b1;
                     if (waiting_time < 30 && paid < paidinneed)
                         next_mode = current_mode;
@@ -125,7 +125,7 @@ module controller(
                 end
             failpurchase:
                 begin
-                    rst=1'b1;
+
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;//010
@@ -135,7 +135,7 @@ module controller(
                 end
             completepurchase: //010
                 begin
-                    rst=1'b1;
+
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;
@@ -145,7 +145,7 @@ module controller(
                 end
             managermode: //100
             begin
-                rst=1'b0;
+
                 if (chooseroot == 2'b01)
 
                     next_mode = rootbrowse;
@@ -162,7 +162,7 @@ module controller(
 
             rootbrowse:
             begin
-                rst=1'b0;
+
                 if (chooseroot == 2'b00)
                     next_mode = managermode;
                 else if (chooseroot == 2'b10)
@@ -176,7 +176,7 @@ module controller(
                     end
             allinall:
             begin
-                rst=1'b0;
+
 
                 if (chooseroot == 2'b00)
                     next_mode = managermode;
@@ -191,7 +191,7 @@ end
                     end
             rootadd:
             begin
-                rst=1'b0;
+
                 if (chooseroot == 2'b01)
 
                     next_mode = rootbrowse;
@@ -208,7 +208,7 @@ end
         endcase
 
     always @(posedge clk, negedge reset) begin //todo
-        if (~reset)
+        if (~reset&&status==3'b100)
             begin
                 charge <= 5'b0;
                 income <= 10'b0;
@@ -329,14 +329,8 @@ end
     //
 
 
-    always @(posedge keyboard_en, negedge reset/*, negedge rst*/) //todo
-        if (!rst ) //todo可能bug
-            begin
-                paid <= 0;
-                if(current_mode==completepurchase)
-                current_numbers <= current_numbers-select_number;
-            end
-        else begin
+    always @(posedge keyboard_en, negedge reset) //todo
+
             if (keyboard_en == 1'b1)
                 begin
                     if (next_mode == rootadd)
@@ -457,6 +451,6 @@ end
                         end
                     else if (next_mode == purchasemode) paid <= 6'b0;
                 end
-        end
+
 
 endmodule : controller
