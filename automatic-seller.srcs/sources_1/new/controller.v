@@ -10,7 +10,7 @@ module controller(
     input [2:0] goods,
     input warning_cancel,
     output [2:0] goods_out,
-input [0:0]okbutton,
+    input [0:0]okbutton,
     output reg [9:0] income,//总收益
     output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,现在多少商品
     //[4:0]:货道001的第001个商品
@@ -325,6 +325,10 @@ input [0:0]okbutton,
 
     end
     //
+    wire clk_okb;
+    wire okbutton_cap;
+    frequency_divider#(500000) frequency_divider_okb(.clk(clk),.rst(reset),.clkout(clk_okb));
+    edge_cap edge_cap_okb(.clk(clk_okb),.rst_n(reset),.pulse(okbutton),.neg_edge(okbutton_cap));
 
 
     always @(posedge keyboard_en, negedge reset) //todo
