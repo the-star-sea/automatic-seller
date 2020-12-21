@@ -293,7 +293,7 @@ end
                             income <= income+paidinneed; //todo 必须要改
                         case ({channel, goods}) //todo
                             6'b001001:
-//////////////////////////////////////////////////////////////////////////////////////////////////
+
                                 if (current_mode == purchasemode)
                                     sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
 
@@ -442,7 +442,7 @@ end
                         paid <= paid+keyboard;
 
                 end
-            else if (~reset)
+            else if (~reset&&status==3'b100)
                 begin
                     if (next_mode == rootadd)
                         begin
