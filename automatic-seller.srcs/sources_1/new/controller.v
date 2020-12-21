@@ -33,22 +33,30 @@ module controller(
     output reg [0:0] warning5,
     output reg [0:0] warning6
 );
-    assign max_supplement = maxnum-current_numbers;
+    assign max_supplement[4:0] = maxnum-current_numbers[4:0];
+    assign max_supplement[9:5] = maxnum-current_numbers[9:5];
+    assign max_supplement[14:10] = maxnum-current_numbers[14:10];
+    assign max_supplement[19:15] = maxnum-current_numbers[19:15];
+    assign max_supplement[24:20] = maxnum-current_numbers[24:20];
+    assign max_supplement[29:25] = maxnum-current_numbers[29:25];
+    assign max_supplement[34:30] = maxnum-current_numbers[34:30];
+    assign max_supplement[39:35] = maxnum-current_numbers[39:35];
+    assign max_supplement[44:40] = maxnum-current_numbers[44:40];
     assign channel_out = channel;
     assign goods_out = goods;
     assign select_out = select_number;
-    assign status_out = current_mode;
+    assign status_out = next_mode;
     reg [7:0] current_mode, next_mode;
     parameter resetmode=8'b00000000;
-    parameter purchasemode=8'b00000001;
-    parameter managermode=8'b00000010;
-    parameter browsemode=8'b00000100;
+    parameter browsemode=8'b00000001;
+    parameter purchasemode=8'b00000010;
+    parameter completepurchase=8'b00000100;
     parameter failpurchase=8'b00001000;
-    parameter completepurchase=8'b00010000;
+    parameter managermode=8'b00010000;
     parameter rootbrowse=8'b00100000;
     parameter rootadd=8'b01000000;
     parameter allinall=8'b10000000;
-    parameter maxnum=4'b1000;
+    parameter maxnum=5'b1000;
     parameter price1=1;
     parameter price2=2;
     parameter price3=3;
@@ -58,6 +66,7 @@ module controller(
     parameter price7=13;
     parameter price8=14;
     parameter price9=15;
+    reg [0:0]rst;
     // parameter searchMode=6'b000001;
 
     always @(posedge clk, negedge reset)
@@ -67,13 +76,13 @@ module controller(
     //30秒计时器
     reg clockstart;
     wire clk_1HZ;
-    frequency_divider#(.period(100000000)) frequency_divider(.clk(clk), .rst(clockstart), .clkout(clk_1HZ));
+    frequency_divider#(.period(100000000)) frequency_divider(.clk(clk), .rst(reset), .clkout(clk_1HZ));
     always @(posedge clk_1HZ) begin
         if (clockstart == 1'b1) begin
-            waiting_time = waiting_time+1;
+            waiting_time <= waiting_time+1;
         end
         if (clockstart == 1'b0) begin
-            waiting_time = 5'b00000;
+            waiting_time <= 5'b00000;
         end
     end
 
@@ -81,6 +90,7 @@ module controller(
         case (current_mode)
             resetmode: //100
                 begin
+
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;
@@ -91,6 +101,7 @@ module controller(
                     endcase
                 end
             browsemode: begin
+
                 clockstart = 1'b0;
                 case (status)
                     3'b010:
@@ -104,6 +115,7 @@ module controller(
             end
             purchasemode:
                 begin
+
                     clockstart = 1'b1;
                     if (waiting_time < 30 && paid < paidinneed)
                         next_mode = current_mode;
@@ -113,6 +125,7 @@ module controller(
                 end
             failpurchase:
                 begin
+
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;//010
@@ -122,6 +135,7 @@ module controller(
                 end
             completepurchase: //010
                 begin
+
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;
@@ -130,6 +144,8 @@ module controller(
                     endcase
                 end
             managermode: //100
+            begin
+
                 if (chooseroot == 2'b01)
 
                     next_mode = rootbrowse;
@@ -142,7 +158,11 @@ module controller(
                             default: next_mode = current_mode;
                         endcase
                     end
+                end
+
             rootbrowse:
+            begin
+
                 if (chooseroot == 2'b00)
                     next_mode = managermode;
                 else if (chooseroot == 2'b10)
@@ -153,7 +173,11 @@ module controller(
                     begin
                         next_mode = current_mode;
                     end
+                    end
             allinall:
+            begin
+
+
                 if (chooseroot == 2'b00)
                     next_mode = managermode;
                 else if (chooseroot == 2'b10)
@@ -163,9 +187,11 @@ module controller(
                 else if (chooseroot == 2'b11)
                     begin
                         next_mode = current_mode;
-
+end
                     end
             rootadd:
+            begin
+
                 if (chooseroot == 2'b01)
 
                     next_mode = rootbrowse;
@@ -175,11 +201,14 @@ module controller(
                     begin
                         next_mode = current_mode;
 
+
+                    end
                     end
 
         endcase
+
     always @(posedge clk, negedge reset) begin //todo
-        if (~reset)
+        if (~reset&&status==3'b100)
             begin
                 charge <= 5'b0;
                 income <= 10'b0;
@@ -300,13 +329,8 @@ module controller(
     //
 
 
-    always @(posedge keyboard_en, negedge reset, negedge next_mode[3:3]) //todo
-        if (next_mode[3:3] == 1'b0) //todo可能bug
-            begin
-                paid <= 0;
-                current_numbers <= current_numbers-select_number;
-            end
-        else begin
+    always @(posedge keyboard_en, negedge reset) //todo
+
             if (keyboard_en == 1'b1)
                 begin
                     if (next_mode == rootadd)
@@ -418,7 +442,7 @@ module controller(
                         paid <= paid+keyboard;
 
                 end
-            else if (next_mode == resetmode)
+            else if (~reset)
                 begin
                     if (next_mode == rootadd)
                         begin
@@ -427,6 +451,6 @@ module controller(
                         end
                     else if (next_mode == purchasemode) paid <= 6'b0;
                 end
-        end
+
 
 endmodule : controller
