@@ -538,7 +538,7 @@ module tube_display(
                     //     default: Y_r = none;
                     // endcase
                     7: Y_r = 7'b1001001;
-                    2: case (income % 100)
+                    2: case (income / 100)
                         0: Y_r = zero;//0
                         1: Y_r = one;//1
                         2: Y_r = two;//2
@@ -550,7 +550,7 @@ module tube_display(
                         8: Y_r = eight;//8
                         9: Y_r = nine;//9
                     endcase
-                    1: case (((income-(income%100)*100))/10)
+                    1: case (((income-(income/100)*100))/10)
                         0: Y_r = zero;//0
                         1: Y_r = one;//1
                         2: Y_r = two;//2
@@ -562,7 +562,7 @@ module tube_display(
                         8: Y_r = eight;//8
                         9: Y_r = nine;//9
                     endcase
-                    0: case (((income-(income%100)*100))%10)
+                    0: case (((income-(income/100)*100))%10)
                         0: Y_r = zero;//0
                         1: Y_r = one;//1
                         2: Y_r = two;//2
