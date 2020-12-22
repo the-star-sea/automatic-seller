@@ -10,7 +10,6 @@ module controller(
     input [2:0] goods,
     input warning_cancel,
     output [2:0] goods_out,
-    input [0:0] okbutton,
     output reg [9:0] income,//总收益
     output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,现在多少商品
     //[4:0]:货道001的第001个商品
@@ -20,7 +19,7 @@ module controller(
     output reg [44:0] sold_numbers,//卖了多少商品
     output [44:0] max_supplement,//还可以添加的数量
     output reg [4:0] waiting_time,//付款计时器，一进入付款状态立即开始计时，处于其他状态保持为0
-    input [3:0] select_number,//选多少商品
+
     output [3:0] select_out,
     output reg [5:0] paid,//已付
     output reg [5:0] paidinneed,//要付
@@ -31,7 +30,8 @@ module controller(
     output reg [0:0] warning3,
     output reg [0:0] warning4,
     output reg [0:0] warning5,
-    output reg [0:0] warning6
+    output reg [0:0] warning6,
+    input [3:0] select_number//选多少商品
 );
     assign max_supplement[4:0] = maxnum-current_numbers[4:0];
     assign max_supplement[9:5] = maxnum-current_numbers[9:5];
@@ -117,6 +117,11 @@ module controller(
                 begin
 
                     clockstart = 1'b1;
+                    case (status)
+                        3'b001: next_mode = browsemode;//010
+                        3'b100: next_mode = managermode;
+                        default: next_mode = current_mode;
+                    endcase
                     if (waiting_time < 30 && paid < paidinneed)
                         next_mode = current_mode;
                     else if (waiting_time >= 30)
