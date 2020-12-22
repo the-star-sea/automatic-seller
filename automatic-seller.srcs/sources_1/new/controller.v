@@ -10,17 +10,17 @@ module controller(
     input [2:0] goods,
     input warning_cancel,
     output [2:0] goods_out,
-    input [0:0]okbutton,
-    output reg [9:0] income,//总收�?
-    output reg [44:0] current_numbers,//�?个商�?5个位宽，�?9个商�?,现在多少商品
-    //[4:0]:货道001的第001个商�?
-    //[9:5]:货道001的第010个商�?
-    //[14:10]:货道001的第100个商�?
-    //[44:40]:货道100的第100个商�?
+    input [0:0] okbutton,
+    output reg [9:0] income,//总收益
+    output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,现在多少商品
+    //[4:0]:货道001的第001个商品
+    //[9:5]:货道001的第010个商品
+    //[14:10]:货道001的第100个商品
+    //[44:40]:货道100的第100个商品
     output reg [44:0] sold_numbers,//卖了多少商品
     output [44:0] max_supplement,//还可以添加的数量
-    output reg [4:0] waiting_time,//付款计时器，�?进入付款状�?�立即开始计时，处于其他状�?�保持为0
-    input [3:0] select_number,//选多少商�?
+    output reg [4:0] waiting_time,//付款计时器，一进入付款状态立即开始计时，处于其他状态保持为0
+    input [3:0] select_number,//选多少商品
     output [3:0] select_out,
     output reg [5:0] paid,//已付
     output reg [5:0] paidinneed,//要付
@@ -121,7 +121,7 @@ module controller(
                         next_mode = current_mode;
                     else if (waiting_time >= 30)
                         next_mode = failpurchase;
-                    else if(okbutton==1'b1)next_mode = completepurchase;
+                    else next_mode = completepurchase;
                 end
             failpurchase:
                 begin
@@ -355,7 +355,7 @@ if (keyboard_en==1'b1)
                         6'b010100:
                             if (warning1 == 1'b0)
                                 begin
-                                    if (current_numbers[29:25]+keyboard > maxnum) warning1 <= 1'b1;//补多�?
+                                    if (current_numbers[29:25]+keyboard > maxnum) warning1 <= 1'b1;//补多了
                                     else current_numbers[29:25] <= current_numbers[29:25]+keyboard;
                                 end
                             else if (current_numbers[29:25]+keyboard < maxnum)
@@ -366,7 +366,7 @@ if (keyboard_en==1'b1)
                         6'b100001:
                             if (warning1 == 1'b0)
                                 begin
-                                    if (current_numbers[34:30]+keyboard > maxnum) warning1 <= 1'b1;//补多�?
+                                    if (current_numbers[34:30]+keyboard > maxnum) warning1 <= 1'b1;//补多了
                                     else current_numbers[34:30] <= current_numbers[34:30]+keyboard;
                                 end
                             else if (current_numbers[34:30]+keyboard < maxnum)
@@ -377,7 +377,7 @@ if (keyboard_en==1'b1)
                         6'b100010:
                             if (warning1 == 1'b0)
                                 begin
-                                    if (current_numbers[39:35]+keyboard > maxnum) warning1 <= 1'b1;//补多�?
+                                    if (current_numbers[39:35]+keyboard > maxnum) warning1 <= 1'b1;//补多了
                                     else current_numbers[39:35] <= current_numbers[39:35]+keyboard;
                                 end
                             else if (current_numbers[39:35]+keyboard < maxnum)
@@ -388,7 +388,7 @@ if (keyboard_en==1'b1)
                         6'b100100:
                             if (warning1 == 1'b0)
                                 begin
-                                    if (current_numbers[44:40]+keyboard > maxnum) warning1 <= 1'b1;//补多�?
+                                    if (current_numbers[44:40]+keyboard > maxnum) warning1 <= 1'b1;//补多了
                                     else current_numbers[44:40] <= current_numbers[44:40]+keyboard;
                                 end
                             else if (current_numbers[44:40]+keyboard < maxnum)
