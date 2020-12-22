@@ -2,8 +2,8 @@
 
 
 //外壳，最外层模块
-//负责组织所有的输入输出接口，以及内部各模块之间的连接
-//输入输出直接对应开发板的引脚
+//负责组织�?有的输入输出接口，以及内部各模块之间的连�?
+//输入输出直接对应�?发板的引�?
 module wrapper(
     input clk,
     input reset,
@@ -15,7 +15,7 @@ module wrapper(
     input [1:0] chooseroot,
     output [2:0] channel_led,
     output [2:0] good_led,
-    //output select_led,//没绑定
+    //output select_led,//没绑�?
     output [3:0] keyboard_col,
     output [0:0] warning1_led,
     output [0:0] warning2_led,
@@ -55,10 +55,10 @@ module wrapper(
     wire keyboard_en;
     wire [3:0] keyboard_col;
     wire [3:0] keyboard_out;
-    keyboard keyboard(.clk(clk), .reset(reset), .keyboard_in(keyboard_in),
-        .keyboard_col(keyboard_col),
-        .keyboard_out(keyboard_out),
-        .keyboard_en(keyboard_en));
+    keyboard keyboard(.clk(clk), .rst_n(reset), .key_in_x(keyboard_in),
+        .key_out_y(keyboard_col),
+        .key_value(keyboard_out),
+        .key_flag(keyboard_en));
 
     //控制信息
     // wire [2:0] status_out;//todo 传给led模块
@@ -66,16 +66,16 @@ module wrapper(
     wire [2:0] goods_out;
     // wire [3:0] warning;
     wire [9:0] income;
-    wire [44:0] current_numbers;//一个商品5个位宽，共9个商品,
-    //[4:0]:货道001的第001个商品
-    //[9:5]:货道001的第010个商品
-    //[14:10]:货道001的第100个商品
-    //[44:40]:货道100的第100个商品
+    wire [44:0] current_numbers;//�?个商�?5个位宽，�?9个商�?,
+    //[4:0]:货道001的第001个商�?
+    //[9:5]:货道001的第010个商�?
+    //[14:10]:货道001的第100个商�?
+    //[44:40]:货道100的第100个商�?
     wire [44:0] sold_numbers;
     wire [44:0] max_supplement;
     wire [4:0] waiting_time;
     wire [3:0] select_number;//todo input
-    wire [3:0]select_out;//todo output传给led模块 选择的数量
+    wire [3:0]select_out;//todo output传给led模块 选择的数�?
     wire [5:0] paid;
     wire [5:0] inneedpaid;
     wire [5:0] charge;
@@ -103,7 +103,7 @@ module wrapper(
         .warning5(warning5), .warning6(warning6));//todo
 
 
-    //数码显示管
+    //数码显示�?
     tube_display tube_display(.rst(reset), .clk(clk), .channel(channel_out),
         .goods_in(goods_out), .current_numbers(current_numbers), .waiting_time(waiting_time),
         .max_supplement(max_supplement), .sold_numbers(sold_numbers), .current_mode(status_led),

@@ -68,7 +68,6 @@ module controller(
     parameter price9=15;
     reg [0:0]rst;
     // parameter searchMode=6'b000001;
-
     always @(posedge clk, negedge reset)
         if (~reset && status == 3'b100) current_mode <= resetmode;
         else current_mode <= next_mode;

@@ -1,159 +1,139 @@
-`timescale 1ns/1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company:
-// Engineer:
-//
-// Create Date: 2020/12/12 18:19:51
-// Design Name:
-// Module Name: keyboard
-// Project Name:
-// Target Devices:
-// Tool Versions:
-// Description:
-//
-// Dependencies:
-//
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-//
-//////////////////////////////////////////////////////////////////////////////////
-
-
+`timescale 1ns / 1ps
 module keyboard(
-    input clk,
-    input reset,
-    input [3:0] keyboard_in, //keyboard_row
-    output reg [3:0] keyboard_col, //keyboard_column
-    output reg [3:0] keyboard_out, //keyboard_value
-    output keyboard_en//é˜²æŠ–ä¸Šå‡æ²¿
-);
+							clk,             // ¿ª·¢°åÉÏÊäÈëÊ±ÖÓ: 50Mhz
+							rst_n,           // ¿ª·¢°åÉÏ¸´Î»°´¼ü
+							key_out_y,       // ÊäÈë¾ØÕó¼üÅÌµÄÁĞĞÅºÅ(KEY0~KEY3)
+							key_in_x,        // Êä³ö¾ØÕó¼üÅÌµÄĞĞĞÅºÅ(KEY4~KEY7)
+							key_value,        
+							key_flag
+						);
 
-    //é˜²æŠ–
-    reg pre_keyboard_en;
-    wire clk_temp;
-    frequency_divider #(.period(5000000)) frequency_divider_keyboard_shake(.clk(clk),.rst(reset),
-        .clkout(clk_temp));
-    edge_cap edge_cap(.clk(clk_temp), .rst_n(reset), .pulse(pre_keyboard_en),
-        .pos_edge(keyboard_en));
+//========================================================
+// PORT declarations
+//========================================================						
+input        		clk; 
+input				rst_n;
+output	reg	[3:0]	key_out_y;
+input		[3:0]	key_in_x;
+output	reg	[3:0]	key_value;
+output	reg			key_flag;
 
-//
-    //frequency divider
-    reg [19:0] cnt;
-    always @(posedge clk, negedge reset)
-        if (~reset) cnt <= 0;
-        else cnt <= cnt+1'b1;
-    wire key_clk = cnt[19];  // (2^20/50M = 21)ms
+//¼Ä´æÆ÷¶¨Òå
+reg [19:0] count;
 
+//==============================================
+// Êä³ö¾ØÕó¼üÅÌµÄĞĞĞÅºÅ£¬20msÉ¨Ãè¾ØÕó¼üÅÌÒ»´Î,²ÉÑùÆµÂÊĞ¡ÓÚ°´¼üÃ«´ÌÆµÂÊ£¬Ïàµ±ÓÚÂË³ıµôÁË¸ßÆµÃ«´ÌĞÅºÅ¡£
+//==============================================
+	always @(posedge clk or negedge rst_n)begin//¼ì²âÊ±ÖÓµÄÉÏÉıÑØºÍ¸´Î»µÄÏÂ½µÑØ
+		if(!rst_n) begin               //¸´Î»ĞÅºÅµÍÓĞĞ§
+			count		<=	20'd0;        //¼ÆÊıÆ÷Çå0
+			key_out_y	<=	4'b1111;  
+			end		
+		else begin
+			if(count == 20'd0)begin          //0msÉ¨ÃèµÚÒ»ÁĞ¾ØÕó¼üÅÌ          
+				key_out_y	<= 4'b1110;      //¿ªÊ¼É¨ÃèµÚÒ»ÁĞ¾ØÕó¼üÅÌ,µÚÒ»ÁĞÊä³ö0
+				count		<= count + 20'b1; //¼ÆÊıÆ÷¼Ó1
+				end
+			else if(count == 20'd249_999)begin //5msÉ¨ÃèµÚ¶şÁĞ¾ØÕó¼üÅÌ,5ms¼ÆÊı(50M/200-1=249_999)           
+				key_out_y	<= 4'b1101;   //¿ªÊ¼É¨ÃèµÚ¶şÁĞ¾ØÕó¼üÅÌ,µÚ¶şÁĞÊä³ö0
+				count		<= count + 20'b1; //¼ÆÊıÆ÷¼Ó1
+				end				
+			else if(count ==20'd499_999)begin   //10msÉ¨ÃèµÚÈıÁĞ¾ØÕó¼üÅÌ,10ms¼ÆÊı(50M/100-1=499_999)           
+				key_out_y	<= 4'b1011;   //É¨ÃèµÚÈıÁĞ¾ØÕó¼üÅÌ,µÚÈıÁĞÊä³ö0
+				count		<= count + 20'b1; //¼ÆÊıÆ÷¼Ó1
+				end	
+			else if(count ==20'd749_999)begin   //15msÉ¨ÃèµÚËÄÁĞ¾ØÕó¼üÅÌ,15ms¼ÆÊı(50M/67.7-1=749_999)           
+				key_out_y	<= 4'b0111;   //É¨ÃèµÚËÄÁĞ¾ØÕó¼üÅÌ,µÚËÄÁĞÊä³ö0
+				count		<= count + 20'b1; //¼ÆÊıÆ÷¼Ó1
+				end				
+			else if(count ==20'd999_999)begin  //20ms¼ÆÊı(50M/50-1=999_999)		   
+				count <= 0;             //¼ÆÊıÆ÷Îª0
+				end	
+			else
+				count <= count + 20'b1;    //¼ÆÊıÆ÷¼Ó1
+			
+     end
+end
+//====================================================
+// ²ÉÑùĞĞµÄ°´¼üĞÅºÅ
+//====================================================
+reg [3:0] key_h1_scan;    //µÚÒ»ĞĞ°´¼üÉ¨ÃèÖµKEY
+reg [3:0] key_h1_scan_r;  //µÚÒ»ĞĞ°´¼üÉ¨ÃèÖµ¼Ä´æÆ÷KEY
+reg [3:0] key_h2_scan;    //µÚ¶şĞĞ°´¼üÉ¨ÃèÖµKEY
+reg [3:0] key_h2_scan_r;  //µÚ¶şĞĞ°´¼üÉ¨ÃèÖµ¼Ä´æÆ÷KEY
+reg [3:0] key_h3_scan;    //µÚÈıĞĞ°´¼üÉ¨ÃèÖµKEY
+reg [3:0] key_h3_scan_r;  //µÚÈıĞĞ°´¼üÉ¨ÃèÖµ¼Ä´æÆ÷KEY
+reg [3:0] key_h4_scan;    //µÚËÄĞĞ°´¼üÉ¨ÃèÖµKEY
+reg [3:0] key_h4_scan_r;  //µÚËÄĞĞ°´¼üÉ¨ÃèÖµ¼Ä´æÆ÷KEY
+always @(posedge clk)
+	begin
+		if(!rst_n) begin               //¸´Î»ĞÅºÅµÍÓĞĞ§
+			key_h1_scan <= 4'b1111;     
+			key_h2_scan <= 4'b1111;          
+			key_h3_scan <= 4'b1111;          
+			key_h4_scan <= 4'b1111;        
+		end		
+		else begin
+		  if(count == 20'd124_999)           //2.5msÉ¨ÃèµÚÒ»ĞĞ¾ØÕó¼üÅÌÖµ
+			   key_h1_scan<=key_in_x;         //É¨ÃèµÚÒ»ĞĞµÄ¾ØÕó¼üÅÌÖµ
+		  else if(count == 20'd374_999)      //7.5msÉ¨ÃèµÚ¶şĞĞ¾ØÕó¼üÅÌÖµ
+			   key_h2_scan<=key_in_x;         //É¨ÃèµÚ¶şĞĞµÄ¾ØÕó¼üÅÌÖµ
+		  else if(count == 20'd624_999)      //12.5msÉ¨ÃèµÚÈıĞĞ¾ØÕó¼üÅÌÖµ
+			   key_h3_scan<=key_in_x;         //É¨ÃèµÚÈıĞĞµÄ¾ØÕó¼üÅÌÖµ
+		  else if(count == 20'd874_999)      //17.5msÉ¨ÃèµÚËÄĞĞ¾ØÕó¼üÅÌÖµ
+			   key_h4_scan<=key_in_x;         //É¨ÃèµÚËÄĞĞµÄ¾ØÕó¼üÅÌÖµ 
+		end
+end
 
-    //FSA one hot code
-    parameter NO_KEY_PRESSED=6'b000_001;  // æ²¡æœ‰æŒ‰é”®æŒ‰ä¸‹
-    parameter SCAN_COL0=6'b000_010;  // æ‰«æç¬¬0åˆ—
-    parameter SCAN_COL1=6'b000_100;  // æ‰«æç¬¬1åˆ—
-    parameter SCAN_COL2=6'b001_000;  // æ‰«æç¬¬2åˆ—
-    parameter SCAN_COL3=6'b010_000;  // æ‰«æç¬¬3åˆ—
-    parameter KEY_PRESSED=6'b100_000;  // æœ‰æŒ‰é”®æŒ‰ä¸‹
+//====================================================
+// °´¼üĞÅºÅËø´æÒ»¸öÊ±ÖÓ½ÚÅÄ
+//====================================================
+always @(posedge clk)
+   begin
+		 key_h1_scan_r <= key_h1_scan;   	
+		 key_h2_scan_r <= key_h2_scan; 
+		 key_h3_scan_r <= key_h3_scan; 
+		 key_h4_scan_r <= key_h4_scan;  
+	end 
+   
+wire [3:0] flag_h1_key = key_h1_scan_r[3:0] & (~key_h1_scan[3:0]);  //µ±¼ì²âµ½°´¼üÓĞÏÂ½µÑØ±ä»¯Ê±£¬´ú±í¸Ã°´¼ü±»°´ÏÂ£¬°´¼üÓĞĞ§ 
+wire [3:0] flag_h2_key = key_h2_scan_r[3:0] & (~key_h2_scan[3:0]);  //µ±¼ì²âµ½°´¼üÓĞÏÂ½µÑØ±ä»¯Ê±£¬´ú±í¸Ã°´¼ü±»°´ÏÂ£¬°´¼üÓĞĞ§ 
+wire [3:0] flag_h3_key = key_h3_scan_r[3:0] & (~key_h3_scan[3:0]);  //µ±¼ì²âµ½°´¼üÓĞÏÂ½µÑØ±ä»¯Ê±£¬´ú±í¸Ã°´¼ü±»°´ÏÂ£¬°´¼üÓĞĞ§ 
+wire [3:0] flag_h4_key = key_h4_scan_r[3:0] & (~key_h4_scan[3:0]);  //µ±¼ì²âµ½°´¼üÓĞÏÂ½µÑØ±ä»¯Ê±£¬´ú±í¸Ã°´¼ü±»°´ÏÂ£¬°´¼üÓĞĞ§ 
 
-    reg [5:0] current_state, next_state; //ç°æ€ã€æ¬¡æ€
+//=====================================================
+// LEDµÆ¿ØÖÆ,°´¼ü°´ÏÂÊ±,Ïà¹ØµÄLEDÊä³ö·­×ª
+//=====================================================
+reg [15:0] temp_led;
+always @ (posedge clk or negedge rst_n)      //¼ì²âÊ±ÖÓµÄÉÏÉıÑØºÍ¸´Î»µÄÏÂ½µÑØ
+begin
+    if (!rst_n)begin                 //¸´Î»ĞÅºÅµÍÓĞĞ§
+         key_value <= 4'd0;     //LEDµÆ¿ØÖÆĞÅºÅÊä³öÎªµÍ, LEDµÆÈ«Ãğ
+		 key_flag  <= 1'b0;
+		 end
+    else
+         begin            
+                  if ( flag_h1_key[0] ) begin key_value <= 4'h1  ; key_flag <= 1'b1; end
+             else if ( flag_h1_key[1] ) begin key_value <= 4'h4  ; key_flag <= 1'b1; end
+             else if ( flag_h1_key[2] ) begin key_value <= 4'h7  ; key_flag <= 1'b1; end
+             else if ( flag_h1_key[3] ) begin key_value <= 4'hE  ; key_flag <= 1'b1; end
 
-    always @(posedge key_clk, negedge reset)
-        if (~reset) current_state <= NO_KEY_PRESSED;
-        else current_state <= next_state;
-    //æ ¹æ®æ¡ä»¶è½¬ç§»çŠ¶æ€
-    always @*
-        case (current_state)
-            NO_KEY_PRESSED:                    // æ²¡æœ‰æŒ‰é”®æŒ‰ä¸‹
-                if (keyboard_in != 4'hF)
-                    next_state = SCAN_COL0;
-                else
-                    next_state = NO_KEY_PRESSED;
-            SCAN_COL0:                         // æ‰«æç¬¬0åˆ—
-                if (keyboard_in != 4'hF)
-                    next_state = KEY_PRESSED;
-                else
-                    next_state = SCAN_COL1;
-            SCAN_COL1:                         // æ‰«æç¬¬1åˆ—
-                if (keyboard_in != 4'hF)
-                    next_state = KEY_PRESSED;
-                else
-                    next_state = SCAN_COL2;
-            SCAN_COL2:                         // æ‰«æç¬¬2åˆ—
-                if (keyboard_in != 4'hF)
-                    next_state = KEY_PRESSED;
-                else
-                    next_state = SCAN_COL3;
-            SCAN_COL3:                         // æ‰«æç¬¬3åˆ—
-                if (keyboard_in != 4'hF)
-                    next_state = KEY_PRESSED;
-                else
-                    next_state = NO_KEY_PRESSED;
-            KEY_PRESSED:                       // æœ‰æŒ‰é”®æŒ‰ä¸‹
-                if (keyboard_in != 4'hF)
-                    next_state = KEY_PRESSED;
-                else
-                    next_state = NO_KEY_PRESSED;
-        endcase
+             else if ( flag_h2_key[0] ) begin key_value <= 4'h2  ; key_flag <= 1'b1; end
+             else if ( flag_h2_key[1] ) begin key_value <= 4'h5  ; key_flag <= 1'b1; end
+             else if ( flag_h2_key[2] ) begin key_value <= 4'h8  ; key_flag <= 1'b1; end
+             else if ( flag_h2_key[3] ) begin key_value <= 4'h0  ; key_flag <= 1'b1; end
 
-    reg key_pressed_flag;             // é”®ç›˜æŒ‰ä¸‹æ ‡å¿—
-    reg [3:0] col_val, row_val;             // åˆ—å€¼ã€è¡Œå€¼
+             else if ( flag_h3_key[0] ) begin key_value <= 4'h3  ; key_flag <= 1'b1; end
+             else if ( flag_h3_key[1] ) begin key_value <= 4'h6  ; key_flag <= 1'b1; end
+             else if ( flag_h3_key[2] ) begin key_value <= 4'h9  ; key_flag <= 1'b1; end
+             else if ( flag_h3_key[3] ) begin key_value <= 4'hF  ; key_flag <= 1'b1; end
+			 
+             else if ( flag_h4_key[0] ) begin key_value <= 4'hA  ; key_flag <= 1'b1; end
+             else if ( flag_h4_key[1] ) begin key_value <= 4'hB  ; key_flag <= 1'b1; end
+             else if ( flag_h4_key[2] ) begin key_value <= 4'hC  ; key_flag <= 1'b1; end
+             else if ( flag_h4_key[3] ) begin key_value <= 4'hD  ; key_flag <= 1'b1; end
+			 else begin key_value <= 4'd0 ; key_flag <= 1'b0;end
+         end
+end
 
-    // æ ¹æ®æ¬¡æ€ï¼Œç»™ç›¸åº”å¯„å­˜å™¨èµ‹å€¼
-    always @(posedge key_clk, negedge reset)
-        if (!reset)
-            begin
-                keyboard_col <= 4'h0;
-                key_pressed_flag <= 0;
-            end
-        else
-            case (next_state)
-                NO_KEY_PRESSED:                  // æ²¡æœ‰æŒ‰é”®æŒ‰ä¸‹
-                    begin
-                        pre_keyboard_en <= 0;
-                        keyboard_col <= 4'h0;
-                        key_pressed_flag <= 0;       // æ¸…é”®ç›˜æŒ‰ä¸‹æ ‡å¿—
-                    end
-                SCAN_COL0:                       // æ‰«æç¬¬0åˆ—
-                    keyboard_col <= 4'b1110;
-                SCAN_COL1:                       // æ‰«æç¬¬1åˆ—
-                    keyboard_col <= 4'b1101;
-                SCAN_COL2:                       // æ‰«æç¬¬2åˆ—
-                    keyboard_col <= 4'b1011;
-                SCAN_COL3:                       // æ‰«æç¬¬3åˆ—
-                    keyboard_col <= 4'b0111;
-                KEY_PRESSED:                     // æœ‰æŒ‰é”®æŒ‰ä¸‹
-                    begin
-                        pre_keyboard_en <= 1;
-                        col_val <= keyboard_col;        // é”å­˜åˆ—å€¼
-                        row_val <= keyboard_in;        // é”å­˜è¡Œå€¼
-                        key_pressed_flag <= 1;          // ç½®é”®ç›˜æŒ‰ä¸‹æ ‡å¿—
-                    end
-            endcase
-
-    //æ‰«æè¡Œåˆ—å€¼
-    always @(posedge key_clk, negedge reset)
-        if (!reset)
-            keyboard_out <= 4'h0;
-        else
-            if (key_pressed_flag)
-            case ({col_val, row_val})
-                8'b1110_1110: keyboard_out <= 4'hD;//D
-                8'b1110_1101: keyboard_out <= 4'hC;//C
-                8'b1110_1011: keyboard_out <= 4'hB;//B
-                8'b1110_0111: keyboard_out <= 4'hA;//A
-
-                8'b1101_1110: keyboard_out <= 4'hF;//#
-                8'b1101_1101: keyboard_out <= 4'h9;//9
-                8'b1101_1011: keyboard_out <= 4'h6;//6
-                8'b1101_0111: keyboard_out <= 4'h3;//3
-
-                8'b1011_1110: keyboard_out <= 4'h0;//0
-                8'b1011_1101: keyboard_out <= 4'h8;//8
-                8'b1011_1011: keyboard_out <= 4'h5;//5
-                8'b1011_0111: keyboard_out <= 4'h2;//2
-
-                8'b0111_1110: keyboard_out <= 4'hE;//*
-                8'b0111_1101: keyboard_out <= 4'h7;//7
-                8'b0111_1011: keyboard_out <= 4'h4;//4
-                8'b0111_0111: keyboard_out <= 4'h1;//1
-            endcase
-endmodule : keyboard
+endmodule
