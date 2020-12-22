@@ -72,10 +72,14 @@ module controller(
 
     //
     wire clk_slow;
-    frequency_divider#(20000000) frequency_divider_slow(.clk(clk),.rst(reset),.clkout(clk_slow));
+    reg [7:0] temp_mode;
+    frequency_divider#(20000000) frequency_divider_slow(.clk(clk), .rst(reset), .clkout(clk_slow));
     always @(posedge clk_slow, negedge reset)
         if (~reset && status == 3'b100) current_mode <= resetmode;
-        else current_mode <= next_mode;
+        else begin
+            temp_mode <= next_mode;
+            current_mode <= temp_mode;
+        end
 
     //30秒计时器
     reg clockstart;
