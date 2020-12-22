@@ -232,7 +232,7 @@ module tube_display(
             goods <= goods_in;
 
 
-    always @(*)
+    always @(tube_cnt)
         case (current_mode)
             browsemode: //��ʾ�����š���Ʒ���ơ���Ʒʣ��������Ʒ���
                 case (tube_cnt)
