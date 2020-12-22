@@ -69,12 +69,7 @@ module controller(
     reg [0:0] rst;
     // parameter searchMode=6'b000001;
 
-
-    //
-    wire clk_slow;
-    reg [7:0] temp_mode;
-    frequency_divider#(20000000) frequency_divider_slow(.clk(clk), .rst(reset), .clkout(clk_slow));
-    always @(posedge clk_slow, negedge reset)
+    always @(posedge clk, negedge reset)
         if (~reset && status == 3'b100) current_mode <= resetmode;
         else begin
             temp_mode <= next_mode;
@@ -213,12 +208,15 @@ module controller(
 
         endcase
 
-    always @(posedge clk_slow, negedge reset) begin //todo
+    always @(posedge clk, negedge reset) begin //todo
         if (~reset && status == 3'b100)
             begin
                 charge <= 5'b0;
                 income <= 10'b0;
                 sold_numbers <= 45'b0;
+                current_numbers <= 45'b0;
+                warning1 <= 1'b0;
+                warning2<=1'b0;
             end
         else
             case (next_mode)
@@ -289,63 +287,19 @@ module controller(
                                 paidinneed <= select_number*price9;
                             end
                     endcase
-
+purchasemode:
+if (keyboard_en==1'b1)
+    paid <= paid+keyboard;
                 failpurchase:
+               begin
                     charge <= paid;
-                completepurchase:
+                        paid<=5'b0;
+                   end
+                rootadd:
+                    if(keyboard_en==1'b1)
                     begin
-                        charge <= paid-paidinneed;
-                        if (current_mode == purchasemode)
-                            income <= income+paidinneed; //todo 必须要改
-                        case ({channel, goods}) //todo
-                            6'b001001:
-
-                                if (current_mode == purchasemode)
-                                    sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
-
-                            6'b001010:
-                                if (current_mode == purchasemode)
-                                    sold_numbers[9:5] <= sold_numbers[9:5]+select_number;
-                            6'b001100:
-                                if (current_mode == purchasemode)
-                                    sold_numbers[14:10] <= sold_numbers[14:10]+select_number;
-                            6'b010001:
-                                if (current_mode == purchasemode)
-                                    sold_numbers[19:15] <= sold_numbers[19:15]+select_number;
-                            6'b010010:
-                                if (current_mode == purchasemode)
-                                    sold_numbers[24:20] <= sold_numbers[24:20]+select_number;
-                            6'b010100:
-                                if (current_mode == purchasemode)
-                                    sold_numbers[29:25] <= sold_numbers[29:25]+select_number;
-                            6'b100001:
-                                if (current_mode == purchasemode)
-                                    sold_numbers[34:30] <= sold_numbers[34:30]+select_number;
-                            6'b100010:
-                                if (current_mode == purchasemode)
-                                    sold_numbers[39:35] <= sold_numbers[39:35]+select_number;
-                            6'b100100:
-                                if (current_mode == purchasemode)
-                                    sold_numbers[44:40] <= sold_numbers[44:40]+select_number;
-                        endcase
-                    end
-            endcase
-
-    end
-    //
-    wire clk_okb;
-    wire okbutton_cap;
-    frequency_divider#(500000) frequency_divider_okb(.clk(clk), .rst(reset), .clkout(clk_okb));
-    edge_cap edge_cap_okb(.clk(clk_okb), .rst_n(reset), .pulse(okbutton), .pos_edge(okbutton_cap));
-
-
-    always @(posedge keyboard_en, negedge reset) //todo
-
-        if (keyboard_en == 1'b1)
-            begin
-                if (next_mode == rootadd)
-
                     case ({channel, goods})
+
                         6'b001001:
                             if (warning1 == 1'b0)
                                 begin
@@ -445,22 +399,80 @@ module controller(
                                     warning1 <= 1'b0;
                                     current_numbers[44:40] <= current_numbers[44:40]+keyboard;
                                 end
-                    endcase
 
-                else if (next_mode == purchasemode)
+                                endcase
+                        end
 
-                    paid <= paid+keyboard;
-
-            end
-        else if (~reset && status == 3'b100)
-            begin
-                if (next_mode == rootadd)
+                completepurchase:
                     begin
-                        current_numbers <= 45'b0;
-                        warning1 <= 1'b0;
+                        charge <= paid-paidinneed;
+                        paid<=0;
+                        if (current_mode == purchasemode)
+                            income <= income+paidinneed; //todo 必须要改
+                        case ({channel, goods}) //todo
+                            6'b001001:
+
+                                if (current_mode == purchasemode)
+                                begin
+                                    sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
+                            current_numbers[4:0]<=current_numbers[4:0]-select_number;
+                                    end
+                            6'b001010:
+                            begin
+                                if (current_mode == purchasemode)
+                                    sold_numbers[9:5] <= sold_numbers[9:5]+select_number;
+                            current_numbers[9:5]<=current_numbers[9:5]-select_number;
+                                end
+                            6'b001100:
+                            begin
+                                if (current_mode == purchasemode)
+                                    sold_numbers[14:10] <= sold_numbers[14:10]+select_number;
+                                current_numbers[14:10]<=current_numbers[14:10]-select_number;
+                                end
+                            6'b010001:
+                            begin
+                                if (current_mode == purchasemode)
+                                    sold_numbers[19:15] <= sold_numbers[19:15]+select_number;
+                            current_numbers[19:15]<=current_numbers[19:15]-select_number;
+                                end
+                            6'b010010:
+                            begin
+                                if (current_mode == purchasemode)
+                                    sold_numbers[24:20] <= sold_numbers[24:20]+select_number;
+                                current_numbers[24:20]<=current_numbers[24:20]-select_number;
+                                end
+                            6'b010100:
+                            begin
+                                if (current_mode == purchasemode)
+                                    sold_numbers[29:25] <= sold_numbers[29:25]+select_number;
+                                current_numbers[29:25]<=current_numbers[29:25]-select_number;
+                                end
+                            6'b100001:
+                            begin
+                                if (current_mode == purchasemode)
+                                    sold_numbers[34:30] <= sold_numbers[34:30]+select_number;
+                            current_numbers[34:30]<=current_numbers-select_number;
+                                end
+                            6'b100010:
+                            begin
+                                if (current_mode == purchasemode)
+                                    sold_numbers[39:35] <= sold_numbers[39:35]+select_number;
+                                current_numbers[39:35]<=current_numbers[39:35]-select_number;
+                                end
+                            6'b100100:
+                            begin
+                                if (current_mode == purchasemode)
+                                    sold_numbers[44:40] <= sold_numbers[44:40]+select_number;
+                                current_numbers[44:40]<=current_numbers[44:40]-select_number;
+                                end
+                        endcase
                     end
-                else if (next_mode == purchasemode) paid <= 6'b0;
-            end
+            endcase
+
+                end
+
+
+
 
 
 endmodule : controller
