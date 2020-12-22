@@ -26,6 +26,7 @@ module wrapper(
     output [7:0] DIG_tube,
     output [7:0] Y_tube,
     output [7:0] status_LED,
+
     input [3:0] select_numbers,
     output [3:0]select_outs
 );
@@ -54,7 +55,7 @@ module wrapper(
     wire keyboard_en;
     wire [3:0] keyboard_col;
     wire [3:0] keyboard_out;
-    keyboard keyboard(.clk(clk),  .rst_n(reset), .key_in_x(keyboard_in),
+    keyboard keyboard(.clk(clk), .rst_n(reset), .key_in_x(keyboard_in),
         .key_out_y(keyboard_col),
         .key_value(keyboard_out),
         .key_flag(keyboard_en));
@@ -105,6 +106,7 @@ module wrapper(
     //数码显示管
     tube_display tube_display(.rst(reset), .clk(clk), .channel(channel_out),
         .goods_in(goods_out), .current_numbers(current_numbers), .waiting_time(waiting_time),
+        .inneedpaid(inneedpaid),
         .max_supplement(max_supplement), .sold_numbers(sold_numbers), .current_mode(status_led),
         .income(income), .charge(charge), .paid(paid), .DIG(DIG_tube), .Y(Y_tube));
 endmodule : wrapper
