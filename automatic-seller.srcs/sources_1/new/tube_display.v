@@ -33,6 +33,7 @@ module tube_display(
     input [7:0] current_mode,
     input [9:0] income,
     input [5:0] charge,
+    input [5:0] inneedpaid,
     input [5:0] paid,//2^6 = 128
     output [7:0] DIG,//bit selection
     output [7:0] Y //seg selection
@@ -315,19 +316,6 @@ module tube_display(
                             endcase
                         end
                     4:
-                        case (paid/100)
-                            0: Y_r = zero;//0
-                            1: Y_r = one;//1
-                            2: Y_r = two;//2
-                            3: Y_r = three;//3
-                            4: Y_r = four;//4
-                            5: Y_r = five;//5
-                            6: Y_r = six;//6
-                            7: Y_r = seven;//7
-                            8: Y_r = eight;//8
-                            9: Y_r = nine;//9
-                        endcase
-                    3:
                         case ((paid-(paid/100)*100)/10)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
@@ -340,7 +328,7 @@ module tube_display(
                             8: Y_r = eight;//8
                             9: Y_r = nine;//9
                         endcase
-                    2:
+                    3:
                         case (paid%100)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
@@ -353,8 +341,8 @@ module tube_display(
                             8: Y_r = eight;//8
                             9: Y_r = nine;//9
                         endcase
-                    0:
-                        case (price)
+                    1:
+                        case (inneedpaid)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
                             2: Y_r = two;//2

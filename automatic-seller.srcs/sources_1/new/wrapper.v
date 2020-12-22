@@ -107,6 +107,7 @@ module wrapper(
     //数码显示管
     tube_display tube_display(.rst(reset), .clk(clk), .channel(channel_out),
         .goods_in(goods_out), .current_numbers(current_numbers), .waiting_time(waiting_time),
+        .inneedpaid(inneedpaid),
         .max_supplement(max_supplement), .sold_numbers(sold_numbers), .current_mode(status_led),
         .income(income), .charge(charge), .paid(paid), .DIG(DIG_tube), .Y(Y_tube));
 endmodule : wrapper
