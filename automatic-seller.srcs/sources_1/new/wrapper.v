@@ -12,7 +12,6 @@ module wrapper(
     input [2:0] channel,
     input [2:0] goods,
     input warning_cancel,
-    input [0:0]okbutton,
     input [1:0] chooseroot,
     output [2:0] channel_led,
     output [2:0] good_led,
@@ -27,7 +26,6 @@ module wrapper(
     output [7:0] DIG_tube,
     output [7:0] Y_tube,
     output [7:0] status_LED,
-
     input [3:0] select_numbers,
     output [3:0]select_outs
 );
@@ -56,10 +54,10 @@ module wrapper(
     wire keyboard_en;
     wire [3:0] keyboard_col;
     wire [3:0] keyboard_out;
-    keyboard keyboard(.clk(clk), .reset(reset), .keyboard_in(keyboard_in),
-        .keyboard_col(keyboard_col),
-        .keyboard_out(keyboard_out),
-        .keyboard_en(keyboard_en));
+    keyboard keyboard(.clk(clk),  .rst_n(reset), .key_in_x(keyboard_in),
+        .key_out_y(keyboard_col),
+        .key_value(keyboard_out),
+        .key_flag(keyboard_en));
 
     //控制信息
     // wire [2:0] status_out;//todo 传给led模块
@@ -96,7 +94,7 @@ module wrapper(
         .keyboard(keyboard_out),
         .keyboard_en(keyboard_en),
         .channel(channel), .channel_out(channel_out), .goods(goods), .goods_out(goods_out),
-        .warning_cancel(warning_cancel),.okbutton(okbutton), .income(income),
+        .warning_cancel(warning_cancel), .income(income),
         .current_numbers(current_numbers), .sold_numbers(sold_numbers), .max_supplement(max_supplement),
         .waiting_time(waiting_time), .select_number(select_number), .select_out(select_out),
         .paid(paid), .paidinneed(inneedpaid), .charge(charge), .chooseroot(chooseroot),
