@@ -288,6 +288,7 @@ module tube_display(
                         15: Y_r = F;//F
                         default: Y_r = none;
                     endcase
+                    default: Y_r = none;
                 endcase
             purchasemode: // [4:0]waiting_time、已付金额--[5:0]paid、商品单价--[3:0] price
                 case (tube_cnt)
@@ -342,7 +343,7 @@ module tube_display(
                             9: Y_r = nine;//9
                         endcase
                     1:
-                        case (inneedpaid)
+                        case (inneedpaid/10)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
                             2: Y_r = two;//2
@@ -361,6 +362,27 @@ module tube_display(
                             15: Y_r = F;//F
                             default: Y_r = none;
                         endcase
+                    0:
+                        case (inneedpaid%10)
+                            0: Y_r = zero;//0
+                            1: Y_r = one;//1
+                            2: Y_r = two;//2
+                            3: Y_r = three;//3
+                            //4: Y_r = four;//4
+                            5: Y_r = five;//5
+                            6: Y_r = six;//6
+                            7: Y_r = seven;//7
+                            8: Y_r = eight;//8
+                            9: Y_r = nine;//9
+                            10: Y_r = A;//A
+                            11: Y_r = b;//b
+                            12: Y_r = C;//c
+                            13: Y_r = d;//d
+                            14: Y_r = E;//E
+                            15: Y_r = F;//F
+                            default: Y_r = none;
+                        endcase
+                    default: Y_r = none;
                 endcase
             failpurchase:
                 case (tube_cnt)
@@ -403,6 +425,7 @@ module tube_display(
                             8: Y_r = eight;//8
                             9: Y_r = nine;//9
                         endcase
+                    default: Y_r = none;
                 endcase
             completepurchase:
                 case (tube_cnt)
@@ -446,6 +469,7 @@ module tube_display(
                             8: Y_r = eight;//8
                             9: Y_r = nine;//9
                         endcase
+                    default: Y_r = none;
                 endcase
             rootadd: //显示最大可补数量
                 case (tube_cnt)
@@ -479,6 +503,7 @@ module tube_display(
                         8: Y_r = eight;//8
                         default: Y_r = none;
                     endcase
+                    default: Y_r = none;
                 endcase
             rootbrowse: //查看售出数量
                 case (tube_cnt)
@@ -516,6 +541,7 @@ module tube_display(
                         8: Y_r = eight;//8
                         default: Y_r = none;
                     endcase
+                    default: Y_r = none;
                 endcase
             allinall:
                 case (tube_cnt)
@@ -559,7 +585,9 @@ module tube_display(
                         8: Y_r = eight;//8
                         9: Y_r = nine;//9
                     endcase
+                    default: Y_r = none;
                 endcase
+            default: Y_r = none;
         endcase                                           //sad s
 
 endmodule: tube_display
