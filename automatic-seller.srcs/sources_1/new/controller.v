@@ -120,16 +120,14 @@ module controller(
                 begin
 
                     clockstart = 1'b1;
-                    case (status)
-                        3'b001: next_mode = browsemode;//010
-                        3'b100: next_mode = managermode;
-                        default: next_mode = current_mode;
-                    endcase
                     if (waiting_time < 30 && paid < paidinneed)
                         next_mode = current_mode;
                     else if (waiting_time >= 30)
                         next_mode = failpurchase;
-                    else next_mode = completepurchase;
+                    else if(status==3'b001)  next_mode = browsemode;
+                    else if(status==3'b100)next_mode=managermode;
+                    else if(keyboard==14&&paid >= paidinneed&&keyboard_en)next_mode = completepurchase;
+else next_mode = current_mode;
                 end
             failpurchase:
                 begin
@@ -217,6 +215,7 @@ module controller(
         if (~reset && status == 3'b100)
             begin
                 charge <= 5'b0;
+                paid<=5'b0;
                 income <= 10'b0;
                 sold_numbers <= 45'b0;
                 current_numbers <= 45'b0;
@@ -234,7 +233,7 @@ module controller(
 
                 browsemode:
 
-
+begin
                     case ({channel, goods})
 
                         6'b001001:
@@ -291,16 +290,93 @@ module controller(
                                 else warning2 <= 1'b0;
                                 paidinneed <= select_number*price9;
                             end
+
+
+
                     endcase
+    paid<=5'b0;
+
+end
 purchasemode:
 if (keyboard_en==1'b1)
+begin
+    if(keyboard!=14)
     paid <= paid+keyboard;
+    else
+    begin
+        if (current_mode == purchasemode)
+    income <= income+paidinneed;
+    charge <= paid-paidinneed;
+
+
+    case ({channel, goods}) //todo
+        6'b001001:
+
+            if (current_mode == purchasemode)
+                begin
+                    sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
+                    current_numbers[4:0]<=current_numbers[4:0]-select_number;
+                end
+        6'b001010:
+            begin
+                if (current_mode == purchasemode)
+                    sold_numbers[9:5] <= sold_numbers[9:5]+select_number;
+                current_numbers[9:5]<=current_numbers[9:5]-select_number;
+            end
+        6'b001100:
+            begin
+                if (current_mode == purchasemode)
+                    sold_numbers[14:10] <= sold_numbers[14:10]+select_number;
+                current_numbers[14:10]<=current_numbers[14:10]-select_number;
+            end
+        6'b010001:
+            begin
+                if (current_mode == purchasemode)
+                    sold_numbers[19:15] <= sold_numbers[19:15]+select_number;
+                current_numbers[19:15]<=current_numbers[19:15]-select_number;
+            end
+        6'b010010:
+            begin
+                if (current_mode == purchasemode)
+                    sold_numbers[24:20] <= sold_numbers[24:20]+select_number;
+                current_numbers[24:20]<=current_numbers[24:20]-select_number;
+            end
+        6'b010100:
+            begin
+                if (current_mode == purchasemode)
+                    sold_numbers[29:25] <= sold_numbers[29:25]+select_number;
+                current_numbers[29:25]<=current_numbers[29:25]-select_number;
+            end
+        6'b100001:
+            begin
+                if (current_mode == purchasemode)
+                    sold_numbers[34:30] <= sold_numbers[34:30]+select_number;
+                current_numbers[34:30]<=current_numbers-select_number;
+            end
+        6'b100010:
+            begin
+                if (current_mode == purchasemode)
+                    sold_numbers[39:35] <= sold_numbers[39:35]+select_number;
+                current_numbers[39:35]<=current_numbers[39:35]-select_number;
+            end
+        6'b100100:
+            begin
+                if (current_mode == purchasemode)
+                    sold_numbers[44:40] <= sold_numbers[44:40]+select_number;
+                current_numbers[44:40]<=current_numbers[44:40]-select_number;
+            end
+    endcase
+    end
+
+
+    end
                 failpurchase:
                begin
                     charge <= paid;
-                        paid<=5'b0;
+
                    end
                 rootadd:
+
                     if(keyboard_en==1'b1)
                     begin
                     case ({channel, goods})
@@ -409,69 +485,77 @@ if (keyboard_en==1'b1)
                         end
 
                 completepurchase:
-                    begin
-                        charge <= paid-paidinneed;
-                        paid<=0;
-                        if (current_mode == purchasemode)
-                            income <= income+paidinneed; //todo 必须要改
-                        case ({channel, goods}) //todo
-                            6'b001001:
+                    if (keyboard_en==1'b1)
+                        begin
+                            if(keyboard==14)
 
-                                if (current_mode == purchasemode)
                                 begin
-                                    sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
-                            current_numbers[4:0]<=current_numbers[4:0]-select_number;
-                                    end
-                            6'b001010:
-                            begin
-                                if (current_mode == purchasemode)
-                                    sold_numbers[9:5] <= sold_numbers[9:5]+select_number;
-                            current_numbers[9:5]<=current_numbers[9:5]-select_number;
+                                    if (current_mode == purchasemode)
+                                    income <= income+paidinneed;
+                                    charge <= paid-paidinneed;
+
+
+                                    case ({channel, goods}) //todo
+                                        6'b001001:
+
+                                            if (current_mode == purchasemode)
+                                                begin
+                                                    sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
+                                                    current_numbers[4:0]<=current_numbers[4:0]-select_number;
+                                                end
+                                        6'b001010:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[9:5] <= sold_numbers[9:5]+select_number;
+                                                current_numbers[9:5]<=current_numbers[9:5]-select_number;
+                                            end
+                                        6'b001100:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[14:10] <= sold_numbers[14:10]+select_number;
+                                                current_numbers[14:10]<=current_numbers[14:10]-select_number;
+                                            end
+                                        6'b010001:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[19:15] <= sold_numbers[19:15]+select_number;
+                                                current_numbers[19:15]<=current_numbers[19:15]-select_number;
+                                            end
+                                        6'b010010:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[24:20] <= sold_numbers[24:20]+select_number;
+                                                current_numbers[24:20]<=current_numbers[24:20]-select_number;
+                                            end
+                                        6'b010100:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[29:25] <= sold_numbers[29:25]+select_number;
+                                                current_numbers[29:25]<=current_numbers[29:25]-select_number;
+                                            end
+                                        6'b100001:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[34:30] <= sold_numbers[34:30]+select_number;
+                                                current_numbers[34:30]<=current_numbers-select_number;
+                                            end
+                                        6'b100010:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[39:35] <= sold_numbers[39:35]+select_number;
+                                                current_numbers[39:35]<=current_numbers[39:35]-select_number;
+                                            end
+                                        6'b100100:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[44:40] <= sold_numbers[44:40]+select_number;
+                                                current_numbers[44:40]<=current_numbers[44:40]-select_number;
+                                            end
+                                    endcase
                                 end
-                            6'b001100:
-                            begin
-                                if (current_mode == purchasemode)
-                                    sold_numbers[14:10] <= sold_numbers[14:10]+select_number;
-                                current_numbers[14:10]<=current_numbers[14:10]-select_number;
-                                end
-                            6'b010001:
-                            begin
-                                if (current_mode == purchasemode)
-                                    sold_numbers[19:15] <= sold_numbers[19:15]+select_number;
-                            current_numbers[19:15]<=current_numbers[19:15]-select_number;
-                                end
-                            6'b010010:
-                            begin
-                                if (current_mode == purchasemode)
-                                    sold_numbers[24:20] <= sold_numbers[24:20]+select_number;
-                                current_numbers[24:20]<=current_numbers[24:20]-select_number;
-                                end
-                            6'b010100:
-                            begin
-                                if (current_mode == purchasemode)
-                                    sold_numbers[29:25] <= sold_numbers[29:25]+select_number;
-                                current_numbers[29:25]<=current_numbers[29:25]-select_number;
-                                end
-                            6'b100001:
-                            begin
-                                if (current_mode == purchasemode)
-                                    sold_numbers[34:30] <= sold_numbers[34:30]+select_number;
-                            current_numbers[34:30]<=current_numbers-select_number;
-                                end
-                            6'b100010:
-                            begin
-                                if (current_mode == purchasemode)
-                                    sold_numbers[39:35] <= sold_numbers[39:35]+select_number;
-                                current_numbers[39:35]<=current_numbers[39:35]-select_number;
-                                end
-                            6'b100100:
-                            begin
-                                if (current_mode == purchasemode)
-                                    sold_numbers[44:40] <= sold_numbers[44:40]+select_number;
-                                current_numbers[44:40]<=current_numbers[44:40]-select_number;
-                                end
-                        endcase
-                    end
+
+
+                        end
             endcase
 
                 end
