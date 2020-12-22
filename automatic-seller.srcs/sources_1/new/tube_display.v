@@ -67,14 +67,14 @@ module tube_display(
         end
 
 
-    parameter resetmode=6'b000000;
-    parameter purchasemode=6'b000001;
-    parameter managermode=6'b000010;
-    parameter browsemode=6'b000100;
-    parameter failpurchase=6'b001000;
-    parameter completepurchase=6'b010000;
-    parameter rootbrowse=6'b100000;
-    parameter rootadd=6'b000011;
+    parameter resetmode=8'b00000000;
+    parameter browsemode=8'b00000001;
+    parameter purchasemode=8'b00000010;
+    parameter completepurchase=8'b00000100;
+    parameter failpurchase=8'b00001000;
+    parameter managermode=8'b00010000;
+    parameter rootbrowse=8'b00100000;
+    parameter rootadd=8'b01000000;
     parameter allinall=8'b10000000;
 
 
@@ -317,7 +317,7 @@ module tube_display(
                             endcase
                         end
                     4:
-                        case ((paid-(paid/100)*100)/10)
+                        case (paid/10)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
                             2: Y_r = two;//2
@@ -330,7 +330,7 @@ module tube_display(
                             9: Y_r = nine;//9
                         endcase
                     3:
-                        case (paid%100)
+                        case (paid%10)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
                             2: Y_r = two;//2
@@ -386,21 +386,22 @@ module tube_display(
                 endcase
             failpurchase:
                 case (tube_cnt)
-                    2:
-                        case (charge/100)
-                            0: Y_r = zero;//0
-                            1: Y_r = one;//1
-                            2: Y_r = two;//2
-                            3: Y_r = three;//3
-                            4: Y_r = four;//4
-                            5: Y_r = five;//5
-                            6: Y_r = six;//6
-                            7: Y_r = seven;//7
-                            8: Y_r = eight;//8
-                            9: Y_r = nine;//9
-                        endcase
+                    7: Y_r = F;
+                    // 2:
+                    //     case (charge/100)
+                    //         0: Y_r = zero;//0
+                    //         1: Y_r = one;//1
+                    //         2: Y_r = two;//2
+                    //         3: Y_r = three;//3
+                    //         4: Y_r = four;//4
+                    //         5: Y_r = five;//5
+                    //         6: Y_r = six;//6
+                    //         7: Y_r = seven;//7
+                    //         8: Y_r = eight;//8
+                    //         9: Y_r = nine;//9
+                    //     endcase
                     1:
-                        case ((charge-(charge/100)*100)/10)
+                        case (charge/10)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
                             2: Y_r = two;//2
@@ -413,7 +414,7 @@ module tube_display(
                             9: Y_r = nine;//9
                         endcase
                     0:
-                        case (charge%100)
+                        case (charge%10)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
                             2: Y_r = two;//2
@@ -430,21 +431,8 @@ module tube_display(
             completepurchase:
                 case (tube_cnt)
                     7: Y_r = A;
-                    2:
-                        case (charge/100)
-                            0: Y_r = zero;//0
-                            1: Y_r = one;//1
-                            2: Y_r = two;//2
-                            3: Y_r = three;//3
-                            4: Y_r = four;//4
-                            5: Y_r = five;//5
-                            6: Y_r = six;//6
-                            7: Y_r = seven;//7
-                            8: Y_r = eight;//8
-                            9: Y_r = nine;//9
-                        endcase
                     1:
-                        case ((charge-(charge/100)*100)/10)
+                        case (charge/10)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
                             2: Y_r = two;//2
@@ -457,7 +445,7 @@ module tube_display(
                             9: Y_r = nine;//9
                         endcase
                     0:
-                        case (charge%100)
+                        case (charge%10)
                             0: Y_r = zero;//0
                             1: Y_r = one;//1
                             2: Y_r = two;//2
@@ -545,11 +533,12 @@ module tube_display(
                 endcase
             allinall:
                 case (tube_cnt)
-                    3: case (income/1)
-                        1: Y_r = one;
-                        default: Y_r = none;
-                    endcase
-                    2: case ((income-(income)/1000)%100)
+                    // 3: case (income)
+                    //     1: Y_r = one;
+                    //     default: Y_r = none;
+                    // endcase
+                    7: Y_r = 7'b1001001;
+                    2: case (income % 100)
                         0: Y_r = zero;//0
                         1: Y_r = one;//1
                         2: Y_r = two;//2
@@ -561,7 +550,7 @@ module tube_display(
                         8: Y_r = eight;//8
                         9: Y_r = nine;//9
                     endcase
-                    1: case ((income-((income-(income)/1000)/100))%10)
+                    1: case (((income-(income%100)*100))/10)
                         0: Y_r = zero;//0
                         1: Y_r = one;//1
                         2: Y_r = two;//2
@@ -573,7 +562,7 @@ module tube_display(
                         8: Y_r = eight;//8
                         9: Y_r = nine;//9
                     endcase
-                    0: case (income-((income-((income-(income)/1000)/100))/10))
+                    0: case (((income-(income%100)*100))%10)
                         0: Y_r = zero;//0
                         1: Y_r = one;//1
                         2: Y_r = two;//2
