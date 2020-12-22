@@ -43,7 +43,7 @@ module tube_display(
     reg [31:0] cnt;
     //reg [2:0] scan_cnt;
     parameter period=200000;//500HZ stable
-    parameter roll_period=2000; // 4s
+    parameter roll_period=200000000; // 4s
     parameter twenkle_period=2500000;//twenkle
 //    parameter period = 250000;//400HZ stable
 //    parameter period = 5000000;//20HZ loop one by one
@@ -192,49 +192,148 @@ module tube_display(
             6'b100_100: sold_num = sold_numbers[44:40];
             default: sold_num = 9;
         endcase
-    reg [31:0] roll_cnt;
-    reg roll_clk;
-    always @(posedge clkout or negedge rst) // frequency division : clkout -> roll_clk
-        begin
-            if (!rst) begin
-                roll_cnt <= 0;
-                roll_clk <= 0;
-            end
-            else begin
-                if (roll_cnt == (roll_period >> 1)-1)
-                    begin
-                        roll_clk <= ~roll_clk;
-                        roll_cnt <= 0;
-                    end
-                else
-                    roll_cnt <= roll_cnt+1;
-            end
-        end
+//    reg [31:0] roll_cnt;
+    wire  roll_clk;
+    frequency_divider#(.period(1000)) roll_clk_out(clkout, rst, roll_clk);
+//    always @(posedge clkout or negedge rst) // frequency division : clkout -> roll_clk
+//        begin
+//            if (!rst) begin
+//                roll_cnt <= 0;
+//                roll_clk <= 0;
+//            end
+//            else begin
+//                if (roll_cnt == (roll_period >> 1)-1)
+//                    begin
+//                        roll_clk <= ~roll_clk;
+//                        roll_cnt <= 0;
+//                    end
+//                else
+//                    roll_cnt <= roll_cnt+1;
+//            end
+//        end
     wire twenkle;
     frequency_divider#(.period(twenkle_period)) twenkler(clk, rst, twenkle);
     always @(posedge roll_clk or negedge rst)
-        if (!rst && current_mode == browsemode && goods_in == 3'b000) begin
+        if (!rst && current_mode == browsemode && goods_in == 3'b000)begin
+                goods <= 3'b001;
+        end
+        else if(rst && current_mode == browsemode && goods_in == 3'b000)begin
             case (goods)
                 3'b001: goods <= 3'b010;
                 3'b010: goods <= 3'b100;
                 3'b100: goods <= 3'b001;
-                default: goods <= 3'b001;
+                3'b000: goods <= 3'b001;
             endcase
-            // goods <= 3'b001;
-            // if (goods == 3'b100)
-            //     goods <= 3'b001;
-            // else if (goods == 3'b010)
-            //     goods <= 3'b100;
-            // else if (goods == 3'b001)
-            //     goods <= 3'b010;
         end
+//        if (!rst && current_mode == browsemode && goods_in == 3'b000) begin
+//            case (goods)
+//                3'b001: goods <= 3'b010;
+//                3'b010: goods <= 3'b100;
+//                3'b100: goods <= 3'b001;
+//                default: goods <= 3'b001;
+//            endcase
+//             goods <= 3'b001;
+//             if (goods == 3'b100)
+//                 goods <= 3'b001;
+//             else if (goods == 3'b010)
+//                 goods <= 3'b100;
+//             else if (goods == 3'b001)
+//                 goods <= 3'b010;
+//        end
         else
             goods <= goods_in;
 
+    reg [3:0] price_roll;
+    always @(*)
+        case ({channel, goods})
+            6'b001_001: price_roll = price1;
+            6'b001_010: price_roll = price2;
+            6'b001_100: price_roll = price3;
+            6'b010_001: price_roll = price4;
+            6'b010_010: price_roll = price5;
+            6'b010_100: price_roll = price6;
+            6'b100_001: price_roll = price7;
+            6'b100_010: price_roll = price8;
+            6'b100_100: price_roll = price9;
+            default: price_roll = 4;
+        endcase
+    reg [4:0] numbers_roll;
+    //ѡ���Ӧ����Ʒʣ����
+    always @(*)
+        case ({channel, goods})
+            6'b001_001: numbers_roll = current_numbers[4:0];
+            6'b001_010: numbers_roll = current_numbers[9:5];
+            6'b001_100: numbers_roll = current_numbers[14:10];
+            6'b010_001: numbers_roll = current_numbers[19:15];
+            6'b010_010: numbers_roll = current_numbers[24:20];
+            6'b010_100: numbers_roll = current_numbers[29:25];
+            6'b100_001: numbers_roll = current_numbers[34:30];
+            6'b100_010: numbers_roll = current_numbers[39:30];
+            6'b100_100: numbers_roll = current_numbers[44:40];
+            default: numbers_roll = 9;
+        endcase
 
     always @(tube_cnt)
         case (current_mode)
             browsemode: //��ʾ�����š���Ʒ���ơ���Ʒʣ��������Ʒ���
+                if (goods_in == 3'b000)begin
+                    case (tube_cnt)
+                        7: case (channel)
+                            3'b001: Y_r = one;//1
+                            3'b010: Y_r = two;//2
+                            3'b100: Y_r = three;//3
+                            default: Y_r = none;
+                        endcase
+                        5: case ({channel, goods})
+                            6'b001001: Y_r = A;//A
+                            6'b001010: Y_r = b;//b
+                            6'b001100: Y_r = C;//c
+                            6'b010001: Y_r = d;//d
+                            6'b010010: Y_r = E;//E
+                            6'b010100: Y_r = F;//F
+                            6'b100001: Y_r = G;//G
+                            6'b100010: Y_r = H;//H
+                            6'b100100: Y_r = J;//J
+                            default: Y_r = none;
+                        endcase
+                        3: case (numbers_roll)
+                            0: begin
+                                if (twenkle == 0) Y_r = zero;//0
+                                else Y_r = none;
+                            end
+                            1: Y_r = one;//1
+                            2: Y_r = two;//2
+                            3: Y_r = three;//3
+                            4: Y_r = four;//4
+                            5: Y_r = five;//5
+                            6: Y_r = six;//6
+                            7: Y_r = seven;//7
+                            8: Y_r = eight;//8
+                            default: Y_r = none;
+                        endcase
+                        1: case (price_roll)
+                            0: Y_r = zero;//0
+                            1: Y_r = one;//1
+                            2: Y_r = two;//2
+                            3: Y_r = three;//3
+                            //4: Y_r = four;//4
+                            5: Y_r = five;//5
+                            6: Y_r = six;//6
+                            7: Y_r = seven;//7
+                            8: Y_r = eight;//8
+                            9: Y_r = nine;//9
+                            10: Y_r = A;//A
+                            11: Y_r = b;//b
+                            12: Y_r = C;//c
+                            13: Y_r = d;//d
+                            14: Y_r = E;//E
+                            15: Y_r = F;//F
+                            default: Y_r = none;
+                        endcase
+                        default: Y_r = none;
+                    endcase
+                end
+                else
                 case (tube_cnt)
                     7: case (channel)
                         3'b001: Y_r = one;//1
@@ -242,7 +341,7 @@ module tube_display(
                         3'b100: Y_r = three;//3
                         default: Y_r = none;
                     endcase
-                    5: case ({channel, goods})
+                    5: case ({channel, goods_in})
                         6'b001001: Y_r = A;//A
                         6'b001010: Y_r = b;//b
                         6'b001100: Y_r = C;//c

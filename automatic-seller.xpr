@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="35" Path="C:/Users/Stone/IdeaProjects/automatic-seller/automatic-seller.xpr">
+<Project Version="7" Minor="35" Path="D:/2020fall/digtalLogic/automatic-seller/automatic-seller.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="610c19b79a1e404395bed21f4be71cc4"/>
