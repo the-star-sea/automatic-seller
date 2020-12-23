@@ -78,7 +78,7 @@ module controller(
     wire clk_1HZ;
     frequency_divider#(.period(100000000)) frequency_divider(.clk(clk), .rst(reset), .clkout(clk_1HZ));
     always @(posedge clk_1HZ) begin
-        if (clockstart == 1'b1) begin
+        if (clockstart ==1'b1) begin
             waiting_time <= waiting_time+1;
         end
         if (clockstart == 1'b0) begin
@@ -118,14 +118,21 @@ module controller(
 
                     clockstart = 1'b1;
                     if (waiting_time < 30 && paid < paidinneed)
+                    begin
                         next_mode = current_mode;
-                    else if (waiting_time >= 30)
+                        warning3=1'b1;
+                        end
+                    else begin
+                        warning3=1'b0;
+                        if (waiting_time >= 30)
                         next_mode = failpurchase;
                     else if(status==3'b001)  next_mode = browsemode;
                     else if(status==3'b100)next_mode=managermode;
-                    else if(keyboard==14&&paid >= paidinneed&&keyboard_en)next_mode = completepurchase;
+                    else if(keyboard==14&&paid >= paidinneed&&keyboard_en) next_mode = completepurchase;
 else next_mode = current_mode;
                 end
+
+                    end
             failpurchase:
                 begin
 
@@ -218,6 +225,7 @@ else next_mode = current_mode;
                 current_numbers <= 45'b0;
                 warning1 <= 1'b0;
                 warning2<=1'b0;
+                warning3<=1'b0;
             end
         else
             case (next_mode)
