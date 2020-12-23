@@ -26,7 +26,6 @@ module tube_display(
     input [2:0] channel,
     input [2:0] goods_in,
     input [44:0] current_numbers,
-    //input [3:0] price,
     input [4:0] waiting_time,
     input [44:0] max_supplement,
     input [44:0] sold_numbers,
@@ -41,14 +40,9 @@ module tube_display(
     reg [2:0] goods;
     reg clkout;
     reg [31:0] cnt;
-    //reg [2:0] scan_cnt;
     parameter period=200000;//500HZ stable
     parameter roll_period=200000000; // 4s
     parameter twenkle_period=2500000;//twenkle
-//    parameter period = 250000;//400HZ stable
-//    parameter period = 5000000;//20HZ loop one by one
-//    parameter period = 2500000;//40HZ twenkle
-//    parameter period = 1000000;//100HZ twenkle
     always @(posedge clk or negedge rst) // frequency division : clk -> clkout
         begin
             if (!rst) begin
@@ -192,25 +186,8 @@ module tube_display(
             6'b100_100: sold_num = sold_numbers[44:40];
             default: sold_num = 9;
         endcase
-//    reg [31:0] roll_cnt;
     wire roll_clk;
     frequency_divider#(.period(1000)) roll_clk_out(clkout, rst, roll_clk);
-//    always @(posedge clkout or negedge rst) // frequency division : clkout -> roll_clk
-//        begin
-//            if (!rst) begin
-//                roll_cnt <= 0;
-//                roll_clk <= 0;
-//            end
-//            else begin
-//                if (roll_cnt == (roll_period >> 1)-1)
-//                    begin
-//                        roll_clk <= ~roll_clk;
-//                        roll_cnt <= 0;
-//                    end
-//                else
-//                    roll_cnt <= roll_cnt+1;
-//            end
-//        end
     wire twenkle;
     frequency_divider#(.period(twenkle_period)) twenkler(clk, rst, twenkle);
     always @(posedge roll_clk or negedge rst)
@@ -225,21 +202,6 @@ module tube_display(
                 3'b000: goods <= 3'b001;
             endcase
         end
-//        if (!rst && current_mode == browsemode && goods_in == 3'b000) begin
-//            case (goods)
-//                3'b001: goods <= 3'b010;
-//                3'b010: goods <= 3'b100;
-//                3'b100: goods <= 3'b001;
-//                default: goods <= 3'b001;
-//            endcase
-//             goods <= 3'b001;
-//             if (goods == 3'b100)
-//                 goods <= 3'b001;
-//             else if (goods == 3'b010)
-//                 goods <= 3'b100;
-//             else if (goods == 3'b001)
-//                 goods <= 3'b010;
-//        end
         else
             goods <= goods_in;
 
@@ -389,7 +351,7 @@ module tube_display(
                         endcase
                         default: Y_r = none;
                     endcase
-            purchasemode: // [4:0]waiting_time、已付金额--[5:0]paid、商品单价--[3:0] price
+            purchasemode:
                 case (tube_cnt)
                     7:
                         begin
@@ -486,19 +448,6 @@ module tube_display(
             failpurchase:
                 case (tube_cnt)
                     7: Y_r = F;
-                    // 2:
-                    //     case (charge/100)
-                    //         0: Y_r = zero;//0
-                    //         1: Y_r = one;//1
-                    //         2: Y_r = two;//2
-                    //         3: Y_r = three;//3
-                    //         4: Y_r = four;//4
-                    //         5: Y_r = five;//5
-                    //         6: Y_r = six;//6
-                    //         7: Y_r = seven;//7
-                    //         8: Y_r = eight;//8
-                    //         9: Y_r = nine;//9
-                    //     endcase
                     1:
                         case (charge/10)
                             0: Y_r = zero;//0
@@ -632,10 +581,6 @@ module tube_display(
                 endcase
             allinall:
                 case (tube_cnt)
-                    // 3: case (income)
-                    //     1: Y_r = one;
-                    //     default: Y_r = none;
-                    // endcase
                     7: Y_r = 7'b1001001;
                     2: case (income/100)
                         0: Y_r = zero;//0
@@ -676,6 +621,6 @@ module tube_display(
                     default: Y_r = none;
                 endcase
             default: Y_r = none;
-        endcase                                           //sad s
+        endcase
 
 endmodule: tube_display

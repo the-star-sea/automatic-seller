@@ -24,10 +24,8 @@ module edge_cap
     (
         input clk, rst_n,
         input pulse,
-
         output pos_edge,
         output neg_edge
-
     );
     reg pulse_r1, pulse_r2, pulse_r3;
 
@@ -47,6 +45,4 @@ module edge_cap
 
     assign pos_edge = (pulse_r2 && ~pulse_r3) ? 1:0;
     assign neg_edge = (~pulse_r2 && pulse_r3) ? 1:0;
-
-
 endmodule

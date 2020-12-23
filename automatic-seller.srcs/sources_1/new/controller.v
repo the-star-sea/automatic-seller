@@ -67,7 +67,6 @@ module controller(
     parameter price8=14;
     parameter price9=15;
     reg [0:0] rst;
-    // parameter searchMode=6'b000001;
 
     always @(posedge clk, negedge reset)
         if (~reset && status == 3'b100) current_mode <= resetmode;
@@ -246,20 +245,12 @@ module controller(
             end
         else
             case (next_mode)
-                // resetmode:
-                //     begin
-                //         charge = 5'b0;
-                //         income = 10'b0;
-                //         sold_numbers = 45'b0;
-                //     end
                 managermode: warning1 <= 0;
                 rootbrowse: warning1 <= 0;
                 allinall: warning1 <= 0;
                 browsemode:
-
                     begin
                         case ({channel, goods})
-
                             6'b001001:
                                 begin
                                     if (select_number > current_numbers[4:0]) warning2 <= 1'b1;
@@ -314,10 +305,8 @@ module controller(
                                     else warning2 <= 1'b0;
                                     paidinneed <= select_number*price9;
                                 end
-
                         endcase
                         paid <= 5'b0;
-
                     end
                 purchasemode:
                     if (keyboard_en == 1'b1)
@@ -329,11 +318,8 @@ module controller(
                                     if (current_mode == purchasemode)
                                         income <= income+paidinneed;
                                     charge <= paid-paidinneed;
-
-
                                     case ({channel, goods}) //todo
                                         6'b001001:
-
                                             if (current_mode == purchasemode)
                                                 begin
                                                     sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
@@ -389,19 +375,15 @@ module controller(
                                             end
                                     endcase
                                 end
-
                         end
                 failpurchase:
                     begin
                         charge <= paid;
-
                     end
                 rootadd:
-
                     if (keyboard_en == 1'b1)
                         begin
                             case ({channel, goods})
-
                                 6'b001001:
                                     if (warning1 == 1'b0)
                                         begin
@@ -501,24 +483,18 @@ module controller(
                                             warning1 <= 1'b0;
                                             current_numbers[44:40] <= current_numbers[44:40]+keyboard;
                                         end
-
                             endcase
                         end
-
                 completepurchase:
                     if (keyboard_en == 1'b1)
                         begin
                             if (keyboard == 15)
-
                                 begin
                                     if (current_mode == purchasemode)
                                         income <= income+paidinneed;
                                     charge <= paid-paidinneed;
-
-
                                     case ({channel, goods}) //todo
                                         6'b001001:
-
                                             if (current_mode == purchasemode)
                                                 begin
                                                     sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
@@ -574,11 +550,7 @@ module controller(
                                             end
                                     endcase
                                 end
-
                         end
             endcase
-
     end
-
-
 endmodule : controller

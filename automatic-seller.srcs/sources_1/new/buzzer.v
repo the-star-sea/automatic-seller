@@ -27,16 +27,10 @@ module buzzer(
     input buzeer_en,
     output wire beep
 );
-//      wire          [5:0]       cnt;
+
     wire [4:0] music;
     wire [31:0] divnum;
 
-//      speed_ctrl speed_ctrl_inst(
-//          .clk                  (clk),
-//          .rst_n                (rst_n),
-//          .cnt                  (cnt)
-//        );
-//      if(buzzer_en == 1'b1)begin
     music_mem music_mem_inst(
         .clk(clk),
         .rst_n(rst_n),
@@ -58,5 +52,4 @@ module buzzer(
         .divnum(divnum),
         .beep(beep)
     );
-//        end
 endmodule

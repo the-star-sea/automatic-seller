@@ -36,10 +36,6 @@ module buzzer_top(
     reg buzeer_en;//让蜂鸣器�?
     reg [5:0] cnt;//调整蜂鸣器音�?
 
-
-    // wire clk_1HZ;
-    // frequency_divider#(.period(100000000)) frequency_divider(.clk(clk), .rst(reset), .clkout(clk_1HZ));
-
     reg [31:0] count;
     reg start;
 
@@ -56,15 +52,6 @@ module buzzer_top(
     always @(posedge clk)
         begin
             if (rst_n == 0) start <= 1'b0;
-            // else
-            //     case (status)
-            //         8'b00000001: start <= 1'b1;
-            //         default:
-            //             begin
-            //                 if (keyboard_en == 1) start <= 1;
-            //                 else if (count == 9999999) start <= 0;
-            //             end
-            //     endcase
             if (status == 8'b00000001) start <= 1'b1;
             else begin
                 if (keyboard_en == 1) begin
@@ -126,7 +113,6 @@ module buzzer_top(
         end
     end
 
-//////////////////////////
     parameter T_250ms=12_500_000;
     reg [25:0] count_;
     wire flag_250ms;

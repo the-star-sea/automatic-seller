@@ -23,9 +23,7 @@
 module cal_divnum(
     input wire clk,
     input wire rst_n,
-
     input wire [4:0] music,
-
     output reg [31:0] divnum
 );
     reg [31:0] freq;

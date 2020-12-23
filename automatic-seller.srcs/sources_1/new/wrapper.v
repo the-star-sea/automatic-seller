@@ -15,7 +15,6 @@ module wrapper(
     input [1:0] chooseroot,
     output [2:0] channel_led,
     output [2:0] good_led,
-    //output select_led,//没绑定
     output [3:0] keyboard_col,
     output [0:0] warning1_led,
     output [0:0] warning2_led,
@@ -29,7 +28,6 @@ module wrapper(
 
     input [3:0] select_numbers,
     output [3:0] select_outs,
-
     output beep //蜂鸣器
 );
 
@@ -53,6 +51,8 @@ module wrapper(
     parameter price7=13;
     parameter price8=14;
     parameter price9=15;
+
+
     //keyboard 处理信息
     wire keyboard_en;
     wire [3:0] keyboard_col;
@@ -63,10 +63,8 @@ module wrapper(
         .key_flag(keyboard_en));
 
     //控制信息
-    // wire [2:0] status_out;//todo 传给led模块
     wire [2:0] channel_out;
     wire [2:0] goods_out;
-    // wire [3:0] warning;
     wire [9:0] income;
     wire [44:0] current_numbers;//一个商品5个位宽，共9个商品,
     //[4:0]:货道001的第001个商品
@@ -76,8 +74,8 @@ module wrapper(
     wire [44:0] sold_numbers;
     wire [44:0] max_supplement;
     wire [4:0] waiting_time;
-    wire [3:0] select_number;//todo input
-    wire [3:0] select_out;//todo output传给led模块 选择的数量
+    wire [3:0] select_number;
+    wire [3:0] select_out;
     wire [5:0] paid;
     wire [5:0] inneedpaid;
     wire [5:0] charge;
@@ -102,7 +100,7 @@ module wrapper(
         .waiting_time(waiting_time), .select_number(select_number), .select_out(select_out),
         .paid(paid), .paidinneed(inneedpaid), .charge(charge), .chooseroot(chooseroot),
         .warning1(warning1), .warning2(warning2), .warning3(warning3), .warning4(warning4),
-        .warning5(warning5), .warning6(warning6));//todo
+        .warning5(warning5), .warning6(warning6));
 
 
     //数码显示管
