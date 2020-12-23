@@ -86,6 +86,21 @@ module controller(
         end
     end
 
+    reg [4:0] numbers;
+    always @(*)
+        case ({channel, goods})
+            6'b001_001: numbers = current_numbers[4:0];
+            6'b001_010: numbers = current_numbers[9:5];
+            6'b001_100: numbers = current_numbers[14:10];
+            6'b010_001: numbers = current_numbers[19:15];
+            6'b010_010: numbers = current_numbers[24:20];
+            6'b010_100: numbers = current_numbers[29:25];
+            6'b100_001: numbers = current_numbers[34:30];
+            6'b100_010: numbers = current_numbers[39:30];
+            6'b100_100: numbers = current_numbers[44:40];
+            default: numbers = 0;
+        endcase
+
     always @*
         case (current_mode)
             resetmode: //100
@@ -94,7 +109,6 @@ module controller(
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;
-                        3'b010: next_mode = purchasemode;
                         3'b100: next_mode = managermode; //todo 可能有bug
                         default: next_mode = current_mode;
 
@@ -106,8 +120,9 @@ module controller(
                 case (status)
                     3'b010:
                         begin
-                            if (warning2 == 1'b0)
+                            if (select_number < numbers)
                                 next_mode = purchasemode;
+                            else next_mode = current_mode;
                         end
                     3'b100: next_mode = managermode;
                     default: next_mode = current_mode;
@@ -225,7 +240,7 @@ module controller(
                 current_numbers <= 45'b0;
                 warning1 <= 1'b0;
                 warning2 <= 1'b0;
-                warning3 <= 1'b0;
+                // warning3 <= 1'b0;
             end
         else
             case (next_mode)
