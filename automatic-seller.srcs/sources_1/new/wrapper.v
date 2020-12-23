@@ -114,6 +114,6 @@ module wrapper(
 
 
     //蜂鸣器
-    buzzer_top buzzer_top(.clk(clk), .rst_n(reset), .beep(beep),.keyboard_en(keyboard_en),
-    .keyboard_value(keyboard_out),.status(status_led));
+    buzzer_top buzzer_top(.clk(clk), .rst_n(reset), .beep(beep), .keyboard_en(keyboard_en),
+        .keyboard_value(keyboard_out), .status(status_led));
 endmodule : wrapper

@@ -193,7 +193,7 @@ module tube_display(
             default: sold_num = 9;
         endcase
 //    reg [31:0] roll_cnt;
-    wire  roll_clk;
+    wire roll_clk;
     frequency_divider#(.period(1000)) roll_clk_out(clkout, rst, roll_clk);
 //    always @(posedge clkout or negedge rst) // frequency division : clkout -> roll_clk
 //        begin
@@ -214,10 +214,10 @@ module tube_display(
     wire twenkle;
     frequency_divider#(.period(twenkle_period)) twenkler(clk, rst, twenkle);
     always @(posedge roll_clk or negedge rst)
-        if (!rst && current_mode == browsemode && goods_in == 3'b000)begin
-                goods <= 3'b001;
+        if (!rst && current_mode == browsemode && goods_in == 3'b000) begin
+            goods <= 3'b001;
         end
-        else if(rst && current_mode == browsemode && goods_in == 3'b000)begin
+        else if (rst && current_mode == browsemode && goods_in == 3'b000) begin
             case (goods)
                 3'b001: goods <= 3'b010;
                 3'b010: goods <= 3'b100;
@@ -276,7 +276,7 @@ module tube_display(
     always @(tube_cnt)
         case (current_mode)
             browsemode: //��ʾ�����š���Ʒ���ơ���Ʒʣ��������Ʒ���
-                if (goods_in == 3'b000)begin
+                if (goods_in == 3'b000) begin
                     case (tube_cnt)
                         7: case (channel)
                             3'b001: Y_r = one;//1
@@ -334,61 +334,61 @@ module tube_display(
                     endcase
                 end
                 else
-                case (tube_cnt)
-                    7: case (channel)
-                        3'b001: Y_r = one;//1
-                        3'b010: Y_r = two;//2
-                        3'b100: Y_r = three;//3
+                    case (tube_cnt)
+                        7: case (channel)
+                            3'b001: Y_r = one;//1
+                            3'b010: Y_r = two;//2
+                            3'b100: Y_r = three;//3
+                            default: Y_r = none;
+                        endcase
+                        5: case ({channel, goods_in})
+                            6'b001001: Y_r = A;//A
+                            6'b001010: Y_r = b;//b
+                            6'b001100: Y_r = C;//c
+                            6'b010001: Y_r = d;//d
+                            6'b010010: Y_r = E;//E
+                            6'b010100: Y_r = F;//F
+                            6'b100001: Y_r = G;//G
+                            6'b100010: Y_r = H;//H
+                            6'b100100: Y_r = J;//J
+                            default: Y_r = none;
+                        endcase
+                        3: case (numbers)
+                            0: begin
+                                if (twenkle == 0) Y_r = zero;//0
+                                else Y_r = none;
+                            end
+                            1: Y_r = one;//1
+                            2: Y_r = two;//2
+                            3: Y_r = three;//3
+                            4: Y_r = four;//4
+                            5: Y_r = five;//5
+                            6: Y_r = six;//6
+                            7: Y_r = seven;//7
+                            8: Y_r = eight;//8
+                            default: Y_r = none;
+                        endcase
+                        1: case (price)
+                            0: Y_r = zero;//0
+                            1: Y_r = one;//1
+                            2: Y_r = two;//2
+                            3: Y_r = three;//3
+                            //4: Y_r = four;//4
+                            5: Y_r = five;//5
+                            6: Y_r = six;//6
+                            7: Y_r = seven;//7
+                            8: Y_r = eight;//8
+                            9: Y_r = nine;//9
+                            10: Y_r = A;//A
+                            11: Y_r = b;//b
+                            12: Y_r = C;//c
+                            13: Y_r = d;//d
+                            14: Y_r = E;//E
+                            15: Y_r = F;//F
+                            default: Y_r = none;
+                        endcase
                         default: Y_r = none;
                     endcase
-                    5: case ({channel, goods_in})
-                        6'b001001: Y_r = A;//A
-                        6'b001010: Y_r = b;//b
-                        6'b001100: Y_r = C;//c
-                        6'b010001: Y_r = d;//d
-                        6'b010010: Y_r = E;//E
-                        6'b010100: Y_r = F;//F
-                        6'b100001: Y_r = G;//G
-                        6'b100010: Y_r = H;//H
-                        6'b100100: Y_r = J;//J
-                        default: Y_r = none;
-                    endcase
-                    3: case (numbers)
-                        0: begin
-                            if (twenkle == 0) Y_r = zero;//0
-                            else Y_r = none;
-                        end
-                        1: Y_r = one;//1
-                        2: Y_r = two;//2
-                        3: Y_r = three;//3
-                        4: Y_r = four;//4
-                        5: Y_r = five;//5
-                        6: Y_r = six;//6
-                        7: Y_r = seven;//7
-                        8: Y_r = eight;//8
-                        default: Y_r = none;
-                    endcase
-                    1: case (price)
-                        0: Y_r = zero;//0
-                        1: Y_r = one;//1
-                        2: Y_r = two;//2
-                        3: Y_r = three;//3
-                        //4: Y_r = four;//4
-                        5: Y_r = five;//5
-                        6: Y_r = six;//6
-                        7: Y_r = seven;//7
-                        8: Y_r = eight;//8
-                        9: Y_r = nine;//9
-                        10: Y_r = A;//A
-                        11: Y_r = b;//b
-                        12: Y_r = C;//c
-                        13: Y_r = d;//d
-                        14: Y_r = E;//E
-                        15: Y_r = F;//F
-                        default: Y_r = none;
-                    endcase
-                    default: Y_r = none;
-                endcase
             purchasemode: // [4:0]waiting_time、已付金额--[5:0]paid、商品单价--[3:0] price
                 case (tube_cnt)
                     7:
@@ -637,7 +637,7 @@ module tube_display(
                     //     default: Y_r = none;
                     // endcase
                     7: Y_r = 7'b1001001;
-                    2: case (income / 100)
+                    2: case (income/100)
                         0: Y_r = zero;//0
                         1: Y_r = one;//1
                         2: Y_r = two;//2

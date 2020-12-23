@@ -45,7 +45,7 @@ module buzzer_top(
 
     always @(posedge clk) begin
         if (rst_n == 0) count <= 32'b0;
-        if (start == 1 )
+        if (start == 1)
             begin
                 count <= count+1;
             end
@@ -74,7 +74,7 @@ module buzzer_top(
                     start <= 0;
                 else if (rst_n == 0) start <= 1'b0;
             end
-            if (status != 8'b00000001 && count==9999999) start = 1'b0;
+            if (status != 8'b00000001 && count == 9999999) start = 1'b0;
         end
 
 
