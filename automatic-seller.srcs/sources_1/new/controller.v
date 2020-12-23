@@ -115,7 +115,7 @@ module controller(
                     endcase
                 end
             browsemode: begin
-
+                warning3 = 1'b0;
                 clockstart = 1'b0;
                 case (status)
                     3'b010:
@@ -145,13 +145,13 @@ module controller(
                         warning3 = 1'b0;
                         if (waiting_time >= 30)
                             next_mode = failpurchase;
-                        else if (keyboard == 14 && paid >= paidinneed && keyboard_en) next_mode = completepurchase;
+                        else if (keyboard == 15 && paid >= paidinneed && keyboard_en) next_mode = completepurchase;
                         else next_mode = current_mode;
                     end
                 end
             failpurchase:
                 begin
-
+                    warning3 = 1'b0;
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;//010
@@ -171,7 +171,7 @@ module controller(
                 end
             managermode: //100
                 begin
-
+                    warning3 = 1'b0;
                     if (chooseroot == 2'b01)
 
                         next_mode = rootbrowse;
@@ -322,7 +322,7 @@ module controller(
                 purchasemode:
                     if (keyboard_en == 1'b1)
                         begin
-                            if (keyboard != 14)
+                            if (keyboard != 15)
                                 paid <= paid+keyboard;
                             else
                                 begin
@@ -508,7 +508,7 @@ module controller(
                 completepurchase:
                     if (keyboard_en == 1'b1)
                         begin
-                            if (keyboard == 14)
+                            if (keyboard == 15)
 
                                 begin
                                     if (current_mode == purchasemode)
