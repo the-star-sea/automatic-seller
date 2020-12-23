@@ -109,7 +109,7 @@ module controller(
                     clockstart = 1'b0;
                     case (status)
                         3'b001: next_mode = browsemode;
-                        3'b100: next_mode = managermode; //todo 可能有bug
+                        3'b100: next_mode = managermode; //todo
                         default: next_mode = current_mode;
 
                     endcase
@@ -120,7 +120,7 @@ module controller(
                 case (status)
                     3'b010:
                         begin
-                            if (select_number < numbers)
+                            if (select_number <= numbers && select_number != 0)
                                 next_mode = purchasemode;
                             else next_mode = current_mode;
                         end
@@ -134,19 +134,20 @@ module controller(
                     clockstart = 1'b1;
                     if (waiting_time < 30 && paid < paidinneed)
                         begin
-                            next_mode = current_mode;
-                            warning3 = 1'b1;
+
+                            if (status == 3'b001) next_mode = browsemode;
+                            else if (status == 3'b100) next_mode = managermode;
+                            else begin next_mode = current_mode;
+                                warning3 = 1'b1;//提示顾客继续付款
+                            end
                         end
                     else begin
                         warning3 = 1'b0;
                         if (waiting_time >= 30)
                             next_mode = failpurchase;
-                        else if (status == 3'b001) next_mode = browsemode;
-                        else if (status == 3'b100) next_mode = managermode;
                         else if (keyboard == 14 && paid >= paidinneed && keyboard_en) next_mode = completepurchase;
                         else next_mode = current_mode;
                     end
-
                 end
             failpurchase:
                 begin
@@ -201,7 +202,6 @@ module controller(
                 end
             allinall:
                 begin
-
                     if (chooseroot == 2'b00)
                         next_mode = managermode;
                     else if (chooseroot == 2'b10)
@@ -219,6 +219,8 @@ module controller(
                     if (chooseroot == 2'b01)
 
                         next_mode = rootbrowse;
+                    else if (chooseroot == 2'b10)
+                        next_mode = rootadd;
                     else if (chooseroot == 2'b00)
                         next_mode = managermode;
                     else if (chooseroot == 2'b10)
@@ -250,7 +252,9 @@ module controller(
                 //         income = 10'b0;
                 //         sold_numbers = 45'b0;
                 //     end
-
+                managermode: warning1 <= 0;
+                rootbrowse: warning1 <= 0;
+                allinall: warning1 <= 0;
                 browsemode:
 
                     begin
@@ -404,7 +408,7 @@ module controller(
                                             if (current_numbers[4:0]+keyboard > maxnum) warning1 <= 1'b1;//todo 判断warning何时消失
                                             else current_numbers[4:0] <= current_numbers[4:0]+keyboard;
                                         end
-                                    else if (current_numbers[4:0]+keyboard < maxnum)
+                                    else if (current_numbers[4:0]+keyboard <= maxnum)
                                         begin
                                             warning1 <= 1'b0;
                                             current_numbers[4:0] <= current_numbers[4:0]+keyboard;
@@ -415,7 +419,7 @@ module controller(
                                             if (current_numbers[9:5]+keyboard > maxnum) warning1 <= 1'b1;//补多�?
                                             else current_numbers[9:5] <= current_numbers[9:5]+keyboard;
                                         end
-                                    else if (current_numbers[9:5]+keyboard < maxnum)
+                                    else if (current_numbers[9:5]+keyboard <= maxnum)
                                         begin
                                             warning1 <= 1'b0;
                                             current_numbers[9:5] <= current_numbers[9:5]+keyboard;
@@ -426,7 +430,7 @@ module controller(
                                             if (current_numbers[14:10]+keyboard > maxnum) warning1 <= 1'b1;//补多�?
                                             else current_numbers[14:10] <= current_numbers[14:10]+keyboard;
                                         end
-                                    else if (current_numbers[14:10]+keyboard < maxnum)
+                                    else if (current_numbers[14:10]+keyboard <= maxnum)
                                         begin
                                             warning1 <= 1'b0;
                                             current_numbers[14:10] <= current_numbers[14:10]+keyboard;
@@ -437,7 +441,7 @@ module controller(
                                             if (current_numbers[19:15]+keyboard > maxnum) warning1 <= 1'b1;//补多�?
                                             else current_numbers[19:15] <= current_numbers[19:15]+keyboard;
                                         end
-                                    else if (current_numbers[19:15]+keyboard < maxnum)
+                                    else if (current_numbers[19:15]+keyboard <= maxnum)
                                         begin
                                             warning1 <= 1'b0;
                                             current_numbers[19:15] <= current_numbers[19:15]+keyboard;
@@ -448,7 +452,7 @@ module controller(
                                             if (current_numbers[24:20]+keyboard > maxnum) warning1 <= 1'b1;//补多�?
                                             else current_numbers[24:20] <= current_numbers[24:20]+keyboard;
                                         end
-                                    else if (current_numbers[24:20]+keyboard < maxnum)
+                                    else if (current_numbers[24:20]+keyboard <= maxnum)
                                         begin
                                             warning1 <= 1'b0;
                                             current_numbers[24:20] <= current_numbers[24:20]+keyboard;
@@ -459,7 +463,7 @@ module controller(
                                             if (current_numbers[29:25]+keyboard > maxnum) warning1 <= 1'b1;//补多了
                                             else current_numbers[29:25] <= current_numbers[29:25]+keyboard;
                                         end
-                                    else if (current_numbers[29:25]+keyboard < maxnum)
+                                    else if (current_numbers[29:25]+keyboard <= maxnum)
                                         begin
                                             warning1 <= 1'b0;
                                             current_numbers[29:25] <= current_numbers[29:25]+keyboard;
@@ -470,7 +474,7 @@ module controller(
                                             if (current_numbers[34:30]+keyboard > maxnum) warning1 <= 1'b1;//补多了
                                             else current_numbers[34:30] <= current_numbers[34:30]+keyboard;
                                         end
-                                    else if (current_numbers[34:30]+keyboard < maxnum)
+                                    else if (current_numbers[34:30]+keyboard <= maxnum)
                                         begin
                                             warning1 <= 1'b0;
                                             current_numbers[34:30] <= current_numbers[34:30]+keyboard;
@@ -481,7 +485,7 @@ module controller(
                                             if (current_numbers[39:35]+keyboard > maxnum) warning1 <= 1'b1;//补多了
                                             else current_numbers[39:35] <= current_numbers[39:35]+keyboard;
                                         end
-                                    else if (current_numbers[39:35]+keyboard < maxnum)
+                                    else if (current_numbers[39:35]+keyboard <= maxnum)
                                         begin
                                             warning1 <= 1'b0;
                                             current_numbers[39:35] <= current_numbers[39:35]+keyboard;
@@ -492,7 +496,7 @@ module controller(
                                             if (current_numbers[44:40]+keyboard > maxnum) warning1 <= 1'b1;//补多了
                                             else current_numbers[44:40] <= current_numbers[44:40]+keyboard;
                                         end
-                                    else if (current_numbers[44:40]+keyboard < maxnum)
+                                    else if (current_numbers[44:40]+keyboard <= maxnum)
                                         begin
                                             warning1 <= 1'b0;
                                             current_numbers[44:40] <= current_numbers[44:40]+keyboard;
