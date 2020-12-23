@@ -72,8 +72,7 @@ module controller(
     always @(posedge clk, negedge reset)
         if (~reset && status == 3'b100) current_mode <= resetmode;
         else begin
-            temp_mode <= next_mode;
-            current_mode <= temp_mode;
+            current_mode <= next_mode;
         end
 
     //30秒计时器
@@ -124,10 +123,10 @@ module controller(
                         next_mode = current_mode;
                     else if (waiting_time >= 30)
                         next_mode = failpurchase;
-                    else if(status==3'b001)  next_mode = browsemode;
-                    else if(status==3'b100)next_mode=managermode;
-                    else if(keyboard==14&&paid >= paidinneed&&keyboard_en)next_mode = completepurchase;
-else next_mode = current_mode;
+                    else if (status == 3'b001) next_mode = browsemode;
+                    else if (status == 3'b100) next_mode = managermode;
+                    else if (keyboard == 14 && paid >= paidinneed && keyboard_en) next_mode = completepurchase;
+                    else next_mode = current_mode;
                 end
             failpurchase:
                 begin
@@ -215,12 +214,12 @@ else next_mode = current_mode;
         if (~reset && status == 3'b100)
             begin
                 charge <= 5'b0;
-                paid<=5'b0;
+                paid <= 5'b0;
                 income <= 10'b0;
                 sold_numbers <= 45'b0;
                 current_numbers <= 45'b0;
                 warning1 <= 1'b0;
-                warning2<=1'b0;
+                warning2 <= 1'b0;
             end
         else
             case (next_mode)
@@ -233,265 +232,77 @@ else next_mode = current_mode;
 
                 browsemode:
 
-begin
-                    case ({channel, goods})
-
-                        6'b001001:
-                            begin
-                                if (select_number > current_numbers[4:0]) warning2 <= 1'b1;
-                                else warning2 <= 1'b0;
-                                paidinneed <= select_number*price1;
-                            end
-                        6'b001010:
-                            begin
-                                if (select_number > current_numbers[9:5]) warning2 <= 1'b1;
-                                else warning2 <= 1'b0;
-                                paidinneed <= select_number*price2;
-                            end
-                        6'b001100:
-                            begin
-                                if (select_number > current_numbers[14:10]) warning2 <= 1'b1;
-                                else warning2 <= 1'b0;
-                                paidinneed <= select_number*price3;
-                            end
-                        6'b010001:
-                            begin
-                                if (select_number > current_numbers[19:15]) warning2 <= 1'b1;
-                                else warning2 <= 1'b0;
-                                paidinneed <= select_number*price4;
-                            end
-                        6'b010010:
-                            begin
-                                if (select_number > current_numbers[24:20]) warning2 <= 1'b1;
-                                else warning2 <= 1'b0;
-                                paidinneed <= select_number*price5;
-                            end
-                        6'b010100:
-                            begin
-                                if (select_number > current_numbers[29:25]) warning2 <= 1'b1;
-                                else warning2 <= 1'b0;
-                                paidinneed <= select_number*price6;
-                            end
-                        6'b100001:
-                            begin
-                                if (select_number > current_numbers[34:30]) warning2 <= 1'b1;
-                                else warning2 <= 1'b0;
-                                paidinneed <= select_number*price7;
-                            end
-                        6'b100010:
-                            begin
-                                if (select_number > current_numbers[39:35]) warning2 <= 1'b1;
-                                else warning2 <= 1'b0;
-                                paidinneed <= select_number*price8;
-                            end
-                        6'b100100:
-                            begin
-                                if (select_number > current_numbers[44:40]) warning2 <= 1'b1;
-                                else warning2 <= 1'b0;
-                                paidinneed <= select_number*price9;
-                            end
-
-
-
-                    endcase
-    paid<=5'b0;
-
-end
-purchasemode:
-if (keyboard_en==1'b1)
-begin
-    if(keyboard!=14)
-    paid <= paid+keyboard;
-    else
-    begin
-        if (current_mode == purchasemode)
-    income <= income+paidinneed;
-    charge <= paid-paidinneed;
-
-
-    case ({channel, goods}) //todo
-        6'b001001:
-
-            if (current_mode == purchasemode)
-                begin
-                    sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
-                    current_numbers[4:0]<=current_numbers[4:0]-select_number;
-                end
-        6'b001010:
-            begin
-                if (current_mode == purchasemode)
-                    sold_numbers[9:5] <= sold_numbers[9:5]+select_number;
-                current_numbers[9:5]<=current_numbers[9:5]-select_number;
-            end
-        6'b001100:
-            begin
-                if (current_mode == purchasemode)
-                    sold_numbers[14:10] <= sold_numbers[14:10]+select_number;
-                current_numbers[14:10]<=current_numbers[14:10]-select_number;
-            end
-        6'b010001:
-            begin
-                if (current_mode == purchasemode)
-                    sold_numbers[19:15] <= sold_numbers[19:15]+select_number;
-                current_numbers[19:15]<=current_numbers[19:15]-select_number;
-            end
-        6'b010010:
-            begin
-                if (current_mode == purchasemode)
-                    sold_numbers[24:20] <= sold_numbers[24:20]+select_number;
-                current_numbers[24:20]<=current_numbers[24:20]-select_number;
-            end
-        6'b010100:
-            begin
-                if (current_mode == purchasemode)
-                    sold_numbers[29:25] <= sold_numbers[29:25]+select_number;
-                current_numbers[29:25]<=current_numbers[29:25]-select_number;
-            end
-        6'b100001:
-            begin
-                if (current_mode == purchasemode)
-                    sold_numbers[34:30] <= sold_numbers[34:30]+select_number;
-                current_numbers[34:30]<=current_numbers-select_number;
-            end
-        6'b100010:
-            begin
-                if (current_mode == purchasemode)
-                    sold_numbers[39:35] <= sold_numbers[39:35]+select_number;
-                current_numbers[39:35]<=current_numbers[39:35]-select_number;
-            end
-        6'b100100:
-            begin
-                if (current_mode == purchasemode)
-                    sold_numbers[44:40] <= sold_numbers[44:40]+select_number;
-                current_numbers[44:40]<=current_numbers[44:40]-select_number;
-            end
-    endcase
-    end
-
-
-    end
-                failpurchase:
-               begin
-                    charge <= paid;
-
-                   end
-                rootadd:
-
-                    if(keyboard_en==1'b1)
                     begin
-                    case ({channel, goods})
+                        case ({channel, goods})
 
-                        6'b001001:
-                            if (warning1 == 1'b0)
+                            6'b001001:
                                 begin
-                                    if (current_numbers[4:0]+keyboard > maxnum) warning1 <= 1'b1;//todo 判断warning何时消失
-                                    else current_numbers[4:0] <= current_numbers[4:0]+keyboard;
+                                    if (select_number > current_numbers[4:0]) warning2 <= 1'b1;
+                                    else warning2 <= 1'b0;
+                                    paidinneed <= select_number*price1;
                                 end
-                            else if (current_numbers[4:0]+keyboard < maxnum)
+                            6'b001010:
                                 begin
-                                    warning1 <= 1'b0;
-                                    current_numbers[4:0] <= current_numbers[4:0]+keyboard;
+                                    if (select_number > current_numbers[9:5]) warning2 <= 1'b1;
+                                    else warning2 <= 1'b0;
+                                    paidinneed <= select_number*price2;
                                 end
-                        6'b001010:
-                            if (warning1 == 1'b0)
+                            6'b001100:
                                 begin
-                                    if (current_numbers[9:5]+keyboard > maxnum) warning1 <= 1'b1;//补多了
-                                    else current_numbers[9:5] <= current_numbers[9:5]+keyboard;
+                                    if (select_number > current_numbers[14:10]) warning2 <= 1'b1;
+                                    else warning2 <= 1'b0;
+                                    paidinneed <= select_number*price3;
                                 end
-                            else if (current_numbers[9:5]+keyboard < maxnum)
+                            6'b010001:
                                 begin
-                                    warning1 <= 1'b0;
-                                    current_numbers[9:5] <= current_numbers[9:5]+keyboard;
+                                    if (select_number > current_numbers[19:15]) warning2 <= 1'b1;
+                                    else warning2 <= 1'b0;
+                                    paidinneed <= select_number*price4;
                                 end
-                        6'b001100:
-                            if (warning1 == 1'b0)
+                            6'b010010:
                                 begin
-                                    if (current_numbers[14:10]+keyboard > maxnum) warning1 <= 1'b1;//补多了
-                                    else current_numbers[14:10] <= current_numbers[14:10]+keyboard;
+                                    if (select_number > current_numbers[24:20]) warning2 <= 1'b1;
+                                    else warning2 <= 1'b0;
+                                    paidinneed <= select_number*price5;
                                 end
-                            else if (current_numbers[14:10]+keyboard < maxnum)
+                            6'b010100:
                                 begin
-                                    warning1 <= 1'b0;
-                                    current_numbers[14:10] <= current_numbers[14:10]+keyboard;
+                                    if (select_number > current_numbers[29:25]) warning2 <= 1'b1;
+                                    else warning2 <= 1'b0;
+                                    paidinneed <= select_number*price6;
                                 end
-                        6'b010001:
-                            if (warning1 == 1'b0)
+                            6'b100001:
                                 begin
-                                    if (current_numbers[19:15]+keyboard > maxnum) warning1 <= 1'b1;//补多了
-                                    else current_numbers[19:15] <= current_numbers[19:15]+keyboard;
+                                    if (select_number > current_numbers[34:30]) warning2 <= 1'b1;
+                                    else warning2 <= 1'b0;
+                                    paidinneed <= select_number*price7;
                                 end
-                            else if (current_numbers[19:15]+keyboard < maxnum)
+                            6'b100010:
                                 begin
-                                    warning1 <= 1'b0;
-                                    current_numbers[19:15] <= current_numbers[19:15]+keyboard;
+                                    if (select_number > current_numbers[39:35]) warning2 <= 1'b1;
+                                    else warning2 <= 1'b0;
+                                    paidinneed <= select_number*price8;
                                 end
-                        6'b010010:
-                            if (warning1 == 1'b0)
+                            6'b100100:
                                 begin
-                                    if (current_numbers[24:20]+keyboard > maxnum) warning1 <= 1'b1;//补多了
-                                    else current_numbers[24:20] <= current_numbers[24:20]+keyboard;
-                                end
-                            else if (current_numbers[24:20]+keyboard < maxnum)
-                                begin
-                                    warning1 <= 1'b0;
-                                    current_numbers[24:20] <= current_numbers[24:20]+keyboard;
-                                end
-                        6'b010100:
-                            if (warning1 == 1'b0)
-                                begin
-                                    if (current_numbers[29:25]+keyboard > maxnum) warning1 <= 1'b1;//补多了
-                                    else current_numbers[29:25] <= current_numbers[29:25]+keyboard;
-                                end
-                            else if (current_numbers[29:25]+keyboard < maxnum)
-                                begin
-                                    warning1 <= 1'b0;
-                                    current_numbers[29:25] <= current_numbers[29:25]+keyboard;
-                                end
-                        6'b100001:
-                            if (warning1 == 1'b0)
-                                begin
-                                    if (current_numbers[34:30]+keyboard > maxnum) warning1 <= 1'b1;//补多了
-                                    else current_numbers[34:30] <= current_numbers[34:30]+keyboard;
-                                end
-                            else if (current_numbers[34:30]+keyboard < maxnum)
-                                begin
-                                    warning1 <= 1'b0;
-                                    current_numbers[34:30] <= current_numbers[34:30]+keyboard;
-                                end
-                        6'b100010:
-                            if (warning1 == 1'b0)
-                                begin
-                                    if (current_numbers[39:35]+keyboard > maxnum) warning1 <= 1'b1;//补多了
-                                    else current_numbers[39:35] <= current_numbers[39:35]+keyboard;
-                                end
-                            else if (current_numbers[39:35]+keyboard < maxnum)
-                                begin
-                                    warning1 <= 1'b0;
-                                    current_numbers[39:35] <= current_numbers[39:35]+keyboard;
-                                end
-                        6'b100100:
-                            if (warning1 == 1'b0)
-                                begin
-                                    if (current_numbers[44:40]+keyboard > maxnum) warning1 <= 1'b1;//补多了
-                                    else current_numbers[44:40] <= current_numbers[44:40]+keyboard;
-                                end
-                            else if (current_numbers[44:40]+keyboard < maxnum)
-                                begin
-                                    warning1 <= 1'b0;
-                                    current_numbers[44:40] <= current_numbers[44:40]+keyboard;
+                                    if (select_number > current_numbers[44:40]) warning2 <= 1'b1;
+                                    else warning2 <= 1'b0;
+                                    paidinneed <= select_number*price9;
                                 end
 
-                                endcase
-                        end
+                        endcase
+                        paid <= 5'b0;
 
-                completepurchase:
-                    if (keyboard_en==1'b1)
+                    end
+                purchasemode:
+                    if (keyboard_en == 1'b1)
                         begin
-                            if(keyboard==14)
-
+                            if (keyboard != 14)
+                                paid <= paid+keyboard;
+                            else
                                 begin
                                     if (current_mode == purchasemode)
-                                    income <= income+paidinneed;
+                                        income <= income+paidinneed;
                                     charge <= paid-paidinneed;
 
 
@@ -501,67 +312,248 @@ begin
                                             if (current_mode == purchasemode)
                                                 begin
                                                     sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
-                                                    current_numbers[4:0]<=current_numbers[4:0]-select_number;
+                                                    current_numbers[4:0] <= current_numbers[4:0]-select_number;
                                                 end
                                         6'b001010:
                                             begin
                                                 if (current_mode == purchasemode)
                                                     sold_numbers[9:5] <= sold_numbers[9:5]+select_number;
-                                                current_numbers[9:5]<=current_numbers[9:5]-select_number;
+                                                current_numbers[9:5] <= current_numbers[9:5]-select_number;
                                             end
                                         6'b001100:
                                             begin
                                                 if (current_mode == purchasemode)
                                                     sold_numbers[14:10] <= sold_numbers[14:10]+select_number;
-                                                current_numbers[14:10]<=current_numbers[14:10]-select_number;
+                                                current_numbers[14:10] <= current_numbers[14:10]-select_number;
                                             end
                                         6'b010001:
                                             begin
                                                 if (current_mode == purchasemode)
                                                     sold_numbers[19:15] <= sold_numbers[19:15]+select_number;
-                                                current_numbers[19:15]<=current_numbers[19:15]-select_number;
+                                                current_numbers[19:15] <= current_numbers[19:15]-select_number;
                                             end
                                         6'b010010:
                                             begin
                                                 if (current_mode == purchasemode)
                                                     sold_numbers[24:20] <= sold_numbers[24:20]+select_number;
-                                                current_numbers[24:20]<=current_numbers[24:20]-select_number;
+                                                current_numbers[24:20] <= current_numbers[24:20]-select_number;
                                             end
                                         6'b010100:
                                             begin
                                                 if (current_mode == purchasemode)
                                                     sold_numbers[29:25] <= sold_numbers[29:25]+select_number;
-                                                current_numbers[29:25]<=current_numbers[29:25]-select_number;
+                                                current_numbers[29:25] <= current_numbers[29:25]-select_number;
                                             end
                                         6'b100001:
                                             begin
                                                 if (current_mode == purchasemode)
                                                     sold_numbers[34:30] <= sold_numbers[34:30]+select_number;
-                                                current_numbers[34:30]<=current_numbers-select_number;
+                                                current_numbers[34:30] <= current_numbers-select_number;
                                             end
                                         6'b100010:
                                             begin
                                                 if (current_mode == purchasemode)
                                                     sold_numbers[39:35] <= sold_numbers[39:35]+select_number;
-                                                current_numbers[39:35]<=current_numbers[39:35]-select_number;
+                                                current_numbers[39:35] <= current_numbers[39:35]-select_number;
                                             end
                                         6'b100100:
                                             begin
                                                 if (current_mode == purchasemode)
                                                     sold_numbers[44:40] <= sold_numbers[44:40]+select_number;
-                                                current_numbers[44:40]<=current_numbers[44:40]-select_number;
+                                                current_numbers[44:40] <= current_numbers[44:40]-select_number;
                                             end
                                     endcase
                                 end
 
+                        end
+                failpurchase:
+                    begin
+                        charge <= paid;
+
+                    end
+                rootadd:
+
+                    if (keyboard_en == 1'b1)
+                        begin
+                            case ({channel, goods})
+
+                                6'b001001:
+                                    if (warning1 == 1'b0)
+                                        begin
+                                            if (current_numbers[4:0]+keyboard > maxnum) warning1 <= 1'b1;//todo 判断warning何时消失
+                                            else current_numbers[4:0] <= current_numbers[4:0]+keyboard;
+                                        end
+                                    else if (current_numbers[4:0]+keyboard < maxnum)
+                                        begin
+                                            warning1 <= 1'b0;
+                                            current_numbers[4:0] <= current_numbers[4:0]+keyboard;
+                                        end
+                                6'b001010:
+                                    if (warning1 == 1'b0)
+                                        begin
+                                            if (current_numbers[9:5]+keyboard > maxnum) warning1 <= 1'b1;//补多了
+                                            else current_numbers[9:5] <= current_numbers[9:5]+keyboard;
+                                        end
+                                    else if (current_numbers[9:5]+keyboard < maxnum)
+                                        begin
+                                            warning1 <= 1'b0;
+                                            current_numbers[9:5] <= current_numbers[9:5]+keyboard;
+                                        end
+                                6'b001100:
+                                    if (warning1 == 1'b0)
+                                        begin
+                                            if (current_numbers[14:10]+keyboard > maxnum) warning1 <= 1'b1;//补多了
+                                            else current_numbers[14:10] <= current_numbers[14:10]+keyboard;
+                                        end
+                                    else if (current_numbers[14:10]+keyboard < maxnum)
+                                        begin
+                                            warning1 <= 1'b0;
+                                            current_numbers[14:10] <= current_numbers[14:10]+keyboard;
+                                        end
+                                6'b010001:
+                                    if (warning1 == 1'b0)
+                                        begin
+                                            if (current_numbers[19:15]+keyboard > maxnum) warning1 <= 1'b1;//补多了
+                                            else current_numbers[19:15] <= current_numbers[19:15]+keyboard;
+                                        end
+                                    else if (current_numbers[19:15]+keyboard < maxnum)
+                                        begin
+                                            warning1 <= 1'b0;
+                                            current_numbers[19:15] <= current_numbers[19:15]+keyboard;
+                                        end
+                                6'b010010:
+                                    if (warning1 == 1'b0)
+                                        begin
+                                            if (current_numbers[24:20]+keyboard > maxnum) warning1 <= 1'b1;//补多了
+                                            else current_numbers[24:20] <= current_numbers[24:20]+keyboard;
+                                        end
+                                    else if (current_numbers[24:20]+keyboard < maxnum)
+                                        begin
+                                            warning1 <= 1'b0;
+                                            current_numbers[24:20] <= current_numbers[24:20]+keyboard;
+                                        end
+                                6'b010100:
+                                    if (warning1 == 1'b0)
+                                        begin
+                                            if (current_numbers[29:25]+keyboard > maxnum) warning1 <= 1'b1;//补多了
+                                            else current_numbers[29:25] <= current_numbers[29:25]+keyboard;
+                                        end
+                                    else if (current_numbers[29:25]+keyboard < maxnum)
+                                        begin
+                                            warning1 <= 1'b0;
+                                            current_numbers[29:25] <= current_numbers[29:25]+keyboard;
+                                        end
+                                6'b100001:
+                                    if (warning1 == 1'b0)
+                                        begin
+                                            if (current_numbers[34:30]+keyboard > maxnum) warning1 <= 1'b1;//补多了
+                                            else current_numbers[34:30] <= current_numbers[34:30]+keyboard;
+                                        end
+                                    else if (current_numbers[34:30]+keyboard < maxnum)
+                                        begin
+                                            warning1 <= 1'b0;
+                                            current_numbers[34:30] <= current_numbers[34:30]+keyboard;
+                                        end
+                                6'b100010:
+                                    if (warning1 == 1'b0)
+                                        begin
+                                            if (current_numbers[39:35]+keyboard > maxnum) warning1 <= 1'b1;//补多了
+                                            else current_numbers[39:35] <= current_numbers[39:35]+keyboard;
+                                        end
+                                    else if (current_numbers[39:35]+keyboard < maxnum)
+                                        begin
+                                            warning1 <= 1'b0;
+                                            current_numbers[39:35] <= current_numbers[39:35]+keyboard;
+                                        end
+                                6'b100100:
+                                    if (warning1 == 1'b0)
+                                        begin
+                                            if (current_numbers[44:40]+keyboard > maxnum) warning1 <= 1'b1;//补多了
+                                            else current_numbers[44:40] <= current_numbers[44:40]+keyboard;
+                                        end
+                                    else if (current_numbers[44:40]+keyboard < maxnum)
+                                        begin
+                                            warning1 <= 1'b0;
+                                            current_numbers[44:40] <= current_numbers[44:40]+keyboard;
+                                        end
+
+                            endcase
+                        end
+
+                completepurchase:
+                    if (keyboard_en == 1'b1)
+                        begin
+                            if (keyboard == 14)
+
+                                begin
+                                    if (current_mode == purchasemode)
+                                        income <= income+paidinneed;
+                                    charge <= paid-paidinneed;
+
+
+                                    case ({channel, goods}) //todo
+                                        6'b001001:
+
+                                            if (current_mode == purchasemode)
+                                                begin
+                                                    sold_numbers[4:0] <= sold_numbers[4:0]+select_number;
+                                                    current_numbers[4:0] <= current_numbers[4:0]-select_number;
+                                                end
+                                        6'b001010:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[9:5] <= sold_numbers[9:5]+select_number;
+                                                current_numbers[9:5] <= current_numbers[9:5]-select_number;
+                                            end
+                                        6'b001100:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[14:10] <= sold_numbers[14:10]+select_number;
+                                                current_numbers[14:10] <= current_numbers[14:10]-select_number;
+                                            end
+                                        6'b010001:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[19:15] <= sold_numbers[19:15]+select_number;
+                                                current_numbers[19:15] <= current_numbers[19:15]-select_number;
+                                            end
+                                        6'b010010:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[24:20] <= sold_numbers[24:20]+select_number;
+                                                current_numbers[24:20] <= current_numbers[24:20]-select_number;
+                                            end
+                                        6'b010100:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[29:25] <= sold_numbers[29:25]+select_number;
+                                                current_numbers[29:25] <= current_numbers[29:25]-select_number;
+                                            end
+                                        6'b100001:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[34:30] <= sold_numbers[34:30]+select_number;
+                                                current_numbers[34:30] <= current_numbers-select_number;
+                                            end
+                                        6'b100010:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[39:35] <= sold_numbers[39:35]+select_number;
+                                                current_numbers[39:35] <= current_numbers[39:35]-select_number;
+                                            end
+                                        6'b100100:
+                                            begin
+                                                if (current_mode == purchasemode)
+                                                    sold_numbers[44:40] <= sold_numbers[44:40]+select_number;
+                                                current_numbers[44:40] <= current_numbers[44:40]-select_number;
+                                            end
+                                    endcase
+                                end
 
                         end
             endcase
 
-                end
-
-
-
+    end
 
 
 endmodule : controller

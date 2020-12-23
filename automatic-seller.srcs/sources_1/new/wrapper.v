@@ -28,7 +28,9 @@ module wrapper(
     output [7:0] status_LED,
 
     input [3:0] select_numbers,
-    output [3:0]select_outs
+    output [3:0] select_outs,
+
+    output beep //蜂鸣器
 );
 
 
@@ -75,7 +77,7 @@ module wrapper(
     wire [44:0] max_supplement;
     wire [4:0] waiting_time;
     wire [3:0] select_number;//todo input
-    wire [3:0]select_out;//todo output传给led模块 选择的数量
+    wire [3:0] select_out;//todo output传给led模块 选择的数量
     wire [5:0] paid;
     wire [5:0] inneedpaid;
     wire [5:0] charge;
@@ -109,4 +111,9 @@ module wrapper(
         .inneedpaid(inneedpaid),
         .max_supplement(max_supplement), .sold_numbers(sold_numbers), .current_mode(status_led),
         .income(income), .charge(charge), .paid(paid), .DIG(DIG_tube), .Y(Y_tube));
+
+
+    //蜂鸣器
+    buzzer_top buzzer_top(.clk(clk), .rst_n(reset), .beep(beep),.keyboard_en(keyboard_en),
+    .keyboard_value(keyboard_out),.status(status_led));
 endmodule : wrapper
