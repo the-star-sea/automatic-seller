@@ -1,5 +1,5 @@
-#Automatic Seller
-## Teammate : Zhang Tong Deng Xiangbo Zhang Kunlong
+#automatic seller
+## teammate : Zhang Tong Deng Xiangbo Zhang Kunlong
 
 ###开发计划
 

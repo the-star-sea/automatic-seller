@@ -4,32 +4,31 @@
 //外壳，最外层模块
 //负责组织所有的输入输出接口，以及内部各模块之间的连接
 //输入输出直接对应开发板的引脚
+//外壳，最外层模块
+//负责组织所有的输入输出接口，以及内部各模块之间的连接
+//输入输出直接对应开发板的引脚
 module wrapper(
-    input clk,
-    input reset,
-    input [3:0] keyboard_in,
-    input [2:0] status,
-    input [2:0] channel,
-    input [2:0] goods,
-    input warning_cancel,
-    input [1:0] chooseroot,
-    output [2:0] channel_led,
-    output [2:0] good_led,
-    output [3:0] keyboard_col,
-    output [0:0] warning1_led,
-    output [0:0] warning2_led,
-    output [0:0] warning3_led,
-    output [0:0] warning4_led,
-    output [0:0] warning5_led,
-    output [0:0] warning6_led,
-    output [7:0] DIG_tube,
-    output [7:0] Y_tube,
-    output [7:0] status_LED,
-
-    input [3:0] select_numbers,
-    output [3:0] select_outs,
-    output beep //蜂鸣器
+    input    [0:0]   clk,                   //时钟信号
+    input    [0:0]   reset,                 //复位信号
+    input    [3:0]   keyboard_in,           //小键盘的行信号
+    input    [2:0]   status,                //状态
+    input    [2:0]   channel,               //货道号
+    input    [2:0]   goods,                 //商品号
+    input    [1:0]   chooseroot,            //选择补货或查看销售信息
+    output   [2:0]   channel_led,           //货道号显示灯
+    output   [2:0]   good_led,              //商品号显示灯
+    output   [3:0]   keyboard_col,          //小键盘的列信号
+    output   [0:0]   warning1_led,          //补货补多了
+    output   [0:0]   warning2_led,          //购买时选多了
+    output   [0:0]   warning3_led,          //提示顾客继续付款
+    output   [7:0]   DIG_tube,              //选择数码管
+    output   [7:0]   Y_tube,                //选择数码管的显示
+    output   [7:0]   status_LED,            //状态显示灯
+    input    [3:0]   select_numbers,        //选择数量
+    output   [3:0]   select_outs,           //选择数量的指示灯
+    output   [0:0]   beep                   //蜂鸣器
 );
+
 
 
     assign select_outs = select_out;

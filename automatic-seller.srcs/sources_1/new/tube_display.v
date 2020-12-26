@@ -21,21 +21,21 @@
 
 
 module tube_display(
-    input rst,//reset
-    input clk,
-    input [2:0] channel,
-    input [2:0] goods_in,
-    input [44:0] current_numbers,
-    input [4:0] waiting_time,
-    input [44:0] max_supplement,
-    input [44:0] sold_numbers,
-    input [7:0] current_mode,
-    input [9:0] income,
-    input [5:0] charge,
-    input [5:0] inneedpaid,
-    input [5:0] paid,//2^6 = 128
-    output [7:0] DIG,//bit selection
-    output [7:0] Y //seg selection
+    input  [0:0]  rst,                      //复位信号
+    input  [0:0]  clk,                      //时钟信号
+    input  [2:0]  channel,                  //货道号
+    input  [2:0]  goods_in,                 //商品号
+    input  [44:0] current_numbers,          //当前商品剩余量
+    input  [4:0]  waiting_time,             //30秒计时器
+    input  [44:0] max_supplement,           //当前商品最大可补数量
+    input  [44:0] sold_numbers,             //当前商品已售数量
+    input  [7:0]  current_mode,             //当前状态
+    input  [9:0]  income,                   //总收入
+    input  [5:0]  charge,                   //找零
+    input  [5:0]  inneedpaid,               //需要支付的金额
+    input  [5:0]  paid,                     //已经支付的金额
+    output [7:0]  DIG,                      //选择数码管
+    output [7:0]  Y                         //选择数码管的显示
 );
     reg [2:0] goods;
     reg clkout;

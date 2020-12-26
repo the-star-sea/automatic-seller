@@ -1,37 +1,32 @@
 module controller(
-    input clk,
-    input reset,
-    input [2:0] status,
-    output [7:0] status_out,
-    input [3:0] keyboard,
-    input keyboard_en,
-    input [2:0] channel,
-    output [2:0] channel_out,
-    input [2:0] goods,
-    input warning_cancel,
-    output [2:0] goods_out,
-    output reg [9:0] income,//总收益
-    output reg [44:0] current_numbers,//一个商品5个位宽，共9个商品,现在多少商品
-    //[4:0]:货道001的第001个商品
-    //[9:5]:货道001的第010个商品
-    //[14:10]:货道001的第100个商品
-    //[44:40]:货道100的第100个商品
-    output reg [44:0] sold_numbers,//卖了多少商品
-    output [44:0] max_supplement,//还可以添加的数量
-    output reg [4:0] waiting_time,//付款计时器，一进入付款状态立即开始计时，处于其他状态保持为0
-
-    output [3:0] select_out,
-    output reg [5:0] paid,//已付
-    output reg [5:0] paidinneed,//要付
-    output reg [5:0] charge,//找零
-    input [1:0] chooseroot,
-    output reg [0:0] warning1,
-    output reg [0:0] warning2,
-    output reg [0:0] warning3,
-    output reg [0:0] warning4,
-    output reg [0:0] warning5,
-    output reg [0:0] warning6,
-    input [3:0] select_number//选多少商品
+    input       [0:0]   clk,                  //时钟信号
+    input       [0:0]   reset,                //复位信号
+    input       [2:0]   status,               //状态
+    output      [7:0]   status_out,           //八个状态灯
+    input       [3:0]   keyboard,             //小键盘输入
+    input               keyboard_en,          //小键盘是否输入
+    input       [2:0]   channel,              //货道号
+    output      [2:0]   channel_out,          //货道号显示灯
+    input       [2:0]   goods,                //商品号
+    output      [2:0]   goods_out,            //商品号显示灯
+    output reg  [9:0]   income,               //总收益
+    output reg  [44:0]  current_numbers,      //一个商品5个位宽，共9个商品,现在多少商品
+                                              //[4:0]:货道001的第001个商品
+                                              //[9:5]:货道001的第010个商品
+                                              //[14:10]:货道001的第100个商品
+                                              //[44:40]:货道100的第100个商品
+    output reg  [44:0]  sold_numbers,         //卖了多少商品
+    output      [44:0]  max_supplement,       //还可以添加的数量
+    output reg  [4:0]   waiting_time,         //付款计时器，一进入付款状态立即开始计时，处于其他状态保持为0
+    output      [3:0]   select_out,           //选择商品数量输出
+    output reg  [5:0]   paid,                 //已付
+    output reg  [5:0]   paidinneed,           //要付
+    output reg  [5:0]   charge,               //找零
+    input       [1:0]   chooseroot,           //管理员选择补货或查看销售信息
+    output reg  [0:0]   warning1,             //补货补多了
+    output reg  [0:0]   warning2,             //购买时选多了
+    output reg  [0:0]   warning3,             //提示顾客继续付款
+    input       [3:0]   select_number         //选多少商品
 );
     assign max_supplement[4:0] = maxnum-current_numbers[4:0];
     assign max_supplement[9:5] = maxnum-current_numbers[9:5];

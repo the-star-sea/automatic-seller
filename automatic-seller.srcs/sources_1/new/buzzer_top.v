@@ -21,16 +21,12 @@
 
 
 module buzzer_top(
-    input wire clk,
-    input wire rst_n,
-
-    output wire beep, //蜂鸣器接�?
-
-    input keyboard_en,
-    input [3:0] keyboard_value,
-    input warning1,
-    input warning2,
-    input [7:0] status //00000001响音乐
+    input wire clk,                 //系统时钟
+    input wire rst_n,               //系统复位信号
+    input keyboard_en,              //键盘输出使能信号
+    input [3:0] keyboard_value,     //键盘输出值
+    input [7:0] status,             //输入系统当前状态
+    output wire beep                //蜂鸣器接口
 );
 
     reg buzeer_en;//让蜂鸣器�?
